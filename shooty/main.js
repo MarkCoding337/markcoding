@@ -9,7 +9,7 @@ class Main extends Phaser.Scene {
 
     }
     create() {
-        this.floor = this.matter.add.rectangle(0,0,1000, 20, 0xFFFFFF, {
+        this.floor = this.matter.add.rectangle(100,100,1000, 20, 0xFFFFFF, {
             isStatic: true,
         })
     }
