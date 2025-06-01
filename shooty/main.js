@@ -1,3 +1,4 @@
+console.log("GOd");
 class Main extends Phaser.Scene {
     constructor() {
         super("Main")
@@ -9,7 +10,7 @@ class Main extends Phaser.Scene {
 
     }
     update() {
-        
+
     }
 }
 const config = {
