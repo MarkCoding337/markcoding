@@ -1,6 +1,7 @@
 var Phaser;
 var PhaserNavMeshPlugin;
 var ctx;
+console.log("jar")
 
 class Main extends Phaser.Scene {
     constructor() {
