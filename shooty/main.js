@@ -4,7 +4,7 @@ var ctx;
 
 class Main extends Phaser.Scene {
     constructor() {
-        super("Main")
+        super("Main");
     }
     preload() {
 
@@ -13,7 +13,7 @@ class Main extends Phaser.Scene {
         ctx = this;
         this.floor = this.matter.add.rectangle(100,100,1000, 20, 0xFFFFFF, {
             isStatic: true,
-        })
+        });
     }
     update() {
 
