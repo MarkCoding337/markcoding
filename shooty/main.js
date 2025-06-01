@@ -1,7 +1,6 @@
 var Phaser;
 var PhaserNavMeshPlugin;
 
-console.log("GOd");
 class Main extends Phaser.Scene {
     constructor() {
         super("Main")
