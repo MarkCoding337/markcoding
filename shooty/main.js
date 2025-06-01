@@ -1,5 +1,6 @@
 var Phaser;
 var PhaserNavMeshPlugin;
+var ctx;
 
 class Main extends Phaser.Scene {
     constructor() {
@@ -9,6 +10,7 @@ class Main extends Phaser.Scene {
 
     }
     create() {
+        ctx = this;
         this.floor = this.matter.add.rectangle(100,100,1000, 20, 0xFFFFFF, {
             isStatic: true,
         })
