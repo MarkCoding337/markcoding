@@ -60,6 +60,7 @@ class Main extends Phaser.Scene {
 		this.platforms = [];
 		this.platformBodies = [];
 		this.UIElements = [];
+		this.chunkLoads = [];
 		this.isPointering = false;
 		this.spawn = {x:0,y: -400};
 		this.bullet;
@@ -195,6 +196,7 @@ class Main extends Phaser.Scene {
 			},
 			extra: {
 				shots: 1,
+				bulletGravity: false,
 			}
 		};
 
@@ -306,6 +308,15 @@ class Main extends Phaser.Scene {
 		
 		this.mousePos = this.input.mousePointer;
 		
+		for(var i=0;i<this.chunkLoads.length;i++) {
+			if(this.player.x > this.chunkLoads[i].data.beginX && this.player.x < this.chunkLoads[i].data.finalX) {	
+				this.loadChunks(i);
+				this.currentChunk = i;
+			} else if(i != this.currentChunk-1 && i != this.currentChunk+1){
+				this.unloadChunks(i);
+			};
+		};
+		
 		this.cursorPiece.setPosition(this.mousePos.x, this.mousePos.y);
 		this.cursorPiece2.setPosition(this.mousePos.x, this.mousePos.y);
 		if(this.isPointering && this.playerParams.val.fireCD <= 0) {
@@ -314,7 +325,7 @@ class Main extends Phaser.Scene {
 			var angle = Phaser.Math.RadToDeg(Math.atan2((this.mousePos.y+this.cameras.main.scrollY)-cent.y, (this.mousePos.x+this.cameras.main.scrollX)-cent.x));
 			for(var i=0;i<this.playerParams.extra.shots;i++) {
 				this.createBullet(cent.x-(5*(i+1))+((this.playerParams.extra.shots-1)*2.5),cent.y,angle, {
-					disableGravity: false
+					disableGravity: this.playerParams.extra.bulletGravity,
 				});
 			};
 		};
@@ -367,14 +378,39 @@ class Main extends Phaser.Scene {
 			this.scene.launch("pauseMenu");
 		};
     }
+	loadChunks(mainChunk) {
+		if(this.chunkLoads[mainChunk-1]) {
+			this.chunkLoads[mainChunk-1].plats.forEach((plat) => {
+				plat.setVisible(true);
+				plat.setCollidesWith(-1);
+			});
+		}
+		this.chunkLoads[mainChunk].plats.forEach((plat) => {
+			plat.setVisible(true);
+			plat.setCollidesWith(-1);
+		});
+		if(this.chunkLoads[mainChunk+1]) {
+			this.chunkLoads[mainChunk+1].plats.forEach((plat) => {
+				plat.setVisible(true);
+				plat.setCollidesWith(-1);
+			});
+		};
+	};
+	unloadChunks(mainChunk) {
+		this.chunkLoads[mainChunk].plats.forEach((plat) => {
+			plat.setVisible(false);
+			plat.setCollidesWith(null);
+		});
+	}
 	createNextPlatform(prevPlat, options) {
 		var platform = this.add.rectangle(0, 0, options.width, options.height, options.color);
 		platform = this.matter.add.gameObject(platform, {
 			isStatic: true,
 		});
 		platform.setCollisionCategory(2);
-		platform.setAlpha(0);
+		platform.setAlpha(1);
 		platform.objectType = "floor";
+		//platform.setCollidesWith(null);
 		platform.body.slop = 0;
 		platform.setAngle(options.angle);
 		if(prevPlat != null) {
@@ -382,6 +418,41 @@ class Main extends Phaser.Scene {
 			var b = platform.getTopLeft();
 			platform.setPosition(platform.body.position.x-(b.x-a.x), platform.body.position.y-(b.y-a.y));
 		};
+		var endOfChunk = false;
+		if(this.chunkLoads[this.chunkLoads.length-1]) {
+			if(this.chunkLoads[this.chunkLoads.length-1].plats.length >= 32) {
+				endOfChunk = true;
+			}
+		};
+		
+		if(this.chunkLoads.length == 0 || endOfChunk) {
+		   this.chunkLoads.push({data: {}, plats: []});
+		}
+		
+		var a = platform.getTopLeft().x;
+		var b = platform.getBottomLeft().x;
+		var c;
+		if(a < b) {
+			c = a;
+		} else {
+			c = b;
+		};
+		this.chunkLoads[this.chunkLoads.length-1].plats.push(platform);
+		if(this.chunkLoads[this.chunkLoads.length-1].plats.length == 1) {
+			this.chunkLoads[this.chunkLoads.length-1].data.beginX = c;
+		}
+		
+		var a = platform.getTopRight().x;
+		var b = platform.getBottomRight().x;
+		var c;
+		if(a > b) {
+			c = a;
+		} else {
+			c = b;
+		};
+		if(this.chunkLoads[this.chunkLoads.length-1].plats.length == 32) {
+			this.chunkLoads[this.chunkLoads.length-1].data.finalX = c;
+		}
 		this.platforms.push(platform);
 		this.platformBodies.push(platform.body);
 		if(this.platforms.length < this.maxPlatforms) {
