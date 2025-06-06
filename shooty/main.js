@@ -1,7 +1,6 @@
 var Phaser;
 var PhaserNavMeshPlugin;
 var ctx;
-var test;
 
 class Menu extends Phaser.Scene {
 	constructor() {
