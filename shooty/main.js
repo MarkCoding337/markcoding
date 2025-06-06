@@ -480,7 +480,7 @@ class pauseMenu extends Phaser.Scene {
 			targets: this.continueButton,
 			x: '+=10',
 			yoyo: true,
-			duration: 900,
+			duration: 9000,
 			ease: 'Quad.easeInOut',
 			persist: true,
 			repeat: -1,
