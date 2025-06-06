@@ -14,6 +14,9 @@ class Menu extends Phaser.Scene {
 		this.background = this.add.rectangle(0,0,config.width,config.height, 0xFFFFFF).setScrollFactor(0).setDepth(1).setOrigin(0,0);
 		this.startButton = this.add.sprite(config.width/2-5, config.height-200, "black").setDisplaySize(200,50).setScrollFactor(0).setDepth(2).setInteractive();
 		
+		this.cursorPiece = this.add.circle(0,0,3,0x000000).setScrollFactor(0).setDepth(5);
+		this.cursorPiece2 = this.add.circle(0,0,5,0xFFFFFF).setScrollFactor(0).setDepth(4);
+		
 		this.tweens.add({
 			targets: this.startButton,
 			x: '+=10',
@@ -37,7 +40,9 @@ class Menu extends Phaser.Scene {
 		})
 	}
 	update() {
-		
+		this.cursorPiece.setPosition(this.input.mousePointer.x, this.input.mousePointer.y);
+		this.cursorPiece2.setPosition(this.input.mousePointer.x, this.input.mousePointer.y);
+
 	}
 }
 
@@ -59,6 +64,8 @@ class Main extends Phaser.Scene {
 		this.spawn = {x:0,y: -400};
 		this.bullet;
 		this.maxPlatforms = 2500;
+		this.cursorPiece = this.add.circle(0,0,3,0x000000).setScrollFactor(0).setDepth(10);
+		this.cursorPiece2 = this.add.circle(0,0,5,0xFFFFFF).setScrollFactor(0).setDepth(9);
 		
 		class enemy extends Phaser.Physics.Matter.Sprite
 		{
@@ -298,6 +305,9 @@ class Main extends Phaser.Scene {
 		this.matter.body.setAngle(this.playerDamageSensor, Phaser.Math.Angle.Wrap(this.player.rotation));
 		
 		this.mousePos = this.input.mousePointer;
+		
+		this.cursorPiece.setPosition(this.mousePos.x, this.mousePos.y);
+		this.cursorPiece2.setPosition(this.mousePos.x, this.mousePos.y);
 		if(this.isPointering && this.playerParams.val.fireCD <= 0) {
 			this.playerParams.val.fireCD = this.playerParams.max.fireCD;
 			var cent = this.player.getCenter();
@@ -475,6 +485,8 @@ class pauseMenu extends Phaser.Scene {
 			persist: true,
 			repeat: -1,
 		});
+		this.cursorPiece = this.add.circle(0,0,3,0x000000).setScrollFactor(0).setDepth(10);
+		this.cursorPiece2 = this.add.circle(0,0,5,0xFFFFFF).setScrollFactor(0).setDepth(9);
 		
 		this.continueButton.on('pointerover', () => {
 		  this.continueButton.setDisplaySize(210,60);
@@ -489,7 +501,10 @@ class pauseMenu extends Phaser.Scene {
 		});
 	}
 	update() {
+		this.mousePos = this.input.mousePointer;
 		
+		this.cursorPiece.setPosition(this.mousePos.x, this.mousePos.y);
+		this.cursorPiece2.setPosition(this.mousePos.x, this.mousePos.y);
 	}
 }
 
