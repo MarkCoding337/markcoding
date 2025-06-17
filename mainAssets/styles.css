@@ -53,7 +53,7 @@ nav a p {
 	overflow-y: auto;
 	border-bottom: solid black;
 }
-#item {
+.item {
 	width: 120px;
 	height: 120px;
 	background: url(https://www.tostitos.com/sites/tostitos.com/files/2021-11/J16906_516374_FL_Tostitos_Dips_ChunkySalsaMedium_3D.png);
@@ -66,14 +66,14 @@ nav a p {
 	transition-duration: 0.2s;
 	cursor: pointer;
 }
-#item:hover {
+.item:hover {
 	box-shadow: 0px 0px 3px 5px #FFFFFF;
 	background-color: #FFFFFF;
 }
-#item:active {
+.item:active {
 	cursor: default;
 }
-#item h3 {
+.item h3 {
 	background-color: #CCCCCC;
 	padding: 5px;
 	border-top-right-radius: 6px;
