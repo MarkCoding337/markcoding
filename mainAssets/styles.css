@@ -73,7 +73,7 @@ nav a p {
 #gameSelector div:active {
 	cursor: default;
 }
-#gameSelector div h3 {
+#gameSelector div a h3 {
 	background-color: #CCCCCC;
 	padding: 5px;
 	border-top-right-radius: 6px;
