@@ -49,8 +49,11 @@ nav a p {
 	margin-top: 20px;
 	padding: 0px 10px;
 	width: calc(100% - 20px);
-	height: 80vh;
+	overflow-x: wrap;
+	overflow-wrap: normal;
 	overflow-y: auto;
+	height: 80vh;
+	float: right;
 	border-bottom: solid black;
 }
 .item {
@@ -60,8 +63,8 @@ nav a p {
 	background-size: contain;
 	background-repeat: no-repeat;
 	background-position: center;
-	display: inline-block;
 	margin: 5px;
+	display: inline-block;
 	border-radius: 6px;
 	transition-duration: 0.2s;
 	cursor: pointer;
