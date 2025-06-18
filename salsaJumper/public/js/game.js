@@ -287,20 +287,20 @@ class Start extends Phaser.Scene {
     });
     
     const backgroundParticles = this.add.particles(0, 0, 'pepper', {
-                x: {min: 0, max: config.width * 2 },
-                y: -5,
-                lifespan: 2000,
-                speedX: { min:-5, max: -200 },
-                speedY: { min: 200, max: 400 },
-                scale: { start: 0.6, end: 0 },
-                quantity: 1,
-                frequency: 100,
-              scale: {start: 0.1, end: 0},
-                rotate: {min: -90, max: 30},
-            });
-            if(document.getElementById("loadingIndicator")) {
-              document.getElementById("loadingIndicator").remove();
-            };
+      x: {min: 0, max: config.width * 2 },
+      y: -5,
+      lifespan: 2000,
+      speedX: { min:-5, max: -200 },
+      speedY: { min: 200, max: 400 },
+      scale: { start: 0.6, end: 0 },
+      quantity: 1,
+      frequency: 100,
+      scale: {start: 0.1, end: 0},
+      rotate: {min: -90, max: 30},
+    });
+    if(document.getElementById("loadingIndicator")) {
+      document.getElementById("loadingIndicator").remove();
+    };
     
   }
 }
