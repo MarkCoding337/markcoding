@@ -298,6 +298,9 @@ class Start extends Phaser.Scene {
               scale: {start: 0.1, end: 0},
                 rotate: {min: -90, max: 30},
             });
+            if(document.getElementById("loadingIndicator")) {
+              document.getElementById("loadingIndicator").remove();
+            };
     
   }
 }
