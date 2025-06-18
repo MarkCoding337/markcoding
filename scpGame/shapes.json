@@ -1,0 +1,37 @@
+{
+  "player":
+  {
+    "type": "fromPhysicsEditor",
+    "isStatic": false,
+    "density": 0.8,
+    "restitution": 0.1,
+    "friction": 0.1,
+    "frictionAir": 0.001,
+    "frictionStatic": 0.5,
+    "collisionFilter": { "group": 0, "category": 1, "mask": 255 },
+    "label": "befunky-design_(11).png",
+    "fixtures": [
+      {
+        "label": "befunky-design_(11).png-fixture-0",
+        "isSensor": false,
+        "vertices": [
+          [
+            { "x": 78, "y": 83 },
+            { "x": 129, "y": 41 },
+            { "x": 179, "y": 43 },
+            { "x": 225, "y": 86 },
+            { "x": 256, "y": 167 },
+            { "x": 265, "y": 279 },
+            { "x": 250, "y": 357 },
+            { "x": 215, "y": 429 },
+            { "x": 167, "y": 465 },
+            { "x": 123, "y": 459 },
+            { "x": 90, "y": 432 },
+            { "x": 45, "y": 335 },
+            { "x": 41, "y": 199 }
+          ]
+        ]
+      }
+    ]
+  }
+}
