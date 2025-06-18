@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="https://glitch.com/favicon.ico" />
+    <meta name="google-adsense-account" content="ca-pub-1887392394779875">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1887392394779875"
+
+     crossorigin="anonymous"></script>
+
+    <title>-</title>
+
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css" />
+
+    <!-- import the webpage's javascript file -->
+    <script src="/script.js" defer></script>
+  </head>
+  <body>
+    <h1 id="cash" class=""></h1>
+    <div id="buttonContainer">
+    <button id="clickyButton">Button</button>
+    </div><br>
+    <input id="consoleD" placeholder="Console Command" type="text" autocapitalize="none"><button onclick="eval(document.getElementById('consoleD').value); document.getElementById('consoleD').value = '';">Run</button>
+    <div id="shop">
+      <div class="stickTop">
+        <label for="purchaseInterval">Interval:</label>
+        <button id="1xIntButt">1x</button>
+        <button id="10xIntButt">10x</button>
+        <button id="100xIntButt">100x</button>
+        <input type="number" value="1" id="purchaseInterval" style="field-sizing: content; min-width: 3em;">
+        <label>Jump to:</label>
+        <button onclick="this.parentElement.parentElement.scrollTop = 0;">Recursive U.</button>
+        <button onclick="this.parentElement.parentElement.scrollTop = document.getElementById('nonRec').offsetTop-253;">One-Time U.</button>
+      </div>
+      <h2 id="rec">Recursive Upgrades</h2>
+      <ul id="recursiveUpgrades">
+        <li class="available">Hi</li>
+        <li class="">Hi</li>
+        <li>JJK</li>
+      </ul>
+      <h2 id="nonRec">One-Time Upgrades</h2>
+      <ul id="nonRecursiveUpgrades">
+        <li>Arghh</li>
+        <li class="available">Hi</li>
+        <li class="available">Hi</li>
+        <li class="available">Hi</li>
+        <li class="available">Hi</li>
+        <li>l</li>
+      </ul>
+    </div>
+    <div id="stats">
+      <p>Money Generation:</p>
+      <div class="borderMe"><span id="monPerSec" class="dance"></span> per Second</div>
+      <div class="borderMe"><span id="monPerClick" class="dance"></span> per Click</div>
+      <p>General Stats:</p>
+      <div>&emsp;Total Clicks: <span id="totClicks" class="dance"></span></div>
+      <p>Controls:</p>
+      <div>&emsp; Simplify Numbers: <input type="checkbox" checked="true" id="niwfon"></div>
+    </div>
+    <!-- <button onclick="game.saveGame()">Save</button>
+    <button onclick="game.loadGame()">Load</button> -->
+    <div id="startMenu">
+      <h1 class="bigText">Game Name</h1>
+      <button id="newGame">New Game</button>
+      <button id="loadGame">Load Game</button>
+    </div>
+  </body>
+</html>

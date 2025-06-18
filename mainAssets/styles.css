@@ -54,7 +54,8 @@ nav a p {
 	overflow-y: auto;
 	height: 80vh;
 	float: right;
-	border-bottom: solid black;
+	border-bottom: solid black 2px;
+	margin-bottom: 10px;
 }
 .item {
 	width: 120px;
@@ -81,4 +82,27 @@ nav a p {
 	padding: 5px;
 	border-top-right-radius: 6px;
 	border-top-left-radius: 6px;
+}
+#about {
+}
+.title {
+	margin-left: 20px;
+	font-size: 2em;
+	font-weight: bold;
+	color: white;
+	font-family: "Arial", monospace;
+}
+#aboutText {
+	color: white;
+	margin-left: 30px;
+	width: 60%;
+	margin-top: 10px;
+	font-family: "Arial", monospace;
+}
+footer {
+	color: white;
+	margin-top: 20px;
+	padding: 50px;
+	border-top: solid black 2px;
+	font-family: "Arial", monospace;
 }

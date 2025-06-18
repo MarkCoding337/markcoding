@@ -1,0 +1,207 @@
+/* a minimalist set of CSS resets */
+
+/* default to border-box */
+html,body {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+html {
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+/* adjust typography defaults */
+body {
+  margin: 1rem;
+  font-family: sans-serif;
+  line-height: 1.5;
+}
+
+/* images and videos max out at full width */
+img,
+video {
+  height: auto;
+  max-width: 100%;
+}
+
+#stats {
+  width: calc(100% - 26px);
+  overflow-x: wrap;
+  word-wrap: break-word; /* Internet Explorer 5.5+ */
+
+}
+
+#stats div {
+  width: 100%;
+}
+
+#shop {
+  width: calc(100% - 26px);
+  border: solid black 1px;
+  height: 45vh;
+  overflow: auto;
+}
+#shop ul {
+  list-style: none;
+  padding: 0px;
+  margin: 0px;
+}
+#shop ul li {
+  background-image: linear-gradient(#eeeeee, #cccccc);
+  animation-name: listElementAvailable;
+  background-size: 300% 300%;
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
+  padding: 15px 10px;
+  cursor: pointer;
+}
+#shop ul li:not(.available) {
+  opacity: 30%;
+  cursor: not-allowed;
+}
+#shop ul li.available {
+  background-image: linear-gradient(#eeeeee, #cccccc);
+}
+#shop ul li.available:active {
+  cursor: default;
+}
+#shop ul li.available:hover {
+  background-image: linear-gradient(#bbbbbb, #888888);
+}
+#shop h2 {
+  margin: 10px 5px;
+}
+
+#ups {
+  cursor: pointer;
+  transition-duration: 2s;
+  padding: 6px;
+  outline:0px solid #ffffff;
+  border: solid 1px;
+  color: black;
+  background-image: linear-gradient(#eeeeee, #aaaaaa);
+}
+#ups:hover {
+  background-image: linear-gradient(#cccccc, #888888);
+}
+#ups:active {
+  cursor: default;
+}
+
+#cash {
+  white-space: pre-wrap; /* css-3 */
+  white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+  white-space: -pre-wrap; /* Opera 4-6 */
+  white-space: -o-pre-wrap; /* Opera 7 */
+  word-wrap: break-word; /* Internet Explorer 5.5+ */
+  word-spacing: 0px;
+  border: solid black 1px;
+  width: calc(100%);
+  padding: 8px
+}
+.cashRainbow {
+  background: linear-gradient(rgba(255,0,0,1) 0%, rgba(255,154,0,1) 10%, rgba(208,222,33,1) 20%, rgba(79,220,74,1) 30%, rgba(63,218,216,1) 40%, rgba(47,201,226,1) 50%, rgba(28,127,238,1) 60%, rgba(95,21,242,1) 70%, rgba(186,12,248,1) 80%, rgba(251,7,217,1) 90%, rgba(255,0,0,1) 100%) 
+   0 0/100% 200%;
+  background-size: 100% 400%;
+  animation: a 4s linear infinite;
+  text-shadow: 
+        -1px -1px 0 #ffffff,  
+        1px -1px 0 #ffffff,
+        -1px 1px 0 #ffffff,
+        1px 1px 0 #ffffff;
+}
+
+
+#clickyButton {
+  cursor: pointer;
+  transition-duration: 2s;
+  padding: 6px;
+  /*left: 0px;
+  position: relative; */
+  outline:0px solid #ffffff;
+  border: solid 1px;
+  color: black;
+  background-image: linear-gradient(#eeeeee, #aaaaaa);
+}
+#clickyButton:hover {
+  background-image: linear-gradient(#cccccc, #888888);
+}
+#clickyButton:active {
+  cursor: default;
+}
+
+#buttonContainer {
+  border-style: solid;
+  padding: 2px;
+  margin: 10px;
+  position: relative;
+  left: 0px;
+  border-width: 1px;
+  width: calc(100% - 26px);
+  text-align: center;
+}
+
+#startMenu {
+  position: fixed;
+  top: 1%;
+  height: 98%;
+  left: 1%;
+  width: 98%;
+  background-color: white;
+  border: solid black 1px;
+  z-index: 10;
+  text-align: center;
+}
+#startMenu button {
+  font-size: 1.75em;
+  padding: 40px;
+}
+
+.bigText {
+  font-size: 4em;
+  margin-top: 20vh;
+  margin-bottom: 15vh;
+}
+
+.borderMe {
+  border: solid black 1px;
+  padding: 4px 10px;
+}
+
+.dance {
+  animation-name: dance;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  display: inline-block;
+  transform: rotate(-1deg);
+}
+
+.stickTop {
+  position: sticky;
+  top: 0px;
+  background-color: white;
+  padding: 5px 10px;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  z-index: 5;
+}
+
+@keyframes dance {
+  50% {transform: rotate(1deg);}
+  100% {transform: rotate(-1deg);}
+}
+
+@keyframes listElementAvailable {
+    0%{background-position:10% 0%}
+    50%{background-position:91% 100%}
+    0%{background-position:10% 0%}
+}
+
+@keyframes a {
+  to {background-position: 0% -800%}
+}
