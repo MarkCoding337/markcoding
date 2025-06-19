@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html>
+  <!--  -->
   <head>
-    <link rel="shortcut icon" type="image/jpg" href="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239" />
+    <link rel="shortcut icon" type="image/jpg" href="https://cdn.glitch.global/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/pkClickerIcon%20(1).png?v=1695131507837" />
     <title>PK Clicker</title>
     
     <style>
       body {
         color: white;
         background-color: #79A0C2;
+        cursor: url ("https://cdn.glitch.global/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/6e069f06-ea18-4eee-81fc-bea5bd634900.image.png?v=1695065180753");
+        touch-action: manipulation;
       }
       header {
         background-color: #000080;
@@ -16,11 +19,11 @@
         position: absolute;
         width: 100%;
         z-index: 1;
-        border-bottom-color: white;
+        border-bottom-color: rgb(255,255,255);
       }
       .pk img {
-        width: 4vw;
-        height: 5vw;
+        width: 7vw;
+        height: 4vw;
       }
       canvas {
         cursor: none;
@@ -46,34 +49,65 @@
         border-radius: 8px;
         font-size: 1em;
         padding: 5px;
+        transition-duration: 0.6s;
+      }
+      .invItem {
+        background-color: white;
+        border-radius: 10px;
+        padding: 5px;
+        margin: 5px;
+        border-style: solid;
+        border-color: black;
+        border-width: 4px;
+      }
+      button:hover {
+        background-color: "rgb(138,138,138)";
+      }
+      .footer {
+        pointer-events: none;
+      }
+      /* width */
+      ::-webkit-scrollbar {
+        width: 12px;
+      }
+      /* Track */
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+      }
+      /* Handle */
+      ::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 10px;
+      }
+      /* Handle on hover */
+      ::-webkit-scrollbar-thumb:hover {
+        background: #555;
       }
     </style>
   </head>
   <body style="overflow: hidden; display: grid;">
+    <div id="saveLoadContainer" style="display: none; position: absolute; z-index: 2;">
+      <textarea id="saveLoad" style="resize: none;" cols="40" rows="10"></textarea>
+      <button onclick="saveData()">Save to text</button>
+      <button onclick="loadData()">Load from text</button>
+    </div>
     <header style="display: grid;">
       <table style="width: 100%;">
         <tr>
           <td style="text-align: left;" class="pk">
-            <img src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239" /><img
-              src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239"
-            /><img src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239" /><img
-              src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239"
-            /><img src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239" /><img
-              src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239"
-            /><img src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239" /><img
-              src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239"
-            /><img src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239" />
+            <img src="https://cdn.glitch.global/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/6e069f06-ea18-4eee-81fc-bea5bd634900.image.png?v=1695065180753" /><img
+              src="https://cdn.glitch.global/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/6e069f06-ea18-4eee-81fc-bea5bd634900.image.png?v=1695065180753"
+            /><img src="https://cdn.glitch.global/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/6e069f06-ea18-4eee-81fc-bea5bd634900.image.png?v=1695065180753" /><img
+              src="https://cdn.glitch.global/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/6e069f06-ea18-4eee-81fc-bea5bd634900.image.png?v=1695065180753"
+            /><img src="https://cdn.glitch.global/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/6e069f06-ea18-4eee-81fc-bea5bd634900.image.png?v=1695065180753" />
           </td>
           <td style="text-align: right;" class="pk">
-            <img src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239" /><img
-              src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239"
-            /><img src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239" /><img
-              src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239"
-            /><img src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239" /><img
-              src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239"
-            /><img src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239" /><img
-              src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239"
-            /><img src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239" />
+            <img src="https://cdn.glitch.global/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/6e069f06-ea18-4eee-81fc-bea5bd634900.image.png?v=1695065180753" /><img
+              src="https://cdn.glitch.global/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/6e069f06-ea18-4eee-81fc-bea5bd634900.image.png?v=1695065180753"
+            /><img src="https://cdn.glitch.global/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/6e069f06-ea18-4eee-81fc-bea5bd634900.image.png?v=1695065180753" /><img
+              src="https://cdn.glitch.global/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/6e069f06-ea18-4eee-81fc-bea5bd634900.image.png?v=1695065180753"
+            /><img src="https://cdn.glitch.global/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/6e069f06-ea18-4eee-81fc-bea5bd634900.image.png?v=1695065180753" />
           </td>
         </tr>
 
@@ -83,52 +117,94 @@
       <h1 style="margin: 0 auto; margin-top: -5vw; z-index: 1; top: 0;">
         Welcome to PK Clicker!!!
       </h1>
-      <rr>Hint: Click The Middle of PK's Forehead</rr>
+      <rr>Hint: Click Somewhere on the Ford Focus!</rr>
     </header>
+    <div id="saving" style="display: none; position: fixed; background-color: white; z-index: 2; border-style: solid; border-width: 1px; border-radius: 5px; padding: 5px;"><button onclick="saveData()" style="padding: 10px; font-size: 2em;">Save</button><button onclick="loadData()" style="padding: 10px; font-size: 2em;">Load</button></div>
     <canvas
       unselectable="on"
-      width="400px"
-      height="500px"
-      style="background: url(https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239); background-size: cover;"
+      width="470px"
+      height="520px"
+      style="background: url(https://cdn.glitch.global/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/6e069f06-ea18-4eee-81fc-bea5bd634900.image.png?v=1695065180753); background-size: fit; background-repeat: no-repeat; background-position-y: center;"
     ></canvas>
+    <audio controls style="display: none;" src="https://cdn.glitch.me/77450426-9a6f-4c50-82bc-8c7b68e006ca/bensound-theelevatorbossanova.mp3?v=1640029476193" id="elevatorMu"></audio>
     <h2
-      style="overflow-y: auto; position: absolute; left: 0; top: 0; height: 100%; width: 28%; background-color: #000080; padding: 5px; border-style: solid; border-width: 1px; border-color: #000080; border-radius: 10px; margin-top: 13%;"
+      style="overflow-y: auto; position: absolute; left: 0; top: 0; height: 70%; width: 28%; background-color: #000080; padding: 5px; border-style: solid; border-width: 1px; border-color: #000080; border-radius: 10px; margin-top: 13%;"
      class="sideBar">
-      <a id="notiF"></a><a id="numOP"></a><a id="Button" style="padding-top: 5px; width: 100%;"><br>Cloth Shop<br></a>
+      <a id="notiF"></a><a id="numOP"></a><br><a id="Button" style="padding-top: 5px; width: 100%;">Cloth Shop<br><br></a><br><br><a id="ButtonO">Polish Oil's<br><br></a><br><br><a id="ButtonA">Auto Polishers<br><br></a><br><br><a>PK's Pawn Shop<br><br></a><br><br><a>PK's Car Parts Emporium<br><br></a>
     </h2>
     <h2
-      style="overflow-y: auto; position: absolute; right: 0; top: 0; height: 100%; width: 28%; background-color: #000080; padding: 5px; border-style: solid; border-width: 1px; border-color: #000080; border-radius: 10px; margin-top: 13%;"
+      style="overflow-y: auto; position: absolute; right: 0; top: 0; height: 70%; width: 28%; background-color: #000080; padding: 5px; border-style: solid; border-width: 1px; border-color: #000080; border-radius: 10px; margin-top: 13%;"
      class="sideBar">
-      <a></a><a id="PKInv"></a>
+      <br>
+      <a style="margin-left: 5%; border-bottom-style: solid; ">Cloths</a><br><br>
+      <a id="PKInvCl"></a><br><br>
+      <a style="margin-left: 5%; border-bottom-style: solid;">Oils</a><br><br>
+      <a id="PKInvOi"></a><br><br>
+      <a style="margin-left: 5%; border-bottom-style: solid;">AutoPolishers</a><br><br>
+      <a id="PKInvA"></a>
+      <a style="position: fixed; bottom: 0; right: 0;"><button onclick="openSaves()">Save/Load</button><button onclick="music()"><img id="playPauseButt" height="40px" src="https://cdn.glitch.me/77450426-9a6f-4c50-82bc-8c7b68e006ca/playButton.png?v=1640039302400"></button></a>
     </h2>
-    <img src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/handkerchief-yhq.png?v=1639424385839" style="display: none;" class="closs" />
+    <head>
+ <style type ="text/css" >
+   .footer{ 
+       position: fixed;     
+       text-align: center;    
+       bottom: 0px; 
+       width: 100%;
+   }  
+  </style>
+  </head>
+  <body>
+    <div class="footer">Alpha Version 2.0</div>
+  </body>
+    <img src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/OIP%20(1).png?v=1639683171605" style="display: none;" class="closs" />
+    <img style="display: none;" class="clossO" />
     <script>
+      window.onload = function() {
+        
+      };
+      var saveOpen = false;
       var polishes = 0;
       var oilQuality = 1;
       var img;
+      var playing = false;
       var cloths = [
-        [10, false, "Blue Cloth", "https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/R.png?v=1639424411964", 2, false],
-        [100, false, "Blue Micro-Fiber Cloth", "https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/R%20(1).png?v=1639424432252", 5, false, false],
+        [10, false, "Terrible Flannel Cloth", "https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/handkerchief-yhq.png?v=1639424385839", 1, false, false],
+        [100, false, "Blue Cloth", "https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/R.png?v=1639424411964", 3, false, false],
+        [500, false, "Blue Micro-Fiber Cloth", "https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/R%20(1).png?v=1639424432252", 5, false, false],
         [1000, false, "Double Mirco-Fiber Cloth", "https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/clothe4.png?v=1639424454908", 10, false, false],
-        [2500, false, "Cotton Washcloth", "https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/0e27ef23-a433-4d8f-b2ad-5696eb4e66c2.6121e00f22e4e5432ba6ce326d423555.png?v=1639491719304", 17, false, false],
-        [5000, false, "PooPoo Towel", "https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Screenshot%202021-12-14%201.23.44%20PM%20(1).png?v=1639509899135", 26, false, false],
-        [10000, false, "Towel", "https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/bath-towel.jpg?v=1639492141514", 37, false, false],
-        [15000, false, "Water Towel", "https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Screenshot%202021-12-14%2012.39.09%20PM%20(1).png?v=1639507322179", 50, false, false],
-        [20000, false, "Fire Towel", "https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Screenshot%202021-12-14%2012.54.38%20PM%20(1).png?v=1639508148251", 65, false, false],
+        [2500, false, "Cotton Washcloth", "https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/0e27ef23-a433-4d8f-b2ad-5696eb4e66c2.6121e00f22e4e5432ba6ce326d423555.png?v=1639491719304", 15, false, false],
+        [5000, false, "Fingertip Towel", "https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/4330_fm%20(1).png?v=1639780666791", 25, false, false],
+        [10000, false, "PooPoo Towel", "https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Screenshot%202021-12-14%201.23.44%20PM%20(1).png?v=1639509899135", 30, false, false],
+        [15000, false, "Towel", "https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/bath-towel.jpg?v=1639492141514", 40, false, false],
+        [20000, false, "Kitchen Towel", "https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/images%20(2).png?v=1639779726505", 45, false, false],
+        [25000, false, "Water Towel", "https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Screenshot%202021-12-14%2012.39.09%20PM%20(1).png?v=1639507322179", 50, false, false],
+        [30000, false, "Fire Towel", "https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Screenshot%202021-12-14%2012.54.38%20PM%20(1).png?v=1639508148251", 60, false, false],
+        [50000, false, "Grass Towel", "https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Screenshot%202021-12-14%205.57.50%20PM%20(1).png?v=1639526324352", 65, false, false],
+        [100000, false, "Gold Towel", "https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/849b621d-ffb2-40ab-859e-e0c5ee8c698b.f51b2baabaf54e8363322fcd45b92f42.png?v=1639837382690", 75, false, false],
+        [150000, false, "Galaxy Towel", "https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Screenshot%202021-12-14%201.42.57%20PM%20(1).png?v=1639511037218", 125, false, false],
+        [250000, false, "Black Hole Towel", "https://cdn.glitch.me/77450426-9a6f-4c50-82bc-8c7b68e006ca/Screenshot%202021-12-20%2011.15.36%20AM%20(1).png?v=1640020587191", 175, false, false],
+        [350000, false, "PooPoo Drill Polisher", "https://cdn.glitch.me/77450426-9a6f-4c50-82bc-8c7b68e006ca/Screenshot%202021-12-20%204.49.36%20PM%20(1).png?v=1640040604947", 200, false, false],
+        [500000, false, "Drill Polisher", "https://cdn.glitch.me/77450426-9a6f-4c50-82bc-8c7b68e006ca/61vP4%2B%2ByqsL._AC_SL1500_.png?v=1640026488892", 300, false, false],
+        [750000, false, "Inverted Drill Polisher", "https://cdn.glitch.me/77450426-9a6f-4c50-82bc-8c7b68e006ca/Screenshot%202021-12-20%201.10.14%20PM%20(1).png?v=1640027445945", 500, false, false],
+        [1000000, false, "Gold Drill Polisher", "https://cdn.glitch.me/77450426-9a6f-4c50-82bc-8c7b68e006ca/Screenshot%202021-12-20%2012.59.02%20PM%20(1).png?v=1640026792710", 1000, false, false],
+        [1250000, false, "PooPoo Car Wash Brush", "https://cdn.glitch.me/77450426-9a6f-4c50-82bc-8c7b68e006ca/Screenshot%202021-12-20%204.46.23%20PM%20(1).png?v=1640040418276", 1500, false, false],
+        [1500000, false, "Car Wash Brush", "https://cdn.glitch.me/77450426-9a6f-4c50-82bc-8c7b68e006ca/Screenshot%202021-12-20%201.28.55%20PM%20(1).png?v=1640028579298", 2500, false, false],
+        [2500000, false, "Inverted Car Wash Brush", "https://cdn.glitch.me/77450426-9a6f-4c50-82bc-8c7b68e006ca/Screenshot%202021-12-20%204.36.58%20PM%20(2).png?v=1640039892715", 3000, false, false],
+        [3500000, false, "Grass Car Wash Brush", "https://cdn.glitch.me/77450426-9a6f-4c50-82bc-8c7b68e006ca/Screenshot%202021-12-20%204.43.43%20PM%20(1).png?v=1640040253973", 4000, false, false],
+        [5000000, false, "Gold Car Wash Brush", "https://cdn.glitch.me/77450426-9a6f-4c50-82bc-8c7b68e006ca/Screenshot%202021-12-20%204.39.33%20PM%20(1).png?v=1640040067124", 5000, false, false],
       ];
       var oils = [
-        [100, false, "83 yo Black Motor Oil", "https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/download%20(11).png?v=1639507993582"],
-        []
+        [10000, false, "83 year old Black Motor Oil", "https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/download%20(11).png?v=1639507993582", 1.25, false, false],
+        [50000, false, "Original Polish Oil", "https://cdn.glitch.me/77450426-9a6f-4c50-82bc-8c7b68e006ca/s-l500.png?v=1640041623830", 2, false, false],
+      ];
+      var autoPolishers = [
+        [100, false, "Automatic Scrubber (Bad)", "https://cdn.glitch.global/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/d1ac0406-56c5-4ec2-b6a4-77ae1222c58c.image.png?v=1695404876250", 10, false, false],
       ];
       var InventoryT = [];
-      var cloth1 = false;
-      var cloth2 = false;
-      var cloth3 = false;
-      var cloth4 = false;
-      var cloth5 = false;
-      var cloth6 = false;
-      var cloth7 = false;
-      var polishQuality = 1;
+      var InventoryTO = [];
+      var InventoryA = [];
+      var polishQuality = 0.5;
       var canvas = document.querySelector("canvas");
       var rect = canvas.getBoundingClientRect();
       setInterval(function() {
@@ -138,7 +214,11 @@
         let x = event.clientX - rect.left;
         let y = event.clientY - rect.top;
         console.log("Coordinate x: " + x, "Coordinate y: " + y);
-        if (x > 150 && x < 255 && y > 60 && y < 160) {
+        var polishAreaX = canvas.width/5;
+        var polishAreaX2 = (canvas.width/5)*4;
+        var polishAreaY = canvas.height/3;
+        var polishAreaY2 = (canvas.height/3)*2;
+        if (x > polishAreaX && x < polishAreaX2 && y > polishAreaY && y < polishAreaY2) {
           console.log("Thou Hath Polished The PK");
           polishe(false);
         } else {
@@ -157,10 +237,10 @@
       }
 
       function CustomCursor() {
-        canvas.clearRect(0, 0, 400, 500);
+        canvas.clearRect(0, 0, 470, 520);
         var xPosition = event.clientX - rect.left;
         var yPosition = event.clientY - rect.top;
-        canvas.fillRect(xPosition, yPosition, 10, 10);
+        canvas.fillRect(xPosition, yPosition, 1, 1);
         img = document.querySelector(".closs");
         canvas.drawImage(img, xPosition - 50, yPosition - 50, 100, 100);
       }
@@ -169,22 +249,16 @@
 
       function polishe(bad) {
         if (bad == false) {
-          let randNum = Math.floor(Math.random() * 5);
-          if (randNum == 3 || randNum == 5) {
+          let randNum = Math.floor(Math.random() * 10); //Change the 10 in "... * 10);..." to whatever number you want, the greater the number, the less the chance of getting a bad polish.
+          if (randNum == 3) {
             polishes--;
             document.getElementById("notiF").innerHTML =
-              "You didn't do it right<br>-1 Polish Credits<br><br>";
-          } else if (randNum == 1 || randNum == 2 || randNum == 4) {
-            polishes += polishQuality*oilQuality;
-            document.getElementById("notiF").innerHTML =
-              "Good Job, Shine That Head!<br>+" +
-              polishQuality +
-              " Polish Credits<br><br>";
+              "You missed a spot!<br>-1 Polish Credits<br><br>";
           } else {
             polishes += polishQuality*oilQuality;
             document.getElementById("notiF").innerHTML =
-              "Good Job, Shine That Head!<br>+" +
-              polishQuality +
+              "Good Job, Make it Shine!<br>+" +
+              polishQuality*oilQuality +
               " Polish Credits<br><br>";
           }
         }
@@ -196,7 +270,7 @@
       }
       setInterval(function() {
         document.getElementById("numOP").innerHTML =
-          "<br>PK Polish Credits: " + polishes + "<br><br>";
+          "<br>PK Credits: " + Math.floor(polishes*10)/10 + "<br><br>";
           for (i = 0; i < cloths.length; i++) {
             if (polishes >= cloths[i][0] && cloths[i][1] == false) {
               a = document.createElement("button");
@@ -220,29 +294,77 @@
             cloths[i][1] = false;
           }
         }
-        /*for(i=0;i<oils.length;i++) {
-                if(polishes >= oils[i][0] && oils[i][1] == false) {
-                    a = document.createElement("button");
-                    a.innerHTML = "Get "+oils[i][2];
-                    a.setAttribute("id", "oil"+i+"But");
-                    a.setAttribute("onclick", "document.querySelector(\".cloils\").setAttribute(\"src\", \""+oils[i][3]+"\"); polishes -= "+oils[i][0]+"; polishQuality += "+oils[i][4]+"; document.getElementById(\"oil"+i+"But\").remove();");
-                    document.getElementById("PKUpgrades").appendChild(a);
-                    oils[i][1] = true;
-                  };
-                if(polishes < oils[i][0] && oils[i][1] == true) {
-                    document.getElementById("oil"+i+"But").remove();
-                    oils[i][1] = false;
-                  };
-              };*/
+        //oils
+        for (i = 0; i < oils.length; i++) {
+            if (polishes >= oils[i][0] && oils[i][1] == false) {
+              a = document.createElement("button");
+              a.innerHTML = "Get " + oils[i][2] + "<br>Price: " + oils[i][0];
+              a.setAttribute("id", "oil" + i + "But");
+              a.setAttribute(
+               "onclick",
+              'InventoryTO.push(oils['+i+']); document.getElementById("oil' +
+                i +
+                'But").remove(); document.getElementById("buttonBRC'+i+'").remove(); updateInv(); polishes -= ' + oils[i][0] + '; oils[' + i + '][6] = true;'
+            );
+            document.getElementById("ButtonO").appendChild(a);
+            a = document.createElement("br");
+            a.setAttribute("id", "buttonBRC"+i);
+            document.getElementById("ButtonO").appendChild(a);
+            oils[i][1] = true;
+          }
+          if (polishes < oils[i][0] && oils[i][1] == true && oils[i][6] == false) {
+            document.getElementById("oil" + i + "But").remove();
+            document.getElementById("buttonBRC"+i).remove();
+            oils[i][1] = false;
+          }
+        }
+        for (i = 0; i < autoPolishers.length; i++) {
+            if (polishes >= autoPolishers[i][0] && autoPolishers[i][1] == false) {
+              a = document.createElement("button");
+              a.innerHTML = "Get " + autoPolishers[i][2] + "<br>Price: " + autoPolishers[i][0];
+              a.setAttribute("id", "aP" + i + "But");
+              a.setAttribute(
+               "onclick",
+              'InventoryA.push(autoPolishers['+i+']); document.getElementById("aP' +
+                i +
+                'But").remove(); document.getElementById("buttonBRA'+i+'").remove(); updateInv(); polishes -= ' + autoPolishers[i][0] + '; autoPolishers[' + i + '][6] = true;'
+            );
+            document.getElementById("ButtonA").appendChild(a);
+            a = document.createElement("br");
+            a.setAttribute("id", "buttonBRA"+i);
+            document.getElementById("ButtonA").appendChild(a);
+            autoPolishers[i][1] = true;
+          }
+          if (polishes < autoPolishers[i][0] && autoPolishers[i][1] == true && autoPolishers[i][6] == false) {
+            document.getElementById("aP" + i + "But").remove();
+            document.getElementById("buttonBRA"+i).remove();
+            autoPolishers[i][1] = false;
+          }
+        }
       }, 1);
       function updateInv() {
-        document.getElementById("PKInv").innerHTML = "";
+        document.getElementById("PKInvCl").innerHTML = "";
         for(i=0;i<InventoryT.length;i++) {
           a = document.createElement("a");
           a.setAttribute("title", InventoryT[i][2] + " | Original Price: " + InventoryT[i][0] + " | Polish Quality: " + InventoryT[i][4]);
           a.setAttribute("onclick", "stopAllGreen(); document.querySelector('.closs').setAttribute('src', '" + InventoryT[i][3] + "'); polishQuality = " + InventoryT[i][4] + "; InventoryT["+i+"][5] = true;"); //document.getElementById('clothImg"+i+"').setAttribute('style', 'border-style: solid; border-radius: 8px; border-color: green; border-width: 2px;')
-          a.innerHTML = '<img src="'+ InventoryT[i][3] +'" width="100px" height="100px" id="clothImg'+i+'">';
-          document.getElementById("PKInv").appendChild(a);
+          a.innerHTML = '<img src="'+ InventoryT[i][3] +'" width="100px" height="100px" class="invItem" id="clothImg'+i+'">';
+          document.getElementById("PKInvCl").appendChild(a);
+        };
+        document.getElementById("PKInvOi").innerHTML = "";
+        for(i=0;i<InventoryTO.length;i++) {
+          a = document.createElement("a");
+          a.setAttribute("title", InventoryTO[i][2] + " | Original Price: " + InventoryTO[i][0] + " | Oil Quality: " + InventoryTO[i][4]);
+          a.setAttribute("onclick", "stopAllGreenOi(); document.querySelector('.clossO').setAttribute('src', '" + InventoryTO[i][3] + "'); oilQuality = " + InventoryTO[i][4] + "; InventoryTO["+i+"][5] = true;"); //document.getElementById('clothImg"+i+"').setAttribute('style', 'border-style: solid; border-radius: 8px; border-color: green; border-width: 2px;')
+          a.innerHTML = '<img src="'+ InventoryTO[i][3] +'" width="100px" height="100px" class="invItem" id="oilImg'+i+'">';
+          document.getElementById("PKInvOi").appendChild(a);
+        };
+        document.getElementById("PKInvA").innerHTML = "";
+        for(i=0;i<InventoryA.length;i++) {
+          a = document.createElement("a");
+          a.setAttribute("title", InventoryA[i][2] + " | Original Price: " + InventoryA[i][0] + " | Polisher Quality: " + InventoryA[i][4]);
+          a.innerHTML = '<img src="'+ InventoryA[i][3] +'" width="100px" height="100px" class="invItem" id="autoImg'+i+'">';
+          document.getElementById("PKInvA").appendChild(a);
         };
       };
       function stopAllGreen() {
@@ -250,15 +372,119 @@
           InventoryT[i][5] = false;
         };
       };
+      function stopAllGreenOi() {
+        for(i=0;i<InventoryTO.length;i++) {
+          InventoryTO[i][5] = false;
+        };
+      };
       setInterval(function() {
         for(i=0;i<InventoryT.length;i++) {
           if(InventoryT[i][5] == true) {
-            document.getElementById("clothImg"+i).setAttribute('style', 'border-style: solid; border-radius: 8px; border-color: green; border-width: 2px;');
+            document.getElementById("clothImg"+i).setAttribute('style', 'border-style: solid; border-color: green; border-width: 4px;');
           } else {
             document.getElementById("clothImg"+i).setAttribute('style', '');
           };
         };
+        for(i=0;i<InventoryTO.length;i++) {
+          if(InventoryTO[i][5] == true) {
+            document.getElementById("oilImg"+i).setAttribute('style', 'border-style: solid; border-color: green; border-width: 4px;');
+          } else {
+            document.getElementById("oilImg"+i).setAttribute('style', '');
+          };
+        };
       });
+      function music() {
+        if(playing == false) {
+          playing = true;
+          document.getElementById("elevatorMu").play();
+          document.getElementById("playPauseButt").setAttribute("src", "https://cdn.glitch.me/77450426-9a6f-4c50-82bc-8c7b68e006ca/pauseButton.png?v=1640039296917");
+        } else if(playing == true) {
+          playing = false;
+          document.getElementById("elevatorMu").pause();
+          document.getElementById("playPauseButt").setAttribute("src", "https://cdn.glitch.me/77450426-9a6f-4c50-82bc-8c7b68e006ca/playButton.png?v=1640039302400");
+        };
+      };
+      setInterval(function() {
+        if(document.getElementById("elevatorMu").currentTime >= document.getElementById("elevatorMu").duration-0.2) {
+          document.getElementById("elevatorMu").currentTime = 0;
+        };
+      }, 1);
+      function debug() {
+        for(i=0;i<oils.length;i++) {
+          InventoryTO.push(oils[i]);
+          oils[i][1] = true;
+        };
+        for(i=0;i<cloths.length;i++) {
+          InventoryT.push(cloths[i]);
+          cloths[i][1] = true;
+        };
+        updateInv();
+        polishes = 1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000;
+      };
+    function loadData() {
+      var confirma = confirm("Are you sure? (Current progress will be overwritten)");
+      if(confirma == true) {
+        InventoryT = JSON.parse(localStorage.getItem("InventoryTs"));
+        InventoryTO = JSON.parse(localStorage.getItem("InventoryTOs"));
+        InventoryA = JSON.parse(localStorage.getItem("InventoryAs"));
+        polishes = parseInt(localStorage.getItem("polishesS"));
+        updateInv();
+        console.log(cloths);
+        document.getElementById("Button").innerHTML = "Cloth Shop<br>";
+        for(i=0;i<cloths.length;i++) {
+          if(InventoryT[i]) {
+            cloths[i][1] = true;
+            cloths[i][6] = true;
+          }else {
+            cloths[i][1] = false;
+            cloths[i][6] = false;
+          };
+        };
+        for(i=0;i<oils.length;i++) {
+          if(InventoryTO[i]) {
+            oils[i][1] = true;
+            oils[i][6] = true;
+          }else {
+            oils[i][1] = false;
+            oils[i][6] = false;
+          };
+        };
+        for(i=0;i<autoPolishers.length;i++) {
+          if(InventoryA[i]) {
+            autoPolishers[i][1] = true;
+            autoPolishers[i][6] = true;
+          }else {
+            autoPolishers[i][1] = false;
+            autoPolishers[i][6] = false;
+          };
+        };
+        for(i=0;i<InventoryT.length;i++) {
+          InventoryT[i][5] = false
+        };
+        for(i=0;i<InventoryTO.length;i++) {
+          InventoryTO[i][5] = false
+        };
+        for(i=0;i<InventoryA.length;i++) {
+          InventoryA[i][5] = false
+        };
+      };
+    };
+    function saveData() {
+      var confirma = confirm("Are you sure? (Previous save will be overwritten)");
+      if(confirma == true) {
+        localStorage.setItem("InventoryTs", JSON.stringify(InventoryT));
+        localStorage.setItem("InventoryTOs", JSON.stringify(InventoryTO));
+        localStorage.setItem("InventoryAs", JSON.stringify(InventoryA));
+        localStorage.setItem("polishesS", polishes);
+      };
+    };
+    function openSaves() {
+      if(document.getElementById("saving").style.display == "none") {
+        document.getElementById("saving").style.display = "";
+      } else if(document.getElementById("saving").style.display == "") {
+        document.getElementById("saving").style.display = "none";
+      };
+    };
     </script>
   </body>
 </html>
