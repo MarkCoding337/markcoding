@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon"/>
+
+    <title>The Halls | By Markathious |</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="./script.js" defer></script>
+    <script src="./tilemap.js" defer></script>
+  </head>
+  <body>
+    <div class="fullScreen">
+      <canvas id="gameCanvas"></canvas>
+      <table id="tutorialPrompt">
+        <tr>
+          <th>Tutorial</th>
+        </tr>
+        <tr>
+          <td>There are <strong style="color: white;">Two</strong> different ways to generate maps. You can either select a default such as <strong style="color: white;">Small, Medium, Large, or Absurd</strong>. If you wish to use a preset map, then all you have to do is click on the <strong style="color: white;">No Default</strong> dropdown and select one of the options. Once you've selected a preset, then click on the <strong style="color: white;">Random Map Generator</strong> button. <i style="color: crimson;">Absurd is not to be used on mobile devices as most of them reach an error.</i><br><br>The other way to generate a map is to input your own preferences in <strong style="color: white;">Dimension, num of Objectives, and Room Iterations</strong>. Once you've input your desired preferences, then you can click on the <strong style="color: white;">Random Map Generator</strong> button.<br><br>Regardless of your choice of generation, the objective of the game is to find the objective points (<i>number of which are displayed in the bottom-left of your screen</i>).<br><br>Throughout the map you will find dark spots, these are doors. As you move the doors will open and close randomly. They will also cycle through opening and closing if you hit the <strong style="color: white;">"E" Key</strong> on desktop or the middle button on the D-Pad.<br><br> Currently there is nothing following you, but that may change in further updates...<br><button id="closeTutorial" onclick="document.getElementById('tutorialPrompt').style.display = 'none'; localStorage.setItem('tutorial', 'false')">Close</button></td>
+        </tr>
+      </table>
+      <img id="displayImg" src="https://cdn.glitch.global/1c4aaba5-2823-4206-a064-61fd958008b1/defaultHallway.jpg?v=1707226778999">
+      <h1 class="XandY">X: 100<br>Y: 200</h1>
+      <h2 class="objColl">Objectives Collected: 10 of 20</h2>
+      <table id="d-Pad">
+        <tr>
+          <td class="emptyTD"></td><td onmousedown="if(game.player.dW == true) {game.player.Mw = true;game.player.dW = false;};" onmouseup="game.player.Mw = false; game.player.dW = true;" onpointerdown="if(game.player.dW == true) {game.player.Mw = true;game.player.dW = false;};" pointerup="game.player.Mw = false; game.player.dW = true;">⇧</td><td class="emptyTD"></td>
+        </tr>
+        <tr>
+          <td onmousedown="if(game.player.dA == true) {game.player.Ma = true;game.player.dA = false;};" onmouseup="game.player.Ma = false; game.player.dA = true;" onpointerdown="if(game.player.dA == true) {game.player.Ma = true;game.player.dA = false;};" pointerup="game.player.Ma = false; game.player.dA = true;">⇦</td><td onclick="updateCanvas();"></td><td onmousedown="if(game.player.dD == true) {game.player.Md = true;game.player.dD = false;};" onmouseup="game.player.Md = false; game.player.dD = true;" onpointerdown="if(game.player.dD == true) {game.player.Md = true;game.player.dD = false;};" pointerup="game.player.Md = false; game.player.dD = true;">⇨</td>
+        </tr>
+        <tr>
+          <td class="emptyTD"></td><td onmousedown="if(game.player.dS == true) {game.player.Ms = true;game.player.dS = false;};" onmouseup="game.player.Ms = false; game.player.dS = true;" onpointerdown="if(game.player.dS == true) {game.player.Ms = true;game.player.dS = false;};" pointerup="game.player.Ms = false; game.player.dS = true;">⇩</td><td class="emptyTD"></td>
+        </tr>
+        <button id="optionsOpen" onclick="if(document.getElementById('menuOptions').style.display == 'none') {document.getElementById('menuOptions').style.display = '';} else {document.getElementById('menuOptions').style.display = 'none';}">Options</button>
+          <table id="menuOptions">
+            <tr>
+              <th>Options</th>
+            </tr>
+            <tr>
+              <td align="center" onclick="game.boxSizes = 170; updateCanvas();">Hard Mode</td>
+              <td align="center" onclick="game.boxSizes = 50; updateCanvas();">Normal Mode</td>
+              <td align="center" onclick="game.boxSizes = 20; updateCanvas();">Easy Mode</td>
+            </tr>
+            <tr>
+              <td align="center" onclick="game.boxSizes += 1; updateCanvas();">++</td>
+              <td align="center" onclick="game.boxSizes -= 1; updateCanvas();">--</td>
+            </tr>
+            <tr>
+              <td align="center" onclick="game.boxSizes += 0.1; updateCanvas();">+</td>
+              <td align="center" onclick="game.boxSizes -= 0.1; updateCanvas();">-</td>
+            </tr>
+            <tr>
+              <td align="center"><input type="number" id="xMapInput" placeholder="Input Map Dim" min="0"></td>
+              <td align="center"><input type="number" id="objectivesInput" placeholder="Input Objectives Max" min="1"></td>
+            </tr>
+            <tr>
+              <td align="center"><input type="number" id="interationInput" placeholder="Input Iteration Count" min="0"></td>
+              <td align="center" id="randMapGen" onclick="getMap();">Random Map Generator</td>
+              <td align="center">
+                <select id="defaults">
+                  <option value="none">No Default</option>
+                  <option value="small">Small</option>
+                  <option value="medium">Medium</option>
+                  <option value="large">Large</option>
+                  <option value="absurd">Absurd</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td align="center" id="fullScreenCallButton" onclick="fullScreenCall()">Fullscreen</td>
+              <td align="center" id="dPadToggle" onclick="toggleDPad()">Toggle DPad</td>
+              <td align="center" id="tutorialShow" onclick="document.getElementById('tutorialPrompt').style.display = ''; localStorage.setItem('tutorial', 'true')">Tutorial</td>
+            </tr>
+          </table>
+      </table>
+    </div>
+		<canvas id="memCanvas"></canvas>
+  </body>
+</html>

@@ -229,7 +229,7 @@ class mainGame extends Phaser.Scene {
     this.load.image('grassTiles', 'https://cdn.glitch.global/27dc39f2-c1ed-4431-8f86-a125544d68da/TX%20Tileset%20Grass.png?v=1712946178929');
     this.load.image('bandaid', 'https://cdn.glitch.global/27dc39f2-c1ed-4431-8f86-a125544d68da/bandaid.png?v=1713554289907');
     this.load.image('exp', 'https://cdn.glitch.global/27dc39f2-c1ed-4431-8f86-a125544d68da/BeFunky-design%20(1).png?v=1713964869961');
-    this.load.tilemapTiledJSON('tilemap', '/tileMap.json');
+    this.load.tilemapTiledJSON('tilemap', './tileMap.json');
     
     this.load.audio('music', 'https://cdn.glitch.global/27dc39f2-c1ed-4431-8f86-a125544d68da/King%20nothing%20-%20Metallica%20(instrumental).mp3?v=1713815158381');
     this.load.audio('slash', 'https://cdn.glitch.global/27dc39f2-c1ed-4431-8f86-a125544d68da/audiomass-output.mp3?v=1713815620025');

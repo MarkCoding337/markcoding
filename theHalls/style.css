@@ -1,0 +1,248 @@
+html {
+  touch-action: manipulation;
+}
+canvas { 
+  image-rendering: optimizeSpeed;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: -o-crisp-edges;
+  image-rendering: optimize-contrast;
+  -ms-interpolation-mode: nearest-neighbor;
+}
+#gameCanvas {
+  background-color: #000000;
+  border-style: solid;
+  border-width: 0.5px;
+  padding: 0;
+  margin: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #3ab09e;
+}
+#memCanvas {
+  background-color: #000000;
+  border-style: solid;
+  border-width: 0.5px;
+  width: 500px;
+  height: 500px;
+  display: none;
+}
+#menuOptions {
+  position: absolute;
+  top: 130px;
+  background-color: rgba(0,0,0,0.6);
+  padding: 5px;
+  text-align: center;
+  color: lightgreen;
+  border-radius: 3px;
+  border-color: rgba(127,127,127,0.6);
+  border-style: solid;
+  font-family: Arial, Helvetica, sans-serif;
+  margin-left: 5px;
+}
+#menuOptions input {
+  color: lightgreen;
+  background-color: rgba(127,127,127,0.6);
+  font-weight: bold;
+}
+::placeholder {
+  color: #a1FFa1;
+  opacity: 1; /* Firefox */
+}
+
+::-ms-input-placeholder { /* Edge 12-18 */
+  color: red;
+}
+#menuOptions p {
+  margin: 0;
+}
+#menuOptions h3 {
+  width: 100%;
+  margin: 0;
+}
+#menuOptions table, td, th {
+  border: 1px solid;
+  border-collapse: collapse;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+  
+}
+#menuOptions td {
+  cursor: pointer;
+}
+#menuOptions td:hover {
+  background-color: rgba(150,150,150,0.6);
+}
+#menuOptions td:active {
+  background-color: rgba(25,25,25,0.6);
+}
+#optionsOpen {
+  position: absolute;
+  top: 110px;
+  color: lightgreen;
+  background-color: rgba(0,0,0,0.6);
+  border-radius: 3px;
+  border-color: rgba(127,127,127,0.6);
+  border-style: solid;
+  cursor: pointer;
+  margin-left: 5px;
+}
+#optionsOpen:hover {
+  background-color: rgba(150,150,150,0.6);
+}
+#optionsOpen:active {
+  background-color: rgba(25,25,25,0.6);
+}
+.XandY {
+  color: lightgreen;
+  position: absolute;
+  top: 5px;
+  left: 10px;
+  height: 80px;
+  z-index: 1;
+  margin: 0;
+  background-color: rgba(0,0,0,0.6);
+  padding: 5px;
+  border-radius: 3px;
+  border-color: rgba(127,127,127,0.6);
+  border-style: solid;
+  width: 20%;
+}
+.objColl {
+  color: lightgreen;
+  position: absolute;
+  left: 5px;
+  z-index: 1;
+  margin: 0;
+  background-color: rgba(0,0,0,0.6);
+  padding: 5px;
+  border-radius: 3px;
+  border-color: rgba(127,127,127,0.6);
+  border-style: solid;
+  width: 20%;
+  min-width: 360px;
+}
+
+#displayImg {
+  position: absolute;
+  top: 0;
+  left: 650px;
+  width: 500px;
+  height: 500px;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
+#defaults {
+  color: lightgreen;
+  background-color: rgba(0,0,0,0.6);
+  cursor: pointer;
+}
+#d-Pad {
+  color: lightgreen;
+  position: absolute;
+  z-index: 1;
+  margin: 0;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+  background-color: rgba(0,0,0,0.6);
+  padding: 5px;
+  border-radius: 3px;
+  border-color: rgba(127,127,127,0.6);
+  border-style: solid;
+  width: 210px;
+  height: 99px;
+  font-size: 32px;
+  text-align: center;
+  transition-duration: 1s;
+  padding: 0;
+}
+#d-Pad td:not(.emtpyTD) {
+  width: 70px;
+  vertical-align:middle;
+  font-family: monospace;
+  font-size: 1.5em;
+}
+#d-Pad td:hover:not(.emtpyTD) {
+  background-color: rgba(127,127,127);
+  cursor: pointer;
+}
+#tutorialPrompt {
+  color: lightgreen;
+  position: fixed;
+  z-index: 1;
+  margin: 0;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+  background-color: rgba(0,0,0);
+  padding: 5px;
+  border-radius: 3px;
+  border-color: rgba(127,127,127,0.6);
+  border-style: solid;
+  width: 50%;
+  left: 25%;
+  height: 75%;
+  overflow-y: auto;
+  display: block;
+  font-size: 32px;
+  text-align: center;
+  transition-duration: 1s;
+  padding: 0;
+  z-index: 2;
+  font-family: Arial, Helvetica, sans-serif;
+}
+#closeTutorial {
+  color: lightgreen;
+  border-style: solid;
+  border-color: lightgreen;
+  background-color: rgba(0,0,0,0.6);
+  cursor: pointer;
+  font-size: 0.8em;
+  margin: 20px 0px;
+}
+#closeTutorial:hover {
+  background-color: rgba(127,127,127);
+}
+#endScreen {
+  color: lightgreen;
+  position: fixed;
+  z-index: 1;
+  margin: 0;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+  background-color: rgba(0,0,0);
+  padding: 5px;
+  border-radius: 3px;
+  border-color: rgba(127,127,127,0.6);
+  border-style: solid;
+  width: 50%;
+  left: 25%;
+  height: 75%;
+  overflow-y: auto;
+  display: block;
+  font-size: 32px;
+  text-align: center;
+  transition-duration: 1s;
+  padding: 0;
+  z-index: 2;
+  font-family: Arial, Helvetica, sans-serif;
+}
+#closeEndGame {
+  color: crimson;
+  border-style: solid;
+  border-color: crimson;
+  background-color: rgba(0,0,0,0.6);
+  cursor: pointer;
+  font-size: 0.8em;
+  margin: 20px 0px;
+}
+#closeEndGame:hover {
+  background-color: rgba(127,127,127);
+}
