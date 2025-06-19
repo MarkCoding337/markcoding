@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="https://glitch.com/favicon.ico" />
+    <title>Econ Simulation</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="./script.js" defer></script>
+  </head>
+  <body>
+    <div id="displayArea">
+      <label for="timePerRound">Time Per Round (mins): </label>
+      <input name="timePerRound" type="number" value="15" style="margin-top: 10px;"><br><br>
+      <label for="numRounds" id="numRoundsLabel">Number of Rounds: </label>
+      <input name="numRounds" type="number" value="2" style="font-size: 1.5em;"><br>
+      <h2 id="timer">
+        Timer:<br>Yet to Begin...
+      </h2><br>
+      <button onclick="beginSimulation()" id="beginPause">Begin</button>
+      <button onclick="pauseSimulation()" id="Pause">Pause</button><br>
+      <button onclick="restartSim()" id="restart">Restart</button>
+      <div id="commisionBox">
+        <h2>Government Comissions</h2>
+        <button onclick="if(this.parentElement.style.left == '') {this.parentElement.style.left = 0; this.innerHTML = 'Unlock'} else {this.parentElement.style.left = ''; this.innerHTML = 'Lock Open'}">Lock Open</button>
+        <div class="comission">
+          <p>$10 for 5 Bracelets<br>Bead Order: Red-Red-Green-Blue-Red </p>
+        </div>
+      </div>
+      <div id="resultsBox">
+        <h2>Results</h2>
+        <button onclick="if(this.parentElement.style.right == '') {this.parentElement.style.right = 0; this.innerHTML = 'Unlock'} else {this.parentElement.style.right = ''; this.innerHTML = 'Lock Open'}">Lock Open</button>
+        
+      </div>
+      <div id="newsBox">
+        <button class="noDef" onclick="this.parentElement.style.display = 'none';">Close</button>
+      </div>
+      <div id="communityArea">
+        <div id="stretchContainer">
+          <!--<div>
+            <h1 contenteditable="true">Community 1</h1>
+            <label for="comType">Community Type</label><br>
+            <select name="comType" id="comm1">
+              <option value="" disabled selected>Please Select</option>
+              <option value="market">Market</option>
+              <option value="command">Command</option>
+              <option value="traditional">Traditional</option>
+            </select>
+          </div>
+          <div>
+            <h1 contenteditable="true">Community 1</h1>
+            <label for="comType">Community Type</label><br>
+            <select name="comType" id="comm2">
+              <option value="" disabled selected>Please Select</option>
+              <option value="market">Market</option>
+              <option value="command">Command</option>
+              <option value="traditional">Traditional</option>
+            </select>
+          </div>
+          <div>
+            <h1 contenteditable="true">Community 1</h1>
+            <label for="comType">Community Type</label><br>
+            <select name="comType" id="comm3">
+              <option value="" disabled selected>Please Select</option>
+              <option value="market">Market</option>
+              <option value="command">Command</option>
+              <option value="traditional">Traditional</option>
+            </select>
+          </div>
+          <div>
+            <h1 contenteditable="true">Community 1</h1>
+            <label for="comType">Community Type</label><br>
+            <select name="comType" id="comm4">
+              <option value="" disabled selected>Please Select</option>
+              <option value="market">Market</option>
+              <option value="command">Command</option>
+              <option value="traditional">Traditional</option>
+            </select>
+          </div>-->
+          <div id="addCommunity">
+            <h1 style="font-size: 1em; line-height: calc(40vh);">Add Community</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
