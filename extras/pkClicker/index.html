@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="shortcut icon" type="image/jpg" href="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239" />
+    <title>PK Clicker</title>
+    
+    <style>
+      body {
+        color: white;
+        background-color: #79A0C2;
+      }
+      header {
+        background-color: #000080;
+        top: 0;
+        left: 0;
+        position: absolute;
+        width: 100%;
+        z-index: 1;
+        border-bottom-color: white;
+      }
+      .pk img {
+        width: 4vw;
+        height: 5vw;
+      }
+      canvas {
+        cursor: none;
+      }
+      canvas {
+        border-style: solid;
+        border-color: #79A0C2;
+        margin: 0 auto;
+        margin-top: 100px;
+      }
+      body {
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none; /* Chrome/Safari/Opera */
+        -khtml-user-select: none; /* Konqueror */
+        -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+        user-select: none; /* Non-prefixed version, currently
+                                  not supported by any browser */
+      }
+      button {
+        border-style: solid;
+        border-width: 1px;
+        border-radius: 8px;
+        font-size: 1em;
+        padding: 5px;
+      }
+    </style>
+  </head>
+  <body style="overflow: hidden; display: grid;">
+    <header style="display: grid;">
+      <table style="width: 100%;">
+        <tr>
+          <td style="text-align: left;" class="pk">
+            <img src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239" /><img
+              src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239"
+            /><img src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239" /><img
+              src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239"
+            /><img src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239" /><img
+              src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239"
+            /><img src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239" /><img
+              src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239"
+            /><img src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239" />
+          </td>
+          <td style="text-align: right;" class="pk">
+            <img src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239" /><img
+              src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239"
+            /><img src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239" /><img
+              src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239"
+            /><img src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239" /><img
+              src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239"
+            /><img src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239" /><img
+              src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239"
+            /><img src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239" />
+          </td>
+        </tr>
+
+        <tr></tr>
+      </table>
+      <br>
+      <h1 style="margin: 0 auto; margin-top: -5vw; z-index: 1; top: 0;">
+        Welcome to PK Clicker!!!
+      </h1>
+      <rr>Hint: Click The Middle of PK's Forehead</rr>
+    </header>
+    <canvas
+      unselectable="on"
+      width="400px"
+      height="500px"
+      style="background: url(https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Kinsella_Paul.jpg?v=1639423229239); background-size: cover;"
+    ></canvas>
+    <h2
+      style="overflow-y: auto; position: absolute; left: 0; top: 0; height: 100%; width: 28%; background-color: #000080; padding: 5px; border-style: solid; border-width: 1px; border-color: #000080; border-radius: 10px; margin-top: 13%;"
+     class="sideBar">
+      <a id="notiF"></a><a id="numOP"></a><a id="Button" style="padding-top: 5px; width: 100%;"><br>Cloth Shop<br></a>
+    </h2>
+    <h2
+      style="overflow-y: auto; position: absolute; right: 0; top: 0; height: 100%; width: 28%; background-color: #000080; padding: 5px; border-style: solid; border-width: 1px; border-color: #000080; border-radius: 10px; margin-top: 13%;"
+     class="sideBar">
+      <a></a><a id="PKInv"></a>
+    </h2>
+    <img src="https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/handkerchief-yhq.png?v=1639424385839" style="display: none;" class="closs" />
+    <script>
+      var polishes = 0;
+      var oilQuality = 1;
+      var img;
+      var cloths = [
+        [10, false, "Blue Cloth", "https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/R.png?v=1639424411964", 2, false],
+        [100, false, "Blue Micro-Fiber Cloth", "https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/R%20(1).png?v=1639424432252", 5, false, false],
+        [1000, false, "Double Mirco-Fiber Cloth", "https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/clothe4.png?v=1639424454908", 10, false, false],
+        [2500, false, "Cotton Washcloth", "https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/0e27ef23-a433-4d8f-b2ad-5696eb4e66c2.6121e00f22e4e5432ba6ce326d423555.png?v=1639491719304", 17, false, false],
+        [5000, false, "PooPoo Towel", "https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Screenshot%202021-12-14%201.23.44%20PM%20(1).png?v=1639509899135", 26, false, false],
+        [10000, false, "Towel", "https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/bath-towel.jpg?v=1639492141514", 37, false, false],
+        [15000, false, "Water Towel", "https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Screenshot%202021-12-14%2012.39.09%20PM%20(1).png?v=1639507322179", 50, false, false],
+        [20000, false, "Fire Towel", "https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/Screenshot%202021-12-14%2012.54.38%20PM%20(1).png?v=1639508148251", 65, false, false],
+      ];
+      var oils = [
+        [100, false, "83 yo Black Motor Oil", "https://cdn.glitch.me/653f73bf-afbf-4b74-88e7-2fd3bb881fdb/download%20(11).png?v=1639507993582"],
+        []
+      ];
+      var InventoryT = [];
+      var cloth1 = false;
+      var cloth2 = false;
+      var cloth3 = false;
+      var cloth4 = false;
+      var cloth5 = false;
+      var cloth6 = false;
+      var cloth7 = false;
+      var polishQuality = 1;
+      var canvas = document.querySelector("canvas");
+      var rect = canvas.getBoundingClientRect();
+      setInterval(function() {
+        rect = document.querySelector("canvas").getBoundingClientRect();
+      }, 10);
+      function getMousePosition(canvas, event) {
+        let x = event.clientX - rect.left;
+        let y = event.clientY - rect.top;
+        console.log("Coordinate x: " + x, "Coordinate y: " + y);
+        if (x > 150 && x < 255 && y > 60 && y < 160) {
+          console.log("Thou Hath Polished The PK");
+          polishe(false);
+        } else {
+          polishe(true);
+        }
+      }
+
+      let canvasElem = document.querySelector("canvas");
+
+      canvasElem.addEventListener("mousedown", function(e) {
+        getMousePosition(canvasElem, e);
+      });
+      function CanvasProperties() {
+        canvas = canvas.getContext("2d");
+        window.addEventListener("mousemove", CustomCursor, false);
+      }
+
+      function CustomCursor() {
+        canvas.clearRect(0, 0, 400, 500);
+        var xPosition = event.clientX - rect.left;
+        var yPosition = event.clientY - rect.top;
+        canvas.fillRect(xPosition, yPosition, 10, 10);
+        img = document.querySelector(".closs");
+        canvas.drawImage(img, xPosition - 50, yPosition - 50, 100, 100);
+      }
+
+      window.addEventListener("load", CanvasProperties, false);
+
+      function polishe(bad) {
+        if (bad == false) {
+          let randNum = Math.floor(Math.random() * 5);
+          if (randNum == 3 || randNum == 5) {
+            polishes--;
+            document.getElementById("notiF").innerHTML =
+              "You didn't do it right<br>-1 Polish Credits<br><br>";
+          } else if (randNum == 1 || randNum == 2 || randNum == 4) {
+            polishes += polishQuality*oilQuality;
+            document.getElementById("notiF").innerHTML =
+              "Good Job, Shine That Head!<br>+" +
+              polishQuality +
+              " Polish Credits<br><br>";
+          } else {
+            polishes += polishQuality*oilQuality;
+            document.getElementById("notiF").innerHTML =
+              "Good Job, Shine That Head!<br>+" +
+              polishQuality +
+              " Polish Credits<br><br>";
+          }
+        }
+        if (bad == true) {
+          polishes--;
+          document.getElementById("notiF").innerHTML =
+            "DON'T POLISH THERE!!!<br>-1 Polish Credits<br><br>";
+        }
+      }
+      setInterval(function() {
+        document.getElementById("numOP").innerHTML =
+          "<br>PK Polish Credits: " + polishes + "<br><br>";
+          for (i = 0; i < cloths.length; i++) {
+            if (polishes >= cloths[i][0] && cloths[i][1] == false) {
+              a = document.createElement("button");
+              a.innerHTML = "Get " + cloths[i][2] + "<br>Price: " + cloths[i][0];
+              a.setAttribute("id", "cloth" + i + "But");
+              a.setAttribute(
+               "onclick",
+              'InventoryT.push(cloths['+i+']); document.getElementById("cloth' +
+                i +
+                'But").remove(); document.getElementById("buttonBR'+i+'").remove(); updateInv(); polishes -= ' + cloths[i][0] + '; cloths[' + i + '][6] = true;'
+            );
+            document.getElementById("Button").appendChild(a);
+            a = document.createElement("br");
+            a.setAttribute("id", "buttonBR"+i);
+            document.getElementById("Button").appendChild(a);
+            cloths[i][1] = true;
+          }
+          if (polishes < cloths[i][0] && cloths[i][1] == true && cloths[i][6] == false) {
+            document.getElementById("cloth" + i + "But").remove();
+            document.getElementById("buttonBR"+i).remove();
+            cloths[i][1] = false;
+          }
+        }
+        /*for(i=0;i<oils.length;i++) {
+                if(polishes >= oils[i][0] && oils[i][1] == false) {
+                    a = document.createElement("button");
+                    a.innerHTML = "Get "+oils[i][2];
+                    a.setAttribute("id", "oil"+i+"But");
+                    a.setAttribute("onclick", "document.querySelector(\".cloils\").setAttribute(\"src\", \""+oils[i][3]+"\"); polishes -= "+oils[i][0]+"; polishQuality += "+oils[i][4]+"; document.getElementById(\"oil"+i+"But\").remove();");
+                    document.getElementById("PKUpgrades").appendChild(a);
+                    oils[i][1] = true;
+                  };
+                if(polishes < oils[i][0] && oils[i][1] == true) {
+                    document.getElementById("oil"+i+"But").remove();
+                    oils[i][1] = false;
+                  };
+              };*/
+      }, 1);
+      function updateInv() {
+        document.getElementById("PKInv").innerHTML = "";
+        for(i=0;i<InventoryT.length;i++) {
+          a = document.createElement("a");
+          a.setAttribute("title", InventoryT[i][2] + " | Original Price: " + InventoryT[i][0] + " | Polish Quality: " + InventoryT[i][4]);
+          a.setAttribute("onclick", "stopAllGreen(); document.querySelector('.closs').setAttribute('src', '" + InventoryT[i][3] + "'); polishQuality = " + InventoryT[i][4] + "; InventoryT["+i+"][5] = true;"); //document.getElementById('clothImg"+i+"').setAttribute('style', 'border-style: solid; border-radius: 8px; border-color: green; border-width: 2px;')
+          a.innerHTML = '<img src="'+ InventoryT[i][3] +'" width="100px" height="100px" id="clothImg'+i+'">';
+          document.getElementById("PKInv").appendChild(a);
+        };
+      };
+      function stopAllGreen() {
+        for(i=0;i<InventoryT.length;i++) {
+          InventoryT[i][5] = false;
+        };
+      };
+      setInterval(function() {
+        for(i=0;i<InventoryT.length;i++) {
+          if(InventoryT[i][5] == true) {
+            document.getElementById("clothImg"+i).setAttribute('style', 'border-style: solid; border-radius: 8px; border-color: green; border-width: 2px;');
+          } else {
+            document.getElementById("clothImg"+i).setAttribute('style', '');
+          };
+        };
+      });
+    </script>
+  </body>
+</html>
