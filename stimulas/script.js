@@ -6,6 +6,8 @@ var popCounter;
 var endCard;
 var ctx;
 var ballSpeed;
+var ballCount;
+var dragPopChoice;
 
 class Start extends Phaser.Scene {
   constructor() {
@@ -29,7 +31,7 @@ class Start extends Phaser.Scene {
     soundManager = this.sound;
     const backgroundParticles2 = this.add.particles(0, 0, 'particle', {
       x: {min: config.width/2-150, max: config.width/2+150 },
-      y: {min: 100, max: 200},
+      y: {min: 50, max: 110},
       lifespan: 1000,
       speedX: { min:-50, max: 50 },
       speedY: { min: -25, max: 50 },
@@ -40,15 +42,53 @@ class Start extends Phaser.Scene {
       alpha: {start: 0.7, end: 0},
       rotate: {min: -30, max: 30},
     });
-    let text = this.add.text(config.width/2,150,"STIMULAS").setScrollFactor(0).setFontSize(60).setFontFamily('Courier New').setOrigin(0.5, 0.5).setShadow(3,10,0xFF0000,20).setColor("#FFD1DC");
+    let text = this.add.text(config.width/2,80,"STIMULAS").setScrollFactor(0).setFontSize(60).setFontFamily('Courier New').setOrigin(0.5, 0.5).setShadow(3,10,0xFF0000,20).setColor("#FFD1DC");
     text.setShadow(-3, 3, 'rgba(255,255,255,0.4)', 2);
-        this.add.text(config.width/2, 180, "Release Beta").setScrollFactor(0).setFontSize(20).setFontFamily("Courier New").setOrigin(0, 0.5).setColor("#FFFFFF");
+        this.add.text(config.width/2, 125, "Release Gamma").setScrollFactor(0).setFontSize(20).setFontFamily("Courier New").setOrigin(0, 0.5).setColor("#FFFFFF");
+		
+		this.dragPop = this.add.rectangle(config.width/2, 198, 250, 50, 0xFFFFFF).setInteractive();
+	this.add.text(config.width/2, 185, "Drag To Pop").setFontSize(20).setFontFamily("Courier New").setOrigin(0.5, 0.5).setColor("#000000");
+	this.add.rectangle(config.width/2, 200, 250, 2, 0x000000);
+	this.dragPopText = this.add.text(config.width/2, 210, "Disabled").setFontSize(20).setFontFamily("Arial").setOrigin(0.5, 0.5).setColor("#000000").setAngle(-1);
+	this.tweens.add({
+		targets: this.dragPopText,
+		angle: 1,
+		repeat: -1,
+		yoyo: true,
+		persist: true,
+		ease: "Quad.easeInOut",
+	});
+	dragPopChoice = 1;
+	var dragPopChoices = ["Enabled", "Disabled"];
 	
-	this.speedIndicator = this.add.rectangle(config.width/2, 350, 250, 50, 0xFFFFFF).setInteractive();
-	this.speedText = this.add.text(config.width/2, 350, "Normal").setFontSize(20).setFontFamily("Arial").setOrigin(0.5, 0.5).setColor("#000000").setAngle(-5);
+	this.dragPop.on('pointerover', () => {
+      this.dragPop.setScale(1.1);
+    });
+    this.dragPop.on('pointerout', () => {
+      this.dragPop.setScale(1);
+    });
+    this.dragPop.on('pointerdown', () => {
+      this.sound.play("button1", {volume: 0.8});
+      this.dragPop.setScale(0.9);
+	  if(dragPopChoice >= 1) {
+		  dragPopChoice = 0;
+	  } else {
+		  dragPopChoice += 1;
+	  };
+	  this.dragPopText.setText(dragPopChoices[dragPopChoice]);
+    });
+    this.dragPop.on('pointerup', () => {
+      this.dragPop.setScale(1.1);
+    });
+		
+		
+	this.speedIndicator = this.add.rectangle(config.width/2, 345, 250, 75, 0xFFFFFF).setInteractive();
+	this.add.text(config.width/2, 325, "Ball Speed").setFontSize(30).setFontFamily("Courier New").setOrigin(0.5, 0.5).setColor("#000000");
+	this.add.rectangle(config.width/2, 345, 250, 2, 0x000000);
+	this.speedText = this.add.text(config.width/2, 365, "Normal").setFontSize(20).setFontFamily("Arial").setOrigin(0.5, 0.5).setColor("#000000").setAngle(-4);
 	this.tweens.add({
 		targets: this.speedText,
-		angle: 5,
+		angle: 4,
 		repeat: -1,
 		yoyo: true,
 		persist: true,
@@ -75,6 +115,41 @@ class Start extends Phaser.Scene {
     });
     this.speedIndicator.on('pointerup', () => {
       this.speedIndicator.setScale(1.1);
+    });
+	
+	this.countIndicator = this.add.rectangle(config.width/2, 265, 250, 75, 0xFFFFFF).setInteractive();
+	this.add.text(config.width/2, 245, "Ball Count").setFontSize(30).setFontFamily("Courier New").setOrigin(0.5, 0.5).setColor("#000000");
+	this.add.rectangle(config.width/2, 265, 250, 2, 0x000000);
+	this.countText = this.add.text(config.width/2, 285, "Normal").setFontSize(20).setFontFamily("Arial").setOrigin(0.5, 0.5).setColor("#000000").setAngle(4);
+	this.tweens.add({
+		targets: this.countText,
+		angle: -4,
+		repeat: -1,
+		yoyo: true,
+		persist: true,
+		ease: "Quad.easeInOut",
+	});
+	ballCount = 2;
+	var ballCounts = ["Lower", "Low", "Normal", "A Lot", "Absurd", "Death"];
+	
+	this.countIndicator.on('pointerover', () => {
+      this.countIndicator.setScale(1.1);
+    });
+    this.countIndicator.on('pointerout', () => {
+      this.countIndicator.setScale(1);
+    });
+    this.countIndicator.on('pointerdown', () => {
+      this.sound.play("button1", {volume: 0.8});
+      this.countIndicator.setScale(0.9);
+	  if(ballCount >= 5) {
+		  ballCount = 0;
+	  } else {
+		  ballCount += 1;
+	  };
+	  this.countText.setText(ballCounts[ballCount]);
+    });
+    this.countIndicator.on('pointerup', () => {
+      this.countIndicator.setScale(1.1);
     });
 	
     let start = this.add.rectangle(config.width/2, 500, 300,200, 0xFFD1DC).setOrigin(0.5,0.5);
@@ -113,6 +188,8 @@ class Main extends Phaser.Scene {
 	  ctx = this;
 	  var borderWidth = 10;
 	  var ballMaxSpeeds = [1.5, 2.5, 6];
+	  var ballCounts = [20, 30, 50, 100, 200, 1000];
+	  var dragChoice = ["pointerover", "pointerdown"];
 	  this.ballMaxSpeed = ballMaxSpeeds[ballSpeed]*2;
 	  this.ballMinSpeed = this.ballMaxSpeed/2;
 		this.topWall = this.matter.add.rectangle(config.width/2, 0, config.width, borderWidth, {
@@ -142,7 +219,9 @@ class Main extends Phaser.Scene {
 			restitution: 1,
 		});
 		this.matter.resolver._restingThresh = 0.001;
+		this.totalBalls = 0;
 		this.createBall = function() {
+			this.totalBalls += 1;
 			this.ball = this.add.sprite(config.width/2, 80, "particle").setDisplaySize(50,50);
 			this.ball = this.matter.add.gameObject(this.ball);
 			var selectArr = ["+=360","-=360"];
@@ -176,8 +255,9 @@ class Main extends Phaser.Scene {
 			
 			this.ball.deathPart.stop();
 			this.ball.deathPart.depth = -1;
-			this.ball.on("pointerdown", function(){
-				console.log("arg");
+			this.ball.on(dragChoice[dragPopChoice], function(){
+				ctx.sound.play("button"+(Math.floor(Math.random()*3)+1));
+				ctx.totalBalls -= 1;
 				this.disableInteractive();
 				this.deathPart.setPosition(this.body.position.x, this.body.position.y);
 				this.deathPart.start();
@@ -194,11 +274,18 @@ class Main extends Phaser.Scene {
 					alpha: 0,
 					scale: 0.05
 				});
+				if(ctx.totalBalls <= 0) {
+					ctx.cameras.main.fadeOut(1500, 0, 0, 0, (camera, progress)=>{
+						if(progress >= 0.99) {
+							ctx.scene.stop();
+							ctx.scene.start("Start");
+						}
+					});
+				}
 			}, this.ball);
 			this.ball.setBody({
 				type: "circle",
 				radius: scale/2,
-				maxSides: 10,
 			}, {
 				restitution: 1,
 				frictionAir: 0,
@@ -211,7 +298,7 @@ class Main extends Phaser.Scene {
 			this.ball.setBounce(1);
 			this.ball.setVelocity(Math.random()*this.ballMaxSpeed-this.ballMinSpeed,Math.random()*this.ballMaxSpeed-this.ballMinSpeed);
 		};
-		for(var i=0;i<100;i++) {
+		for(var i=0;i<ballCounts[ballCount];i++) {
 			this.createBall();
 		}
   }
@@ -242,7 +329,7 @@ const config = {
           default: 'matter',
         },
         fps: {
-          target: 100,
+          target: 60,
           forceSetTimeOut: true
         },
     };
