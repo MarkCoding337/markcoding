@@ -4,6 +4,8 @@ var phaserTime;
 var cWidth;
 var popCounter;
 var endCard;
+var ctx;
+var ballSpeed;
 
 class Start extends Phaser.Scene {
   constructor() {
@@ -41,7 +43,40 @@ class Start extends Phaser.Scene {
     let text = this.add.text(config.width/2,150,"STIMULAS").setScrollFactor(0).setFontSize(60).setFontFamily('Courier New').setOrigin(0.5, 0.5).setShadow(3,10,0xFF0000,20).setColor("#FFD1DC");
     text.setShadow(-3, 3, 'rgba(255,255,255,0.4)', 2);
         this.add.text(config.width/2, 180, "Release Beta").setScrollFactor(0).setFontSize(20).setFontFamily("Courier New").setOrigin(0, 0.5).setColor("#FFFFFF");
-
+	
+	this.speedIndicator = this.add.rectangle(config.width/2, 350, 250, 50, 0xFFFFFF).setInteractive();
+	this.speedText = this.add.text(config.width/2, 350, "Normal").setFontSize(20).setFontFamily("Arial").setOrigin(0.5, 0.5).setColor("#000000").setAngle(-5);
+	this.tweens.add({
+		targets: this.speedText,
+		angle: 5,
+		repeat: -1,
+		yoyo: true,
+		persist: true,
+		ease: "Quad.easeInOut",
+	});
+	ballSpeed = 1;
+	var ballSpeeds = ["Zen", "Normal", "Insane"];
+	
+	this.speedIndicator.on('pointerover', () => {
+      this.speedIndicator.setScale(1.1);
+    });
+    this.speedIndicator.on('pointerout', () => {
+      this.speedIndicator.setScale(1);
+    });
+    this.speedIndicator.on('pointerdown', () => {
+      this.sound.play("button1", {volume: 0.8});
+      this.speedIndicator.setScale(0.9);
+	  if(ballSpeed >= 2) {
+		  ballSpeed = 0;
+	  } else {
+		  ballSpeed += 1;
+	  };
+	  this.speedText.setText(ballSpeeds[ballSpeed]);
+    });
+    this.speedIndicator.on('pointerup', () => {
+      this.speedIndicator.setScale(1.1);
+    });
+	
     let start = this.add.rectangle(config.width/2, 500, 300,200, 0xFFD1DC).setOrigin(0.5,0.5);
     this.openVal = 0;
     start.setInteractive();
@@ -72,166 +107,116 @@ class Start extends Phaser.Scene {
 
 class Main extends Phaser.Scene {
   constructor() {
-    super("Main");
+		super("Main");
   }
   create() {
-    var OrbType = Math.floor(Math.random()*50);
-    if(OrbType >= 2) {
-      OrbType = 0;
-    }
-    var gameOrbs = ['particle', 'happyGreen'];
-    popCounter = 0;
-    endCard = false;
-    this.timeCounter = new Date();
-    phaserG = this;
-    phaserTime = this.time;
-    class bouncies extends Phaser.GameObjects.Image {
-      constructor(scene) {
-        super(scene, 0, 0, gameOrbs[OrbType]);
-        }
-
-      fire(x, y, speed) {
-        popCounter += 1;
-        this.particleG = phaserG.add.particles(x, y, "red", {
-          lifespan: 1000,
-          speedX: { min:-100, max: 100 },
-          speedY: { min: -100, max: 100 },
-          scale: 0.6,
-          quantity: 1,
-          frequency: 10,
-          blendMode: "ADD",
-          alpha: {start: 1, end: 0},
-          rotate: {min: -30, max: 30},
-          });
-          
-        this.particleG.stop();
-        this.particleG.depth = -1;
-        this.setScale(0.01+(Math.random()*0.01 ));
-        this.setInteractive();
-        this.setPosition(x, y);
-        this.body.setCircle(1500);
-        this.body.velocity.x = ((Math.random()*speed)-(speed/2));
-        this.body.velocity.y = ((Math.random()*speed)-(speed/2));
-        this.body.setAngularVelocity((Math.random()*720)-360);
-        let alphaY = Math.random()+0.5;
-        if(alphaY>1) {
-          alphaY = 1;
-        }
-        this.setAlpha(alphaY);
-        this.body.setCollideWorldBounds(true);
-        this.body.setBounce(1);
-        this.on("pointerdown", () => {
-          if(OrbType == 1) {
-            soundManager.play("secretHehe", {volume: 0.8});
-          } else {
-            soundManager.play("button"+(Math.floor(Math.random()*3)+1), {volume: 0.8});
-          };
-          this.disableInteractive();
-          this.particleG.start();
-          phaserTime.delayedCall(200, () => {this.particleG.stop();});
-          phaserTime.delayedCall(1000, () => {this.particleG.destroy();});
-          popCounter -= 1;
-          this.body.velocity.x = 0;
-          this.body.velocity.y = 0;
-          phaserG.tweens.add({
-                targets: this,
-                duration: 200,
-                alpha: 0,
-                scale: 0.05
-          });
-          phaserTime.delayedCall(200, () => {this.destroy();});
-        });
-        this.on("pointerover", () => {
-          this.setScale(0.025);
-        });
-        this.on("pointerout", () => {
-          this.setScale(0.02);
-        });
-      }
-      update(time, delta) {
-        this.particleG.x = this.x;
-        this.particleG.y = this.y;
-      }
-    }
-    this.bouncies = this.physics.add.group({
-      classType: bouncies,
-      maxSize: 1000,
-      runChildUpdate: true,
-    });
-    this.temp1 = this.physics.add.staticGroup();
-   this.tempO =  this.add.rectangle(config.width/2, config.height/3, 2, (config.height/3), 0xFFFFFF).setOrigin(0.5,0);
-    //this.tempP = this.add.line(100, 100, 0, 0, 0, 100, 0xFFFFFF);
-    //this.temp1.add(this.tempP);
-    this.temp1.add(this.tempO);
-    
-    this.physics.add.collider(this.temp1, this.bouncies, () => {
-      
-    });
-    const bounce = this.bouncies.get();
-    if (bounce) {
-      bounce.fire(config.width/2, config.height-60, 1000);
-    }
-    for(var i=0;i<=100;i++){
-      const bounce = this.bouncies.get();
-      if (bounce)
-      {
-        var jk;
-        if(Math.random()*2 > 1 ) {jk = 3} else {jk = 1}
-          bounce.fire(config.width/2, config.height/4*(jk), 400);
-      }
-    };
-    //this.physics.add.collider(this.bouncies, this.bouncies);
+	  ctx = this;
+	  var borderWidth = 10;
+	  var ballMaxSpeeds = [1.5, 2.5, 6];
+	  this.ballMaxSpeed = ballMaxSpeeds[ballSpeed]*2;
+	  this.ballMinSpeed = this.ballMaxSpeed/2;
+		this.topWall = this.matter.add.rectangle(config.width/2, 0, config.width, borderWidth, {
+			isStatic: true,
+			slop: 0,
+			restitution: 1,
+		});
+		this.bottomWall = this.matter.add.rectangle(config.width/2, config.height, config.width, borderWidth, {
+			isStatic: true,
+			slop: 0,
+			restitution: 1,
+		});
+		this.leftWall = this.matter.add.rectangle(0, config.height/2, borderWidth, config.height, {
+			isStatic: true,
+			slop: 0,
+			restitution: 1,
+		});
+		this.rightWall = this.matter.add.rectangle(config.width, config.height/2, borderWidth, config.height, {
+			isStatic: true,
+			slop: 0,
+			restitution: 1,
+		});
+		this.wall = this.add.rectangle(config.width/2, config.height/2, 10, 100, 0xFFFFFF).setOrigin(0,0);
+		this.wall = this.matter.add.gameObject(this.wall, {
+			isStatic: true,
+			slop: 0,
+			restitution: 1,
+		});
+		this.matter.resolver._restingThresh = 0.001;
+		this.createBall = function() {
+			this.ball = this.add.sprite(config.width/2, 80, "particle").setDisplaySize(50,50);
+			this.ball = this.matter.add.gameObject(this.ball);
+			var selectArr = ["+=360","-=360"];
+			var angleChange = selectArr[Math.floor(Math.random()*2)];
+			this.ball.rotateTween = ctx.tweens.add({
+				targets: this.ball,
+				angle: angleChange,
+				duration: Math.random()*500+1000,
+				repeat: -1,
+				persist: true,
+			});
+			this.ball.setInteractive();
+			this.ball.deathPart = this.add.particles(0, 0, "red", {
+			  lifespan: 1000,
+			  speedX: { min:-100, max: 100 },
+			  speedY: { min: -100, max: 100 },
+			  scale: 0.6,
+			  quantity: 1,
+			  frequency: 20,
+			  blendMode: "ADD",
+			  alpha: {start: 0.5, end: 0},
+			  rotate: {min: -30, max: 30},
+			});
+			let alphaY = Math.random()+0.5;
+			if(alphaY>1) {
+				alphaY = 1;
+			}
+			this.ball.setAlpha(alphaY);
+			var scale = 50*(Math.random()*0.5+1);
+			this.ball.setDisplaySize(scale, scale);
+			
+			this.ball.deathPart.stop();
+			this.ball.deathPart.depth = -1;
+			this.ball.on("pointerdown", function(){
+				console.log("arg");
+				this.disableInteractive();
+				this.deathPart.setPosition(this.body.position.x, this.body.position.y);
+				this.deathPart.start();
+				this.setFrictionAir(0.8);
+				ctx.time.delayedCall(200, () => {this.deathPart.stop();});
+				ctx.time.delayedCall(1000, () => {
+					this.deathPart.destroy();
+					this.rotateTween.destroy();
+					this.destroy();
+				});
+				ctx.tweens.add({
+					targets: this,
+					duration: 500,
+					alpha: 0,
+					scale: 0.05
+				});
+			}, this.ball);
+			this.ball.setBody({
+				type: "circle",
+				radius: scale/2,
+				maxSides: 10,
+			}, {
+				restitution: 1,
+				frictionAir: 0,
+				friction: 0,
+				inertia: Infinity,
+				slop: 0,
+				frictionStatic: -1,
+			})
+			this.ball.setCollisionGroup(-1);
+			this.ball.setBounce(1);
+			this.ball.setVelocity(Math.random()*this.ballMaxSpeed-this.ballMinSpeed,Math.random()*this.ballMaxSpeed-this.ballMinSpeed);
+		};
+		for(var i=0;i<100;i++) {
+			this.createBall();
+		}
   }
   update() {
-    if(popCounter == 0 && endCard == false) {
-      endCard = true;
-      
-      this.endTime = new Date();
-      
-      this.timeCounter = this.endTime-this.timeCounter;
-      
-      var endTime = this.add.text(config.width/2, 0, (Math.floor(this.timeCounter/10)/100 + " Seconds")).setScrollFactor(0).setFontSize(40).setFontFamily("Courier New").setOrigin(0.5,0.5).setShadow(3, 10, 0xFF0000, 20).setColor("#FFD1DC"); 
-      
-      var endButton = this.add.rectangle(config.width/2, 500, 300,200, 0xFFD1DC).setOrigin(0.5,0.5);
-      let shadowFX = endButton.postFX.addShadow(0, 0, 0.5, 0.5, 0xFFD1DC, 2, 0.5);
-      endButton.alpha = 0;
-      this.tweens.add({
-            targets: endButton,
-            duration: 1000,
-            alpha: 1
-        });
-      this.tweens.add({
-            targets: endTime,
-            duration: 1000,
-            alpha: 1,
-            y: 150,
-        });
-      this.tweens.add({
-            targets: this.tempO,
-            duration: 1000,
-            alpha: 0,
-        });
-      this.openVal = 0;
-      endButton.setInteractive();
-      endButton.on('pointerover', () => {
-        endButton.setScale(1.1);
-        this.sound.play("button1", {volume: 0.8});
-      });
-      endButton.on('pointerout', () => {
-        endButton.setScale(1);
-      });
-      endButton.on('pointerdown', () => {
-        this.sound.play("button1", {volume: 0.8});
-        endButton.setScale(0.9);
-        this.openVal++;
-        if(this.openVal >= 10) {
-          this.scene.restart();
-        };
-      });
-      endButton.on('pointerup', () => {
-        endButton.setScale(1.1);
-      });
-    }
+	  
   }
 }
 
@@ -248,10 +233,13 @@ const config = {
         backgroundColor: "#000000",
         scene: [Start, Main],
         physics: {
-          arcade: {
-             // debug: true,
+          matter: {
+             //debug: true,
+			 gravity: {
+				y: 0
+			 }
           },
-          default: 'arcade',
+          default: 'matter',
         },
         fps: {
           target: 100,
