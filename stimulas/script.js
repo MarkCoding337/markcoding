@@ -96,7 +96,6 @@ class Start extends Phaser.Scene {
 	});
 	ballSpeed = 1;
 	var ballSpeeds = ["Zen", "Normal", "Insane", "Ludicrous"];
-	//Fix
 	
 	this.speedIndicator.on('pointerover', () => {
       this.speedIndicator.setScale(1.1);
@@ -213,12 +212,136 @@ class Main extends Phaser.Scene {
 			slop: 0,
 			restitution: 1,
 		});
-		this.wall = this.add.rectangle(config.width/2, config.height/2, 5, config.height-400, 0xFFFFFF).setOrigin(0,0);
-		this.wall = this.matter.add.gameObject(this.wall, {
-			isStatic: true,
-			slop: 0,
-			restitution: 1,
-		});
+		var mapType = 2//Math.floor(Math.random()*3);
+		if(mapType == 0) {
+			this.wall = this.add.rectangle(config.width/2, config.height/2, 5, config.height-400, 0xFFFFFF).setOrigin(0,0);
+			this.wall = this.matter.add.gameObject(this.wall, {
+				isStatic: true,
+				slop: 0,
+				restitution: 1,
+			});
+		} else if(mapType == 1) {
+			this.wall = this.add.rectangle(config.width/4, config.height/2, 5, config.height-400, 0xFFFFFF).setOrigin(0,0);
+			this.wall = this.matter.add.gameObject(this.wall, {
+				isStatic: true,
+				slop: 0,
+				restitution: 1,
+			});
+			this.wall = this.add.rectangle(config.width/4*3, config.height/2, 5, config.height-400, 0xFFFFFF).setOrigin(0,0);
+			this.wall = this.matter.add.gameObject(this.wall, {
+				isStatic: true,
+				slop: 0,
+				restitution: 1,
+			});
+		} else if(mapType == 2) {
+			this.wall = this.add.circle(config.width/5, config.height/5, 5, 0xFFFFFF);
+			this.wall = this.matter.add.gameObject(this.wall, {
+				isStatic: true,
+				slop: 0,
+				restitution: 1,
+				shape: "circle",
+			});
+			this.wall = this.add.circle(config.width/5*2, config.height/5, 5, 0xFFFFFF);
+			this.wall = this.matter.add.gameObject(this.wall, {
+				isStatic: true,
+				slop: 0,
+				restitution: 1,
+				shape: "circle",
+			});
+			this.wall = this.add.circle(config.width/5*3, config.height/5, 5, 0xFFFFFF);
+			this.wall = this.matter.add.gameObject(this.wall, {
+				isStatic: true,
+				slop: 0,
+				restitution: 1,
+				shape: "circle",
+			});
+			this.wall = this.add.circle(config.width/5*4, config.height/5, 5, 0xFFFFFF);
+			this.wall = this.matter.add.gameObject(this.wall, {
+				isStatic: true,
+				slop: 0,
+				restitution: 1,
+				shape: "circle",
+			});
+			
+			//LL 2
+			
+			this.wall = this.add.circle(config.width/4, config.height/5*2, 5, 0xFFFFFF);
+			this.wall = this.matter.add.gameObject(this.wall, {
+				isStatic: true,
+				slop: 0,
+				restitution: 1,
+				shape: "circle",
+			});
+			this.wall = this.add.circle(config.width/4*2, config.height/5*2, 5, 0xFFFFFF);
+			this.wall = this.matter.add.gameObject(this.wall, {
+				isStatic: true,
+				slop: 0,
+				restitution: 1,
+				shape: "circle",
+			});
+			this.wall = this.add.circle(config.width/4*3, config.height/5*2, 5, 0xFFFFFF);
+			this.wall = this.matter.add.gameObject(this.wall, {
+				isStatic: true,
+				slop: 0,
+				restitution: 1,
+				shape: "circle",
+			});
+			
+			//LL 3
+			
+			this.wall = this.add.circle(config.width/5, config.height/5*3, 5, 0xFFFFFF);
+			this.wall = this.matter.add.gameObject(this.wall, {
+				isStatic: true,
+				slop: 0,
+				restitution: 1,
+				shape: "circle",
+			});
+			this.wall = this.add.circle(config.width/5*2, config.height/5*3, 5, 0xFFFFFF);
+			this.wall = this.matter.add.gameObject(this.wall, {
+				isStatic: true,
+				slop: 0,
+				restitution: 1,
+				shape: "circle",
+			});
+			this.wall = this.add.circle(config.width/5*3, config.height/5*3, 5, 0xFFFFFF);
+			this.wall = this.matter.add.gameObject(this.wall, {
+				isStatic: true,
+				slop: 0,
+				restitution: 1,
+				shape: "circle",
+			});
+			this.wall = this.add.circle(config.width/5*4, config.height/5*3, 5, 0xFFFFFF);
+			this.wall = this.matter.add.gameObject(this.wall, {
+				isStatic: true,
+				slop: 0,
+				restitution: 1,
+				shape: "circle",
+			});
+			
+			//LL 4
+			
+			this.wall = this.add.circle(config.width/4, config.height/5*4, 5, 0xFFFFFF);
+			this.wall = this.matter.add.gameObject(this.wall, {
+				isStatic: true,
+				slop: 0,
+				restitution: 1,
+				shape: "circle",
+			});
+			this.wall = this.add.circle(config.width/4*2, config.height/5*4, 5, 0xFFFFFF);
+			this.wall = this.matter.add.gameObject(this.wall, {
+				isStatic: true,
+				slop: 0,
+				restitution: 1,
+				shape: "circle",
+			});
+			this.wall = this.add.circle(config.width/4*3, config.height/5*4, 5, 0xFFFFFF);
+			this.wall = this.matter.add.gameObject(this.wall, {
+				isStatic: true,
+				slop: 0,
+				restitution: 1,
+				shape: "circle",
+			});
+		}
 		this.matter.resolver._restingThresh = 0.001;
 		this.totalBalls = 0;
 		this.createBall = function() {
@@ -286,7 +409,7 @@ class Main extends Phaser.Scene {
 			}, this.ball);
 			this.ball.setBody({
 				type: "circle",
-				radius: scale/2,
+				radius: (scale/2)*0.9,
 			}, {
 				restitution: 1,
 				frictionAir: 0,
