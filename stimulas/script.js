@@ -96,6 +96,7 @@ class Start extends Phaser.Scene {
 	});
 	ballSpeed = 1;
 	var ballSpeeds = ["Zen", "Normal", "Insane", "Ludicrous"];
+	//Fix
 	
 	this.speedIndicator.on('pointerover', () => {
       this.speedIndicator.setScale(1.1);
