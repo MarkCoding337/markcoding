@@ -212,7 +212,7 @@ class Main extends Phaser.Scene {
 			slop: 0,
 			restitution: 1,
 		});
-		var mapType = 2//Math.floor(Math.random()*3);
+		var mapType = Math.floor(Math.random()*3);
 		if(mapType == 0) {
 			this.wall = this.add.rectangle(config.width/2, config.height/2, 5, config.height-400, 0xFFFFFF).setOrigin(0,0);
 			this.wall = this.matter.add.gameObject(this.wall, {
