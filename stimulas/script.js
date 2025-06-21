@@ -95,7 +95,7 @@ class Start extends Phaser.Scene {
 		ease: "Quad.easeInOut",
 	});
 	ballSpeed = 1;
-	var ballSpeeds = ["Zen", "Normal", "Insane"];
+	var ballSpeeds = ["Zen", "Normal", "Insane", "Ludicrous"];
 	
 	this.speedIndicator.on('pointerover', () => {
       this.speedIndicator.setScale(1.1);
@@ -106,7 +106,7 @@ class Start extends Phaser.Scene {
     this.speedIndicator.on('pointerdown', () => {
       this.sound.play("button1", {volume: 0.8});
       this.speedIndicator.setScale(0.9);
-	  if(ballSpeed >= 2) {
+	  if(ballSpeed >= 3) {
 		  ballSpeed = 0;
 	  } else {
 		  ballSpeed += 1;
@@ -187,8 +187,8 @@ class Main extends Phaser.Scene {
   create() {
 	  ctx = this;
 	  var borderWidth = 10;
-	  var ballMaxSpeeds = [1.5, 2.5, 6];
-	  var ballCounts = [20, 30, 50, 100, 200, 1000];
+	  var ballMaxSpeeds = [1.5, 2.5, 6, 20];
+	  var ballCounts = [20, 30, 50, 100, 200, 500];
 	  var dragChoice = ["pointerover", "pointerdown"];
 	  this.ballMaxSpeed = ballMaxSpeeds[ballSpeed]*2;
 	  this.ballMinSpeed = this.ballMaxSpeed/2;
