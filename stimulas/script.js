@@ -46,10 +46,10 @@ class Start extends Phaser.Scene {
     text.setShadow(-3, 3, 'rgba(255,255,255,0.4)', 2);
         this.add.text(config.width/2, 125, "Release Gamma").setScrollFactor(0).setFontSize(20).setFontFamily("Courier New").setOrigin(0, 0.5).setColor("#FFFFFF");
 		
-		this.dragPop = this.add.rectangle(config.width/2, 198, 250, 50, 0xFFFFFF).setInteractive();
-	this.add.text(config.width/2, 185, "Drag To Pop").setFontSize(20).setFontFamily("Courier New").setOrigin(0.5, 0.5).setColor("#000000");
-	this.add.rectangle(config.width/2, 200, 250, 2, 0x000000);
-	this.dragPopText = this.add.text(config.width/2, 210, "Disabled").setFontSize(20).setFontFamily("Arial").setOrigin(0.5, 0.5).setColor("#000000").setAngle(-1);
+		this.dragPop = this.add.rectangle(config.width/2, 190, 250, 65, 0xFFFFFF).setInteractive();
+	this.add.text(config.width/2, 175, "Drag To Pop").setFontSize(20).setFontFamily("Courier New").setOrigin(0.5, 0.5).setColor("#000000");
+	this.add.rectangle(config.width/2, 190, 250, 2, 0x000000);
+	this.dragPopText = this.add.text(config.width/2, 206, "Disabled").setFontSize(20).setFontFamily("Arial").setOrigin(0.5, 0.5).setColor("#000000").setAngle(-1);
 	this.tweens.add({
 		targets: this.dragPopText,
 		angle: 1,
@@ -212,7 +212,7 @@ class Main extends Phaser.Scene {
 			slop: 0,
 			restitution: 1,
 		});
-		this.wall = this.add.rectangle(config.width/2, config.height/2, 10, 100, 0xFFFFFF).setOrigin(0,0);
+		this.wall = this.add.rectangle(config.width/2, config.height/2, 5, config.height-400, 0xFFFFFF).setOrigin(0,0);
 		this.wall = this.matter.add.gameObject(this.wall, {
 			isStatic: true,
 			slop: 0,
