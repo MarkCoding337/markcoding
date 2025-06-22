@@ -438,7 +438,7 @@ class Popping extends Phaser.Scene {
 			restitution: 1,
 		});
 		if(mapChoice == 0) {
-			var mapType = Math.floor(Math.random()*3+1);
+			var mapType = Math.floor(Math.random()*5+1);
 		} else {
 			mapType = mapChoice;
 		};
