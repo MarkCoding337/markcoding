@@ -345,7 +345,7 @@ class PoppingOptions extends Phaser.Scene {
 			ease: "Quad.easeInOut",
 		});
 		mapChoice = 0;
-		var maps = ["Random", "Single Bar", "Double Bar", "Plinko"];
+		var maps = ["Random", "Single Bar", "Empty", "Double Bar", "Plinko", "Triangled"];
 		
 		this.mapIndicator.on('pointerover', () => {
 		  this.mapIndicator.setScale(1.1);
@@ -357,14 +357,14 @@ class PoppingOptions extends Phaser.Scene {
 		    this.sound.play("button1", {volume: 0.8});
 		    this.mapIndicator.setScale(0.9);
 			if(e.x >= config.width/2) {
-				if(mapChoice >= 3) {
+				if(mapChoice >= 5) {
 					mapChoice = 0;
 				} else {
 					mapChoice += 1;
 				};
 			} else {
 				if(mapChoice <= 0) {
-					mapChoice = 3;
+					mapChoice = 5;
 				} else {
 					mapChoice -= 1;
 				};
@@ -438,7 +438,7 @@ class Popping extends Phaser.Scene {
 			restitution: 1,
 		});
 		if(mapChoice == 0) {
-			var mapType = Math.floor(Math.random()*2+1);
+			var mapType = Math.floor(Math.random()*3+1);
 		} else {
 			mapType = mapChoice;
 		};
@@ -450,6 +450,8 @@ class Popping extends Phaser.Scene {
 				restitution: 1,
 			});
 		} else if(mapType == 2) {
+			
+		} else if(mapType == 3) {
 			this.wall = this.add.rectangle(config.width/4, config.height/2, 5, config.height-400, 0xFFFFFF).setOrigin(0,0);
 			this.wall = this.matter.add.gameObject(this.wall, {
 				isStatic: true,
@@ -462,7 +464,7 @@ class Popping extends Phaser.Scene {
 				slop: 0,
 				restitution: 1,
 			});
-		} else if(mapType == 3) {
+		} else if(mapType == 4) {
 			this.wall = this.add.circle(config.width/5, config.height/5, 5, 0xFFFFFF);
 			this.wall = this.matter.add.gameObject(this.wall, {
 				isStatic: true,
@@ -570,9 +572,55 @@ class Popping extends Phaser.Scene {
 				restitution: 1,
 				shape: "circle",
 			});
+		} else if(mapType == 5) {
+			var verts = [
+			  { x: 0, y: 0 },
+			  { x: 100, y: 0 },
+			  { x: 0, y: 100 }
+			];
+			var body = this.matter.add.fromVertices(37.5, 37.5, verts, {
+				isStatic: true,
+			});
+			var poly = this.add.polygon(body.position.x, body.position.y, verts, 0xFFFFFF);
+			this.matter.add.gameObject(poly, body, false);
+			
+			var verts = [
+			  { x: 0, y: 0 },
+			  { x: 100, y: 0 },
+			  { x: 100, y: 100 }
+			];
+			var body = this.matter.add.fromVertices(config.width-37.5, 37.5, verts, {
+				isStatic: true,
+			});
+			var poly = this.add.polygon(body.position.x, body.position.y, verts, 0xFFFFFF);
+			this.matter.add.gameObject(poly, body, false);
+			
+			var verts = [
+			  { x: 0, y: 0 },
+			  { x: 100, y: 0 },
+			  { x: 100, y: 100 }
+			];
+			var body = this.matter.add.fromVertices(config.width-37.5, config.height-37.5, verts, {
+				isStatic: true,
+			});
+			var poly = this.add.polygon(body.position.x, body.position.y, verts, 0xFFFFFF);
+			this.matter.add.gameObject(poly, body, false).setAngle(90);
+			
+			var verts = [
+			  { x: 0, y: 0 },
+			  { x: 100, y: 0 },
+			  { x: 0, y: 100 }
+			];
+			var body = this.matter.add.fromVertices(37.5, config.height-37.5, verts, {
+				isStatic: true,
+			});
+			var poly = this.add.polygon(body.position.x, body.position.y, verts, 0xFFFFFF);
+			this.matter.add.gameObject(poly, body, false).setAngle(-90);
+			
 		}
 		this.matter.resolver._restingThresh = 0.001;
 		this.totalBalls = 0;
+		this.popCD = 0;
 		this.createBall = function() {
 			this.totalBalls += 1;
 			this.ball = this.add.sprite(config.width/2, 80, "particle").setDisplaySize(50,50);
@@ -609,32 +657,35 @@ class Popping extends Phaser.Scene {
 			this.ball.deathPart.stop();
 			this.ball.deathPart.depth = -1;
 			this.ball.on(dragChoice[dragPopChoice], function(){
-				ctx.sound.play("button"+(Math.floor(Math.random()*3)+1));
-				ctx.totalBalls -= 1;
-				this.disableInteractive();
-				this.deathPart.setPosition(this.body.position.x, this.body.position.y);
-				this.deathPart.start();
-				this.setFrictionAir(0.8);
-				ctx.time.delayedCall(200, () => {this.deathPart.stop();});
-				ctx.time.delayedCall(1000, () => {
-					this.deathPart.destroy();
-					this.rotateTween.destroy();
-					this.destroy();
-				});
-				ctx.tweens.add({
-					targets: this,
-					duration: 500,
-					alpha: 0,
-					scale: 0.05
-				});
-				if(ctx.totalBalls <= 0) {
-					ctx.cameras.main.fadeOut(1500, 0, 0, 0, (camera, progress)=>{
-						if(progress >= 0.99) {
-							ctx.scene.stop();
-							ctx.scene.start("PoppingOptions");
-						}
+				if(ctx.popCD <= 0) {
+					ctx.popCD = 2;
+					ctx.sound.play("button"+(Math.floor(Math.random()*3)+1));
+					ctx.totalBalls -= 1;
+					this.disableInteractive();
+					this.deathPart.setPosition(this.body.position.x, this.body.position.y);
+					this.deathPart.start();
+					this.setFrictionAir(0.8);
+					ctx.time.delayedCall(200, () => {this.deathPart.stop();});
+					ctx.time.delayedCall(1000, () => {
+						this.deathPart.destroy();
+						this.rotateTween.destroy();
+						this.destroy();
 					});
-				}
+					ctx.tweens.add({
+						targets: this,
+						duration: 500,
+						alpha: 0,
+						scale: 0.05
+					});
+					if(ctx.totalBalls <= 0) {
+						ctx.cameras.main.fadeOut(1500, 0, 0, 0, (camera, progress)=>{
+							if(progress >= 0.99) {
+								ctx.scene.stop();
+								ctx.scene.start("PoppingOptions");
+							};
+						});
+					};
+				};
 			}, this.ball);
 			this.ball.setBody({
 				type: "circle",
@@ -654,10 +705,12 @@ class Popping extends Phaser.Scene {
 		for(var i=0;i<ballCounts[ballCount];i++) {
 			this.createBall();
 		}
-  }
-  update() {
-	  
-  }
+    }
+    update() {
+		if(this.popCD > 0) {
+			this.popCD -= 1;
+		}
+    }
 }
 
 if (window.innerWidth < 500) {
@@ -674,7 +727,7 @@ const config = {
         scene: [Start, SelectScene, PoppingOptions, Popping],
         physics: {
           matter: {
-             //debug: true,
+             debug: true,
 			 gravity: {
 				y: 0
 			 }
