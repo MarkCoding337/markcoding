@@ -210,10 +210,10 @@ class PoppingOptions extends Phaser.Scene {
 			ease: "Quad.easeInOut"
 		});
 		
-		this.dragPop = this.add.rectangle(config.width/2, 180, buttonWidth, 75, 0xFFFFFF).setInteractive();
-		this.add.text(config.width/2, 160, "Drag To Pop").setFontSize(30).setFontFamily("Courier New").setOrigin(0.5, 0.5).setColor("#000000");
-		this.add.rectangle(config.width/2, 180, buttonWidth, 2, 0x000000);
-		this.dragPopText = this.add.text(config.width/2, 196, "Disabled").setFontSize(20).setFontFamily("Arial").setOrigin(0.5, 0.5).setColor("#000000").setAngle(-4);
+		this.dragPop = this.add.rectangle(config.width/2, 185, buttonWidth, 75, 0xFFFFFF).setInteractive();
+		this.add.text(config.width/2, 165, "Drag To Pop").setFontSize(30).setFontFamily("Courier New").setOrigin(0.5, 0.5).setColor("#000000");
+		this.add.rectangle(config.width/2, 185, buttonWidth, 2, 0x000000);
+		this.dragPopText = this.add.text(config.width/2, 201, "Disabled").setFontSize(20).setFontFamily("Arial").setOrigin(0.5, 0.5).setColor("#000000").setAngle(-4);
 		this.tweens.add({
 			targets: this.dragPopText,
 			angle: 4,
