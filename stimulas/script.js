@@ -727,7 +727,7 @@ const config = {
         scene: [Start, SelectScene, PoppingOptions, Popping],
         physics: {
           matter: {
-             debug: true,
+             //debug: true,
 			 gravity: {
 				y: 0
 			 }
