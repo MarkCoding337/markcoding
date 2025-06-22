@@ -50,7 +50,7 @@ class Start extends Phaser.Scene {
     });
     let text = this.add.text(config.width/2,160,"STIMULAS").setScrollFactor(0).setFontSize(60).setFontFamily('Courier New').setOrigin(0.5, 0.5).setShadow(3,10,0xFF0000,20).setColor("#FFD1DC");
     text.setShadow(-3, 3, 'rgba(255,255,255,0.4)', 2);
-    let verText = this.add.text(config.width/2, 205, "Release Gamma").setScrollFactor(0).setFontSize(20).setFontFamily("Courier New").setOrigin(0, 0.5).setColor("#FFFFFF");
+    let verText = this.add.text(config.width/2, 205, "Release Delta").setScrollFactor(0).setFontSize(20).setFontFamily("Courier New").setOrigin(0, 0.5).setColor("#FFFFFF");
 		
 	
 	
@@ -124,7 +124,7 @@ class SelectScene extends Phaser.Scene {
 		backButton.on('pointerup', () => {
 		  backButton.setDisplaySize(50,50);
 		});
-		let titleText = this.add.text(config.width/2, 20, "Please Select A Game").setFontFamily("Arial").setOrigin(0.5, 0).setFontSize(30).setAngle(-1);
+		let titleText = this.add.text(config.width/2, config.height/12, "Please Select A Game").setFontFamily("Arial").setOrigin(0.5, 0).setFontSize(30).setAngle(-1);
 		this.tweens.add({
 			targets: titleText,
 			angle: 1,
@@ -134,8 +134,8 @@ class SelectScene extends Phaser.Scene {
 			duration: 1000,
 			ease: "Quad.easeInOut"
 		});
-		let poppingGame = this.add.image(config.width/3, config.height/5, "particle").setDisplaySize(config.width/4, config.width/4).setInteractive();
-		let poppingGameText = this.add.text(config.width/3, config.height/5, "Bubble Popping").setOrigin(0.5,0).setStroke("#000000", 8).setFontFamily("Arial");
+		let poppingGame = this.add.image(config.width/3, config.height/4, "particle").setDisplaySize(config.width/4, config.width/4).setInteractive();
+		let poppingGameText = this.add.text(config.width/3, config.height/4, "Bubble Popping").setOrigin(0.5,0).setStroke("#000000", 8).setFontFamily("Arial");
 		let poppingGameContainer = this.add.container(0,0,[poppingGame, poppingGameText]);
 		poppingGame.on('pointerover', () => {
 		  poppingGame.setDisplaySize(config.width/4+10, config.width/4+10);
@@ -176,6 +176,10 @@ class PoppingOptions extends Phaser.Scene {
 	create() {
 		ctx = this;
 		let targets = [];
+		var buttonWidth = config.width-200;
+		if(buttonWidth < 300) {
+			buttonWidth = 300;
+		}
 		let backButton = this.add.image(10,10, "backButton").setOrigin(0,0).setDisplaySize(45,45).setInteractive();
 		backButton.on('pointerover', () => {
 		  backButton.setDisplaySize(50,50);
@@ -195,7 +199,7 @@ class PoppingOptions extends Phaser.Scene {
 			});	
 		});
 		
-		let titleText = this.add.text(config.width/2, 20, "Popping").setFontFamily("Arial").setOrigin(0.5, 0).setFontSize(30).setAngle(-1);
+		let titleText = this.add.text(config.width/2, 20, "Bubble Popping").setFontFamily("Arial").setOrigin(0.5, 0).setFontSize(30).setAngle(-1);
 		this.tweens.add({
 			targets: titleText,
 			angle: 1,
@@ -206,13 +210,13 @@ class PoppingOptions extends Phaser.Scene {
 			ease: "Quad.easeInOut"
 		});
 		
-		this.dragPop = this.add.rectangle(config.width/2, 180, config.width-200, 75, 0xFFFFFF).setInteractive();
+		this.dragPop = this.add.rectangle(config.width/2, 180, buttonWidth, 75, 0xFFFFFF).setInteractive();
 		this.add.text(config.width/2, 160, "Drag To Pop").setFontSize(30).setFontFamily("Courier New").setOrigin(0.5, 0.5).setColor("#000000");
-		this.add.rectangle(config.width/2, 180, config.width-200, 2, 0x000000);
-		this.dragPopText = this.add.text(config.width/2, 196, "Disabled").setFontSize(20).setFontFamily("Arial").setOrigin(0.5, 0.5).setColor("#000000").setAngle(-1);
+		this.add.rectangle(config.width/2, 180, buttonWidth, 2, 0x000000);
+		this.dragPopText = this.add.text(config.width/2, 196, "Disabled").setFontSize(20).setFontFamily("Arial").setOrigin(0.5, 0.5).setColor("#000000").setAngle(-4);
 		this.tweens.add({
 			targets: this.dragPopText,
-			angle: 1,
+			angle: 4,
 			repeat: -1,
 			yoyo: true,
 			persist: true,
@@ -242,9 +246,9 @@ class PoppingOptions extends Phaser.Scene {
 		});
 			
 			
-		this.speedIndicator = this.add.rectangle(config.width/2, 345, config.width-200, 75, 0xFFFFFF).setInteractive();
+		this.speedIndicator = this.add.rectangle(config.width/2, 345, buttonWidth, 75, 0xFFFFFF).setInteractive();
 		this.add.text(config.width/2, 325, "Ball Speed").setFontSize(30).setFontFamily("Courier New").setOrigin(0.5, 0.5).setColor("#000000");
-		this.add.rectangle(config.width/2, 345, config.width-200, 2, 0x000000);
+		this.add.rectangle(config.width/2, 345, buttonWidth, 2, 0x000000);
 		this.speedText = this.add.text(config.width/2, 365, "Normal").setFontSize(20).setFontFamily("Arial").setOrigin(0.5, 0.5).setColor("#000000").setAngle(-4);
 		this.tweens.add({
 			targets: this.speedText,
@@ -285,9 +289,9 @@ class PoppingOptions extends Phaser.Scene {
 		    this.speedIndicator.setScale(1.1);
 		});
 		
-		this.countIndicator = this.add.rectangle(config.width/2, 265, config.width-200, 75, 0xFFFFFF).setInteractive();
+		this.countIndicator = this.add.rectangle(config.width/2, 265, buttonWidth, 75, 0xFFFFFF).setInteractive();
 		this.add.text(config.width/2, 245, "Ball Count").setFontSize(30).setFontFamily("Courier New").setOrigin(0.5, 0.5).setColor("#000000");
-		this.add.rectangle(config.width/2, 265, config.width-200, 2, 0x000000);
+		this.add.rectangle(config.width/2, 265, buttonWidth, 2, 0x000000);
 		this.countText = this.add.text(config.width/2, 285, "Normal").setFontSize(20).setFontFamily("Arial").setOrigin(0.5, 0.5).setColor("#000000").setAngle(4);
 		this.tweens.add({
 			targets: this.countText,
@@ -328,13 +332,13 @@ class PoppingOptions extends Phaser.Scene {
 		  this.countIndicator.setScale(1.1);
 		});
 		
-		this.mapIndicator = this.add.rectangle(config.width/2, 425, config.width-200, 75, 0xFFFFFF).setInteractive();
+		this.mapIndicator = this.add.rectangle(config.width/2, 425, buttonWidth, 75, 0xFFFFFF).setInteractive();
 		this.add.text(config.width/2, 405, "Map").setFontSize(30).setFontFamily("Courier New").setOrigin(0.5, 0.5).setColor("#000000");
-		this.add.rectangle(config.width/2, 425, config.width-200, 2, 0x000000);
-		this.mapText = this.add.text(config.width/2, 445, "Random").setFontSize(20).setFontFamily("Arial").setOrigin(0.5, 0.5).setColor("#000000").setAngle(-4);
+		this.add.rectangle(config.width/2, 425, buttonWidth, 2, 0x000000);
+		this.mapText = this.add.text(config.width/2, 445, "Random").setFontSize(20).setFontFamily("Arial").setOrigin(0.5, 0.5).setColor("#000000").setAngle(4);
 		this.tweens.add({
 			targets: this.mapText,
-			angle: 4,
+			angle: -4,
 			repeat: -1,
 			yoyo: true,
 			persist: true,
@@ -371,7 +375,7 @@ class PoppingOptions extends Phaser.Scene {
 		    this.mapIndicator.setScale(1.1);
 		});
 		
-		let start = this.add.rectangle(config.width/2, 550, config.width-200, 150, 0xFFD1DC).setOrigin(0.5,0.5);
+		let start = this.add.rectangle(config.width/2, 550, buttonWidth, 150, 0xFFD1DC).setOrigin(0.5,0.5);
 		start.setInteractive();
 		start.on('pointerover', () => {
 		  start.setScale(1.1);
