@@ -10,15 +10,35 @@ class Main extends Phaser.Scene
 		this.UIElements = [];
 		
 		this.marker = this.add.rectangle(0,0,100,100,0xFF0000);
-		this.car = this.add.rectangle(0,0,100,250,0xFFFFFF);
+		this.marker2 =  this.add.line(0,0,0,0,0,900, 0x0000FF).setOrigin(0.5,0);
+		
+		this.car = this.add.rectangle(0,0,100,200,0xFFFFFF);
 		this.car = this.matter.add.gameObject(this.car, {});
 		this.car.setFrictionAir(0.2);
+		this.setCenterOfMass(this.car.body, this.car, {x: 0, y: 75});
+		this.deck = this.add.rectangle(200,0,100,80, 0x999999);
+		this.deck = this.matter.add.gameObject(this.deck, {});
+		this.truckConnection = this.matter.add.constraint(this.car, this.deck, 0, 0.5, {
+			pointA: {x: 0, y: 65}
+		});
+		
+		
+		this.cart = this.add.rectangle(0, 250, 100, 400, 0xAAAAAA);
+		this.cart = this.matter.add.gameObject(this.cart);
+		this.cart.setFrictionAir(0.2);
+		this.setCenterOfMass(this.cart.body, this.cart, {x: 0, y: 125});
+		
+		this.hitch = this.matter.add.constraint(this.car, this.cart, 0, 0.5, {
+			pointA: {x: 0, y: 200},
+			pointB: {x: 0, y: -300},
+		});
+		
 		this.carAccel = 0;
 		this.wheelRotation = 0;
 		this.vehicleGear = 1;
 		this.vehicleGearIndex = ["R","N","1","2","3"]
-		this.setCenterOfMass(this.car.body, this.car, {x: 0, y: 100});
 		this.cameras.main.startFollow(this.car);
+		this.cameras.main.zoomTo(0.5);
 		this.cursors = this.input.keyboard.createCursorKeys();
 		
 		this.gearBack = this.add.rectangle(100, config.height-110, 100, 100, 0xAAAAAA).setAlpha(0.7).setOrigin(0.5, 0.5);
@@ -32,6 +52,7 @@ class Main extends Phaser.Scene
 		
 		this.uiCam.ignore(this.marker);
 		this.uiCam.ignore(this.car);
+		this.uiCam.ignore(this.cart);
 		
 		this.keys["a"] = this.input.keyboard.addKey("a");
 		this.keys["d"] = this.input.keyboard.addKey("d");
@@ -46,6 +67,7 @@ class Main extends Phaser.Scene
 		this.keys["esc"] = this.input.keyboard.addKey("esc");
 	}
 	update() {
+		this.matter.body.setAngle(this.deck.body, Phaser.Math.Angle.Wrap(this.car.rotation));
 		if(this.keys["c"].isDown && this.keyC && this.vehicleGear > 0) {
 			this.vehicleGear -= 1;
 			this.gearMarker.setText(this.vehicleGearIndex[this.vehicleGear]);
@@ -84,6 +106,13 @@ class Main extends Phaser.Scene
 				this.carAccel += 0.001;
 			};
 		};
+		if(this.keys["space"].isDown && this.car.body.speed > 0) {
+			if(this.carAccel > 0) {
+				this.carAccel -= 0.005;
+			} else {
+				this.carAccel += 0.005;
+			};
+		}
 		if(Math.abs(this.carAccel) < 0.005 && !keyed) {
 			this.carAccel = 0;
 		}
