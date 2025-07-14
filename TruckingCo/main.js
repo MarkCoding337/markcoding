@@ -12,33 +12,37 @@ class Main extends Phaser.Scene
 		this.marker = this.add.rectangle(0,0,100,100,0xFF0000);
 		this.marker2 =  this.add.line(0,0,0,0,0,900, 0x0000FF).setOrigin(0.5,0);
 		
-		this.car = this.add.rectangle(0,0,100,200,0xFFFFFF);
+		this.car = this.add.rectangle(0,0,100,150,0xFFFFFF);
 		this.car = this.matter.add.gameObject(this.car, {});
 		this.car.setFrictionAir(0.2);
+		this.car.setCollisionCategory(2);
+		this.car.setCollidesWith([4]);
 		this.setCenterOfMass(this.car.body, this.car, {x: 0, y: 75});
-		this.deck = this.add.rectangle(200,0,100,80, 0x999999);
+		this.deck = this.add.rectangle(200,0,100,100, 0x999999);
 		this.deck = this.matter.add.gameObject(this.deck, {});
+		this.deck.setCollisionCategory(8);
 		this.truckConnection = this.matter.add.constraint(this.car, this.deck, 0, 0.5, {
-			pointA: {x: 0, y: 65}
+			pointA: {x: 0, y: 50}
 		});
 		
 		
 		this.cart = this.add.rectangle(0, 250, 100, 400, 0xAAAAAA);
 		this.cart = this.matter.add.gameObject(this.cart);
+		this.cart.setCollisionCategory(4);
+		this.cart.setCollidesWith([2]);
 		this.cart.setFrictionAir(0.2);
 		this.setCenterOfMass(this.cart.body, this.cart, {x: 0, y: 125});
 		
-		this.hitch = this.matter.add.constraint(this.car, this.cart, 0, 0.5, {
-			pointA: {x: 0, y: 200},
+		this.hitch = this.matter.add.constraint(this.deck, this.cart, 0, 0.5, {
 			pointB: {x: 0, y: -300},
 		});
 		
 		this.carAccel = 0;
 		this.wheelRotation = 0;
 		this.vehicleGear = 1;
-		this.vehicleGearIndex = ["R","N","1","2","3"]
+		this.vehicleGearIndex = ["R","N","1","2","3","4","5","6","7"]
 		this.cameras.main.startFollow(this.car);
-		this.cameras.main.zoomTo(0.5);
+		this.cameras.main.zoomTo(0.76);
 		this.cursors = this.input.keyboard.createCursorKeys();
 		
 		this.gearBack = this.add.rectangle(100, config.height-110, 100, 100, 0xAAAAAA).setAlpha(0.7).setOrigin(0.5, 0.5);
@@ -50,9 +54,14 @@ class Main extends Phaser.Scene
 		
 		this.uiCam = this.cameras.add();
 		
+		if(config.physics.matter.debug) {
+		  this.uiCam.ignore(this.matter.world.debugGraphic);
+		};
+		
 		this.uiCam.ignore(this.marker);
 		this.uiCam.ignore(this.car);
 		this.uiCam.ignore(this.cart);
+		this.uiCam.ignore(this.deck);
 		
 		this.keys["a"] = this.input.keyboard.addKey("a");
 		this.keys["d"] = this.input.keyboard.addKey("d");
@@ -64,6 +73,7 @@ class Main extends Phaser.Scene
 		this.keyV = true;
 		this.keys["space"] = this.input.keyboard.addKey("space");
 		this.keys["e"] = this.input.keyboard.addKey("e");
+		this.keyE = true;
 		this.keys["esc"] = this.input.keyboard.addKey("esc");
 	}
 	update() {
@@ -84,20 +94,43 @@ class Main extends Phaser.Scene
 		if(this.keys["v"].isUp) {
 			this.keyV = true;
 		}
+		
+		if(this.keys["e"].isDown && this.keyE) {
+			this.keyE = false;
+			if(this.hitch == null) {
+				this.hitch = this.matter.add.constraint(this.deck, this.cart, 0, 0.5, {
+					pointB: {x: Math.sin(Phaser.Math.DegToRad(this.cart.angle))*300, y: Math.cos(Phaser.Math.DegToRad(this.cart.angle))*-300},
+				});
+			} else {
+				this.matter.world.remove(this.hitch);
+				this.hitch = null;
+			};
+		}
+		if(this.keys["e"].isUp) {
+			this.keyE = true;
+		}
 		var keyed = false;
 		if(this.cursors.up.isDown || this.keys["w"].isDown) {
 			keyed = true;
-			if(this.vehicleGear == 0) {
+			if(this.vehicleGear == 0) { //R
 				if(this.carAccel > -1) this.carAccel -= 0.001;
-			} else if(this.vehicleGear == 1) {
+			} else if(this.vehicleGear == 1) { //N
 				
-			} else if(this.vehicleGear == 2) {
-				if(this.carAccel < 0.02) this.carAccel += 0.0008;
-			} else if(this.vehicleGear == 3) {
-				if(this.carAccel < 0.08) this.carAccel += 0.001;
-			} else if(this.vehicleGear == 4) {
-				if(this.carAccel < 0.2) this.carAccel += 0.001;
-			};
+			} else if(this.vehicleGear == 2) { //1
+				if(this.carAccel < 0.08) this.carAccel += 0.005;
+			} else if(this.vehicleGear == 3) { //2
+				if(this.carAccel < 0.2) this.carAccel += 0.0025;
+			} else if(this.vehicleGear == 4) { //3
+				if(this.carAccel < 0.3) this.carAccel += 0.001;
+			} else if(this.vehicleGear == 5) { //4
+				if(this.carAccel < 0.35) this.carAccel += 0.0005;
+			} else if(this.vehicleGear == 6) { //5
+				if(this.carAccel < 0.4) this.carAccel += 0.0005;
+			} else if(this.vehicleGear == 7) { //6
+				if(this.carAccel < 0.45) this.carAccel += 0.0005;
+			} else if(this.vehicleGear == 8) { //7
+				if(this.carAccel < 0.5) this.carAccel += 0.0005;
+			}
 		};
 		if((this.cursors.down.isDown || this.keys["s"].isDown) && this.car.body.speed > 0) {
 			if(this.carAccel > 0) {
