@@ -1,6 +1,16 @@
 var nightShiftChecklist = {
-	stockCoffeeIsland: {id: "stockCoffeeIsland", simpleName: "Stock The Coffee Island", detail: "Stock: \n\tBrunn Cups & Lids,\n\tSoda Cups & Lids,\n\tTorke Cups & Lids,\n\tCoffee Creamers,\n\tCondiments, ", completed: false},
-	sanitizeIslandCounter: {id: "sanitizeIslandCounter", simpleName: "Sanitize The Island Counter", detail: "", completed: false}
+	stockCoffeeIsland: {
+		id: "stockCoffeeIsland",
+		simpleName: "Stock The Coffee Island",
+		detail: "Stock: \n\tBrunn Cups & Lids,\n\tSoda Cups & Lids,\n\tTorke Cups & Lids,\n\tCoffee Creamers,\n\tCondiments, ",
+		completed: false
+	},
+	sanitizeIslandCounter: {
+		id: "sanitizeIslandCounter",
+		simpleName: "Sanitize The Island Counter",
+		detail: "",
+		completed: false
+	},
 }
 
 window.onload = () => {

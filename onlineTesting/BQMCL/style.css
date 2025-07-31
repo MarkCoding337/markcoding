@@ -77,7 +77,7 @@ nav {
 	overflow: hidden;
 }
 #list li {
-	height: 120px;
+	height: 150px;
 	border: solid #000000 1px;
 	width: calc(100% - 2px);
 	position: relative;
@@ -93,6 +93,18 @@ nav {
 	background-color: #FFFFFF;
 }
 
+#employee1, #employee2 {
+	position: absolute;
+	right: 10px;
+	height: 20px;
+	font-size: 20px;
+}
+#employee1 {
+	top: 10px;
+}
+#employee2 {
+	top: 40px;
+}
 .listTitle {
 	position: absolute;
 	margin: 0;
@@ -107,7 +119,7 @@ nav {
 	color: #FF3333;
 	-webkit-text-stroke: 1px black;
 	text-align: center;
-	line-height: 120px;
+	line-height: 150px;
 	animation: notDoneSpan 2s ease-in-out infinite alternate;
 }
 .doneSpanContainer {
