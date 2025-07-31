@@ -1,0 +1,130 @@
+html, body {
+	user-select: none;
+	font-family: "Arial", monospace;
+	margin: 0;
+	padding: 0;
+}
+nav {
+	position: fixed;
+	top: 0;
+	left: 0;
+	background-color: green;
+	width: 100%;
+	text-align: center;
+	height: 100px;
+}
+
+#title {
+	margin-bottom: 0px;
+}
+#subscript {
+	margin-top: 0px;
+}
+#settingsButton {
+	filter: invert(100%) sepia(0%) saturate(2014%) hue-rotate(239deg) brightness(118%) contrast(100%);
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 50px;
+	margin-top: 25px;
+	margin-left: 25px;
+	cursor: pointer;
+	transition-duration: 0.2s;
+}
+#settingsButton:hover {
+	filter: invert(100%) sepia(0%) saturate(2014%) hue-rotate(239deg) brightness(70%) contrast(100%);
+}
+#settingsButton:active {
+	cursor: default;
+}
+#settingsSidebar {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 250px;
+	height: 100%;
+	background-color: #AAAAAA;
+	transition-duration: 0.5s;
+	left: -250px;
+	z-index: 1;
+}
+#backArrow {
+	height: 40px;
+	margin-top: 10px;
+	margin-left: 5px;
+	cursor: pointer;
+	transition-duration: 0.2s;
+}
+#backArrow:hover {
+	filter: invert(24%) sepia(0%) saturate(1461%) hue-rotate(152deg) brightness(98%) contrast(63%);
+}
+#backArrow:active {
+	cursor: default;
+}
+#settingsLabel {
+	position: absolute;
+	top: 18px;
+	right: 50px;
+	margin: 0;
+}
+#list {
+	list-style: none;
+	width: 100%;
+	margin: 0;
+	margin-top: 100px;
+	padding: 0;
+	overflow: hidden;
+}
+#list li {
+	height: 90px;
+	border: solid #000000 1px;
+	width: calc(100% - 2px);
+	position: relative;
+	animation-name: listItemIdle;
+	animation-duration: 2s;
+	animation-iteration-count: infinite;
+	overflow: hidden;
+}
+#list > *:nth-child(odd) {
+	background-color: #DDDDDD;
+}
+#list > *:nth-child(even) {
+	background-color: #FFFFFF;
+}
+
+.listTitle {
+	margin: 0;
+	margin-top: 5px;
+	margin-left: 5px;
+}
+.doneSpan {
+	height: 90px;
+	width: 270px;
+	font-size: 2em;
+	font-weight: bold;
+	color: #FF3333;
+	-webkit-text-stroke: 1px black;
+	text-align: center;
+	line-height: 90px;
+	animation: notDoneSpan 2s ease-in-out infinite alternate;
+}
+.doneSpanContainer {
+	box-shadow: 0px 0px 4px 3px #777777;
+	position: absolute;
+	top: 0;
+	right: 0;
+	background-color: #EEEEEE;
+	cursor: pointer;
+	transition-duration: 0.2s;
+}
+.doneSpanContainer:hover {
+	background-color: #CCCCCC;
+}
+.doneSpanContainer:active {
+	cursor: default;
+}
+
+@keyframes notDoneSpan {
+	0% {transform: rotate(-5deg);}
+	100% {transform: rotate(5deg);}
+}
