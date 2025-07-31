@@ -1,6 +1,6 @@
 var nightShiftChecklist = {
-	stockCoffeeIsland: {id: "stockCoffeeIsland", simpleName: "Stock The Coffee Island", completed: false},
-	sanitizeIslandCounter: {id: "sanitizeIslandCounter", simpleName: "Sanitize The Island Counter", completed: false}
+	stockCoffeeIsland: {id: "stockCoffeeIsland", simpleName: "Stock The Coffee Island", detail: "Stock: \n\tBrunn Cups & Lids,\n\tSoda Cups & Lids,\n\tTorke Cups & Lids,\n\tCoffee Creamers,\n\tCondiments, ", completed: false},
+	sanitizeIslandCounter: {id: "sanitizeIslandCounter", simpleName: "Sanitize The Island Counter", detail: "", completed: false}
 }
 
 window.onload = () => {
@@ -20,6 +20,7 @@ window.onload = () => {
 		<div class="doneSpanContainer" customVar="`+currentItem.id+`">
 			<div class="doneSpan" style="animation-delay: -`+Math.floor(Math.random()*20)/10+`s">Not Done</div>
 		</div>
+		<h3 class="listDetail">`+currentItem.detail+`</h3>
 		`;
 		document.getElementById("list").appendChild(a);
 	}
