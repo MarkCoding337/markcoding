@@ -150,7 +150,6 @@ nav {
 	height: calc(100% - 5px);
 	white-space: pre;
 }
-
 @keyframes notDoneSpan {
 	0% {transform: rotate(-5deg);}
 	100% {transform: rotate(5deg);}
