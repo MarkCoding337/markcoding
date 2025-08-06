@@ -2,15 +2,74 @@ var nightShiftChecklist = {
 	stockCoffeeIsland: {
 		id: "stockCoffeeIsland",
 		simpleName: "Stock The Coffee Island",
-		detail: "Stock: \n\tBrunn Cups & Lids,\n\tSoda Cups & Lids,\n\tTorke Cups & Lids,\n\tCoffee Creamers,\n\tCondiments, ",
+		detail: 
+`Stock:
+	Brunn Cups & Lids,
+	Soda Cups & Lids,
+	Torke Cups & Lids,
+	Coffee Creamers,
+	Condiments,
+	Napkins.
+`,
 		completed: false
 	},
 	sanitizeIslandCounter: {
 		id: "sanitizeIslandCounter",
-		simpleName: "Sanitize The Island Counter",
-		detail: "",
+		simpleName: "Sanitize Countertops",
+		detail:
+`Sanitize:
+	Island Counter (Coffee Island),
+	Deli Prep-Table,
+	Register Counter (Where Customer's Items Go),
+	The Tables & Chairs Near The Front Entrance.
+
+`,
 		completed: false
 	},
+	stockCigarettes: {
+		id: "stockCigarettes",
+		simpleName: "Stock Tobacco",
+		detail:
+`Stock:
+	Cigarettes,
+	Cigars & Cigarillos,
+	Cans (Grizzly, Zyn, Copenhagen, etc.),
+	Vape Pods.
+`,
+		completed: false
+	},
+	stockCooler: {
+		id: "stockCooler",
+		simpleName: "Stock Cold Stuff",
+		detail:
+`Stock:
+	Cooler,
+	Cold Island.
+`,
+		completed: false
+	},
+	coffeeCare: {
+		id: "coffeeCare",
+		simpleName: "Take Care of Coffee",
+		detail:
+`Empty & Clean:
+	Torke Carafes,
+	Silver Coffee Pot.
+Clean:
+	Catch-Tray For Silver Pot,
+	Catch-Tray For Capucino Machine,
+	Catch-Tray For Brunn Machine,
+`,
+		completed: false
+	},
+	sodaMachine: {
+		id: "sodaMachine",
+		simpleName: "Soda Machine Care",
+		detail:
+`Take heads off of soda fountain, then put them into hot water overnight.
+`,
+	}
+	
 }
 
 window.onload = () => {
