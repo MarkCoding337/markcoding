@@ -11,7 +11,7 @@ class Menu extends Phaser.Scene {
 	}
 	create() {
 		ctx = this;
-		this.background = this.add.rectangle(0,0,config.width,config.height, 0xFFFFFF).setScrollFactor(0).setDepth(1).setOrigin(0,0);
+		this.background = this.add.rectangle(0,0,config.width,config.height, 0xAA6666).setScrollFactor(0).setDepth(1).setOrigin(0,0);
 		this.startButton = this.add.sprite(config.width/2-5, config.height-200, "black").setDisplaySize(200,50).setScrollFactor(0).setDepth(2).setInteractive();
 		
 		this.cursorPiece = this.add.circle(0,0,3,0x000000).setScrollFactor(0).setDepth(5);
@@ -64,7 +64,7 @@ class Main extends Phaser.Scene {
 		this.isPointering = false;
 		this.spawn = {x:0,y: -400};
 		this.bullet;
-		this.maxPlatforms = 2500;
+		this.maxPlatforms = 750;
 		this.cursorPiece = this.add.circle(0,0,3,0x000000).setScrollFactor(0).setDepth(10);
 		this.cursorPiece2 = this.add.circle(0,0,5,0xFFFFFF).setScrollFactor(0).setDepth(9);
 		
@@ -93,7 +93,7 @@ class Main extends Phaser.Scene {
 				this.setCollisionCategory(4);
 				this.body.attackCD = 0;
 				this.following = false;
-				this.speed = Math.random()*3+3;
+				this.speed = Math.random()*2+2;
 				this.body.density = 1;
 			}
 			update() {
@@ -134,11 +134,11 @@ class Main extends Phaser.Scene {
 				this.body.destruction = false;
 				this.body.isBullet = true;
 				this.body.slop = 0.00001;
-				this.setMass(0.15);
+				this.setMass(this.scene.playerParams.extra.bulletWeight);
 				this.setIgnoreGravity(options.disableGravity);
 				this.scene.events.on('update', this.update, this);
 				scene.add.existing(this);
-				this.thrust(0.012);
+				this.thrust(this.scene.playerParams.extra.bulletThrust);
 				this.setCollisionCategory(8)
 				this.setCollidesWith([2,4,8]);
 				this.timeout = 100;
@@ -176,7 +176,7 @@ class Main extends Phaser.Scene {
 		
 		this.fillTerrain();
 		
-		this.player = this.matter.add.sprite(this.spawn.x, this.spawn.y, "black").setDisplaySize(50,50).setFriction(0.9).setFrictionAir(0.01).setFrictionStatic(1).setDepth(3);
+		this.player = this.matter.add.sprite(this.spawn.x, this.spawn.y, "black").setDisplaySize(50,50).setFriction(0.9).setFrictionAir(0.01).setFrictionStatic(1).setDepth(3).setFixedRotation();
 		this.player.isPlayer = true;
 
 		this.playerParams = {
@@ -185,7 +185,7 @@ class Main extends Phaser.Scene {
 				damageCD: 10,
 				health: 100,
 				jumpingCD: 300,
-				sprintingCD: 300,
+				sprintingCD: 200,
 			},
 			val: {
 				fireCD: 0,
@@ -197,6 +197,8 @@ class Main extends Phaser.Scene {
 			extra: {
 				shots: 1,
 				bulletGravity: false,
+				bulletWeight: 0.3,
+				bulletThrust: 0.022,
 			}
 		};
 
@@ -205,7 +207,7 @@ class Main extends Phaser.Scene {
 			ignoreGravity: true,
 		});
 		this.playerDamageSensor.sensorType = "damage";
-		this.playerMoveSensor = this.matter.add.rectangle(this.spawn.x, this.spawn.y, 45, 0.5, {
+		this.playerMoveSensor = this.matter.add.rectangle(this.spawn.x, this.spawn.y, 50, 2, {
 			isSensor: true,
 			ignoreGravity: true,
 		});
@@ -284,13 +286,29 @@ class Main extends Phaser.Scene {
 		}
 		this.keys = {};
 		
-		this.UIElements.push(this.add.rectangle(7,7,153,13,0x000000).setScrollFactor(0).setOrigin(0,0).setDepth(4));
-		this.sprintCDIndicator = this.add.rectangle(10,10,150,10,0xFFFFFF).setScrollFactor(0).setOrigin(0,0).setDepth(5);
+		this.UIElements.push(this.add.rectangle(83.5,13.5,153,13,0x000000).setScrollFactor(0).setDepth(4).setAngle(-0.5));
+		this.sprintCDIndicator = this.add.rectangle(85,15,150,10,0xFFFFFF).setScrollFactor(0).setDepth(5).setAngle(-0.5);
 		
-		this.UIElements.push(this.add.rectangle(7,27,153,13,0x000000).setScrollFactor(0).setOrigin(0,0).setDepth(4));
-		this.healthIndicator = this.add.rectangle(10,30,150,10,0xFFAAAA).setScrollFactor(0).setOrigin(0,0).setDepth(5);
+		this.tweens.add({
+			targets: [this.UIElements[0],this.sprintCDIndicator],
+			angle: 0.5,
+			duration: 1000,
+			repeat: -1,
+			yoyo: true,
+		})
 		
-		this.damageCDIndicator = this.add.rectangle(10,38,150,2,0xFFFFFF).setScrollFactor(0).setOrigin(0,0).setDepth(6);
+		this.UIElements.push(this.add.rectangle(83.5,33.5,153,13,0x000000).setScrollFactor(0).setDepth(4).setAngle(0.5));
+		this.healthIndicator = this.add.rectangle(85,35,150,10,0xFFAAAA).setScrollFactor(0).setDepth(5).setAngle(0.5);
+		this.damageCDIndicator = this.add.rectangle(85,43,150,2,0xFFFFFF).setScrollFactor(0).setDepth(6).setAngle(0.5);
+		
+		this.tweens.add({
+			targets: [this.UIElements[1],this.healthIndicator,this.damageCDIndicator],
+			angle: -0.5,
+			duration: 1000,
+			repeat: -1,
+			yoyo: true,
+		})
+		
 		
 		this.keys["a"] = this.input.keyboard.addKey("a");
 		this.keys["d"] = this.input.keyboard.addKey("d");
@@ -339,14 +357,14 @@ class Main extends Phaser.Scene {
 		this.matter.body.setPosition(this.playerMoveSensor, c);
 		this.matter.body.setAngle(this.playerMoveSensor, Phaser.Math.Angle.Wrap(this.player.rotation));
 		this.graphics.clear();
-		this.graphics.lineStyle(2, 0xFF0000, 1.0);
+		this.graphics.lineStyle(2, 0xFF0000, 0.2);
 		var a = this.player.getCenter();
 		this.graphics.lineBetween(a.x, a.y, this.mousePos.x+this.player.body.position.x-config.width/2, this.mousePos.y+this.player.body.position.y-config.height/2-100);
 		if((this.cursors.right.isDown || this.keys["d"].isDown) && this.player.touching) {
-			this.player.thrust(0.04);
+			this.player.thrust(0.03);
 		}
 		if((this.cursors.left.isDown || this.keys["a"].isDown) && this.player.touching) {
-			this.player.thrustBack(0.04);
+			this.player.thrustBack(0.03);
 		}
 		if((this.cursors.up.isDown || this.keys["space"].isDown || this.keys["w"].isDown) && this.player.touching && this.playerParams.val.jumpingCD >= 0) {
 			this.player.setVelocityY(-16);
@@ -357,9 +375,16 @@ class Main extends Phaser.Scene {
 			this.createEnemy(this.player.body.position.x, -300 );
 		};
 		if(this.cursors.shift.isDown && this.playerParams.val.sprintingCD <= 0) {
-			this.playerParams.val.sprintingCD = this.playerParams.max.sprintingCD;
-			this.player.thrust(this.player.getVelocity().x/30);
-			this.player.setVelocityY(-5);
+			if(this.cursors.right.isDown || this.keys["d"].isDown) {
+				this.playerParams.val.sprintingCD = this.playerParams.max.sprintingCD;
+				this.player.setVelocityX(15);
+				this.player.setVelocityY(-8);
+			};
+			if(this.cursors.left.isDown || this.keys["a"].isDown) {
+				this.playerParams.val.sprintingCD = this.playerParams.max.sprintingCD;
+				this.player.setVelocityX(-15);
+				this.player.setVelocityY(-8);
+			};
 		};
 		if(this.player.touching && this.playerParams.val.sprintingCD > 0) {
 			this.playerParams.val.sprintingCD -= 1;
@@ -457,10 +482,10 @@ class Main extends Phaser.Scene {
 		this.platformBodies.push(platform.body);
 		if(this.platforms.length < this.maxPlatforms) {
 			if(prevPlat != null) {
-				var angle = prevPlat.rotation+(Math.random()*10-5);
+				var angle = prevPlat.rotation+(Math.random()*15-7.5);
 				if(angle > 30) angle = 30;
 				if(angle < -30) angle = -30;
-			} else angle = Math.random()*10-5;
+			} else angle = Math.random()*15-7.5;
 			this.createNextPlatform(platform, {
 				width: Math.floor(Math.random()*50+50),
 				height: 40,
