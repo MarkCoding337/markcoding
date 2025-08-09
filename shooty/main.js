@@ -1,6 +1,7 @@
 var Phaser;
 var PhaserNavMeshPlugin;
 var ctx;
+var mobile;
 
 class Menu extends Phaser.Scene {
 	constructor() {
@@ -27,6 +28,23 @@ class Menu extends Phaser.Scene {
 			repeat: -1,
 		});
 		
+		this.mobileFriendly = false;
+		
+		this.mobileText = this.add.text(config.width/2, config.height/2-75, "Playing Mobile?").setDepth(2).setOrigin(0.5, 0.5).setFontFamily("Arial");
+		
+		this.checkbox = this.add.rectangle(config.width/2, config.height/2, 50, 50, 0xCCCCCC).setDepth(2);
+		this.checkmark = this.add.rectangle(config.width/2, config.height/2, 40, 40, 0x00AA00).setDepth(3).setInteractive().setAlpha(0.1);
+		
+		this.checkmark.on('pointerdown', () => {
+			if(ctx.mobileFriendly) {
+				ctx.checkmark.setAlpha(0.1);
+				ctx.mobileFriendly = false;
+			} else {
+				ctx.checkmark.setAlpha(1);
+				ctx.mobileFriendly = true;
+			}
+		})
+		
 		this.startButton.on('pointerover', () => {
 		  this.startButton.setDisplaySize(210,60);
 		});
@@ -35,6 +53,9 @@ class Menu extends Phaser.Scene {
 		  this.startButton.setDisplaySize(200,50);
 		});
 		this.startButton.on("pointerdown", () => {
+			if(this.mobileFriendly) {
+				mobile = true;
+			} else {mobile = false};
 			this.scene.stop();
 			this.scene.start("Main");
 		})
@@ -270,6 +291,41 @@ class Main extends Phaser.Scene {
 		
 		this.cameras.main.startFollow(this.player, false, 1, 1, 0, 100);
 		
+		if(mobile) {
+			this.leftMove = this.add.rectangle(50, config.height-50, 175, 125, 0xFFFFFF).setAlpha(0.3).setDepth(10).setScrollFactor(0).setOrigin(0,1).setInteractive();
+				this.leftMove.on('pointerover', () => {
+					this.leftDown = true;
+				});
+				this.leftMove.on('pointerout', () => {
+					this.leftDown = false;
+				});
+			
+			
+			this.rightMove = this.add.rectangle(235, config.height-50, 175, 125, 0xFFFFFF).setAlpha(0.3).setDepth(10).setScrollFactor(0).setOrigin(0,1).setInteractive();
+				this.rightMove.on('pointerover', () => {
+					this.rightDown = true;
+				});
+				this.rightMove.on('pointerout', () => {
+					this.rightDown = false;
+				});
+			
+			this.jumpButton = this.add.rectangle(config.width-50, config.height-50, 175, 125, 0xFFFFFF).setAlpha(0.3).setDepth(10).setScrollFactor(0).setOrigin(1,1).setInteractive();
+				this.jumpButton.on('pointerover', () => {
+					this.upDown = true;
+				});
+				this.jumpButton.on('pointerout', () => {
+					this.upDown = false;
+				});
+			this.dashButton = this.add.rectangle(config.width-50, config.height-185, 175, 125, 0xFFFFFF).setAlpha(0.3).setDepth(10).setScrollFactor(0).setOrigin(1,1).setInteractive();
+				this.dashButton.on('pointerover', () => {
+					this.dashDown = true;
+				});
+				this.dashButton.on('pointerout', () => {
+					this.dashDown = false;
+				});
+			
+		}
+		
 		this.input.on("pointerdown", (e) => {
 			console.log("X: "+Math.floor(e.worldX*1000)/1000+"\nY: "+Math.floor(e.worldY*1000)/1000);
 			this.isPointering = true;
@@ -360,13 +416,13 @@ class Main extends Phaser.Scene {
 		this.graphics.lineStyle(2, 0xFF0000, 0.2);
 		var a = this.player.getCenter();
 		this.graphics.lineBetween(a.x, a.y, this.mousePos.x+this.player.body.position.x-config.width/2, this.mousePos.y+this.player.body.position.y-config.height/2-100);
-		if((this.cursors.right.isDown || this.keys["d"].isDown) && this.player.touching) {
-			this.player.thrust(0.03);
+		if((this.cursors.right.isDown || this.keys["d"].isDown || this.rightDown) && this.player.touching) {
+			this.player.setVelocityX(10);
 		}
-		if((this.cursors.left.isDown || this.keys["a"].isDown) && this.player.touching) {
-			this.player.thrustBack(0.03);
+		if((this.cursors.left.isDown || this.keys["a"].isDown || this.leftDown) && this.player.touching) {
+			this.player.setVelocityX(-10);
 		}
-		if((this.cursors.up.isDown || this.keys["space"].isDown || this.keys["w"].isDown) && this.player.touching && this.playerParams.val.jumpingCD >= 0) {
+		if((this.cursors.up.isDown || this.keys["space"].isDown || this.keys["w"].isDown || this.upDown) && this.player.touching && this.playerParams.val.jumpingCD >= 0) {
 			this.player.setVelocityY(-16);
 			this.player.touching = false;
 			this.playerParams.val.jumpingCD = this.playerParams.max.jumpingCD;
@@ -374,15 +430,15 @@ class Main extends Phaser.Scene {
 		if(this.keys["e"].isDown) {
 			this.createEnemy(this.player.body.position.x, -300 );
 		};
-		if(this.cursors.shift.isDown && this.playerParams.val.sprintingCD <= 0) {
-			if(this.cursors.right.isDown || this.keys["d"].isDown) {
+		if((this.cursors.shift.isDown || this.dashDown) && this.playerParams.val.sprintingCD <= 0) {
+			if(this.cursors.right.isDown || this.keys["d"].isDown || this.rightDown) {
 				this.playerParams.val.sprintingCD = this.playerParams.max.sprintingCD;
-				this.player.setVelocityX(15);
+				this.player.setVelocityX(18);
 				this.player.setVelocityY(-8);
 			};
-			if(this.cursors.left.isDown || this.keys["a"].isDown) {
+			if(this.cursors.left.isDown || this.keys["a"].isDown || this.leftDown) {
 				this.playerParams.val.sprintingCD = this.playerParams.max.sprintingCD;
-				this.player.setVelocityX(-15);
+				this.player.setVelocityX(-18);
 				this.player.setVelocityY(-8);
 			};
 		};
