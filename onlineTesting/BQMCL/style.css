@@ -75,6 +75,7 @@ nav {
 	margin: 0;
 	margin-top: 100px;
 	padding: 0;
+	padding-bottom: 200px;
 	overflow: hidden;
 }
 #list li {
@@ -104,6 +105,16 @@ nav {
 }
 #employee2 {
 	top: 40px;
+}
+#reminder1 {
+	position: absolute;
+	bottom: 5px;
+	margin: 0px;
+	right: 25%;
+}
+#reminder1 > span {
+	font-size: 1.5em;
+	top: 2px;
 }
 .listTitle {
 	position: absolute;
@@ -153,6 +164,7 @@ nav {
 	border-left: solid black 1px;
 	background-color: inherit;
 	min-height: calc(100% - 5px);
+	overflow-y: hidden;
 }
 .listDetail:hover {
 	height: auto;
