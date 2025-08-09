@@ -292,7 +292,7 @@ class Main extends Phaser.Scene {
 		this.cameras.main.startFollow(this.player, false, 1, 1, 0, 100);
 		
 		if(mobile) {
-			this.leftMove = this.add.rectangle(50, config.height-50, 175, 125, 0xFFFFFF).setAlpha(0.3).setDepth(10).setScrollFactor(0).setOrigin(0,1).setInteractive();
+			this.leftMove = this.add.rectangle(50, config.height-50, config.width/6, config.height/5, 0xFFFFFF).setAlpha(0.3).setDepth(10).setScrollFactor(0).setOrigin(0,1).setInteractive();
 				this.leftMove.on('pointerover', () => {
 					this.leftDown = true;
 				});
@@ -301,7 +301,7 @@ class Main extends Phaser.Scene {
 				});
 			
 			
-			this.rightMove = this.add.rectangle(235, config.height-50, 175, 125, 0xFFFFFF).setAlpha(0.3).setDepth(10).setScrollFactor(0).setOrigin(0,1).setInteractive();
+			this.rightMove = this.add.rectangle(60 + config.width/6, config.height-50, config.width/6, config.height/5, 0xFFFFFF).setAlpha(0.3).setDepth(10).setScrollFactor(0).setOrigin(0,1).setInteractive();
 				this.rightMove.on('pointerover', () => {
 					this.rightDown = true;
 				});
