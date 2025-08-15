@@ -46,7 +46,7 @@ class Main extends Phaser.Scene
                 // enable: true
             });
 			this.joyStickCursor = this.joyStick.createCursorKeys();
-			this.input.addPointer();
+			this.input.addPointer(1);
 		this.sprintButton = this.add.rectangle(config.width - 150, config.height - 150, 100, 100, 0xcccccc).setDepth(5).setInteractive().setScrollFactor(0).setAlpha(0.5);
 		this.sprintButton.on('pointerover', ()=>{
 			ctx.sprintButton.isDown = true;
