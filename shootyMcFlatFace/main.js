@@ -24,6 +24,13 @@ class Main extends Phaser.Scene
 	}
 	create() {
 		ctx = this;
+		screen.orientation.lock("landscape")
+        .then(() => {
+            console.log("Screen locked to landscape.");
+        })
+        .catch((error) => {
+            console.error("Failed to lock screen orientation:", error);
+        });
 		this.player = this.add.rectangle(0,0,50,50,0xFFFFFF);
 		this.player = this.matter.add.gameObject(this.player).setFrictionAir(0.5).setDepth(5).setCollisionCategory(1);
 		this.player.body.isPlayer = true;
