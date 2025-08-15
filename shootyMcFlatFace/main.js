@@ -36,9 +36,9 @@ class Main extends Phaser.Scene
 		this.player.body.isPlayer = true;
 		this.cameras.main.startFollow(this.player, 0, 0.2);
 		this.joyStick = this.plugins.get('rexvirtualjoystickplugin').add(this, {
-                x: 200,
-                y: config.height-200,
-                radius: 75,
+                x: 150,
+                y: config.height-150,
+                radius: config.height/4,
                 base: this.add.circle(0, 0, 100, 0x888888),
                 thumb: this.add.circle(0, 0, 50, 0xcccccc),
                 // dir: '8dir',   // 'up&down'|0|'left&right'|1|'4dir'|2|'8dir'|3
