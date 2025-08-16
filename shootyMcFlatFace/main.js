@@ -1,3 +1,11 @@
+screen.orientation.lock("landscape")
+        .then(() => {
+            console.log("Screen locked to landscape.");
+        })
+        .catch((error) => {
+            console.error("Failed to lock screen orientation:", error);
+        });
+
 var ctx;
 var cellSize = 500;
 
@@ -24,41 +32,38 @@ class Main extends Phaser.Scene
 	}
 	create() {
 		ctx = this;
-		screen.orientation.lock("landscape")
-        .then(() => {
-            console.log("Screen locked to landscape.");
-        })
-        .catch((error) => {
-            console.error("Failed to lock screen orientation:", error);
-        });
+		
 		this.player = this.add.rectangle(0,0,50,50,0xFFFFFF);
 		this.player = this.matter.add.gameObject(this.player).setFrictionAir(0.5).setDepth(5).setCollisionCategory(1);
 		this.player.body.isPlayer = true;
+		this.pointInScreen2 = this.add.circle(config.width/2,config.height/2, 4, 0xFF0000).setScrollFactor(0).setDepth(5);
+		this.connectionLine = this.add.line(0,0,0,0,0,0,0xFF0000, 1).setScrollFactor(0).setDepth(6);
+		this.pointInScreen = this.add.circle(config.width/2,config.height/2, 3, 0x000000).setScrollFactor(0).setDepth(7);
 		this.cameras.main.startFollow(this.player, 0, 0.2);
 		this.joyStick = this.plugins.get('rexvirtualjoystickplugin').add(this, {
                 x: 150,
                 y: config.height-150,
                 radius: config.height/4,
-                base: this.add.circle(0, 0, 100, 0x888888),
-                thumb: this.add.circle(0, 0, 50, 0xcccccc),
+                base: this.add.circle(0, 0, 100, 0x888888).setDepth(5),
+                thumb: this.add.circle(0, 0, 50, 0xcccccc).setDepth(5),
                 // dir: '8dir',   // 'up&down'|0|'left&right'|1|'4dir'|2|'8dir'|3
                 // forceMin: 16,
                 // enable: true
             });
 			this.joyStickCursor = this.joyStick.createCursorKeys();
 			this.input.addPointer(1);
-		this.sprintButton = this.add.rectangle(config.width - 150, config.height - 150, 100, 100, 0xcccccc).setDepth(5).setInteractive().setScrollFactor(0).setAlpha(0.5);
-		this.sprintButton.on('pointerover', ()=>{
-			ctx.sprintButton.isDown = true;
+		this.spawnButton = this.add.rectangle(config.width - 150, config.height - 150, 100, 100, 0xcccccc).setDepth(5).setInteractive().setScrollFactor(0).setAlpha(0.5);
+		this.spawnButton.on('pointerover', ()=>{
+			ctx.spawnButton.isDown = true;
 		});
-		this.sprintButton.on('pointerdown', ()=>{
-			ctx.sprintButton.isDown = true;
+		this.spawnButton.on('pointerdown', ()=>{
+			ctx.spawnButton.isDown = true;
 		});
-		this.sprintButton.on('pointerout', ()=>{
-			ctx.sprintButton.isDown = false;
+		this.spawnButton.on('pointerout', ()=>{
+			ctx.spawnButton.isDown = false;
 		});
-		this.sprintButton.on('pointerup', ()=>{
-			ctx.sprintButton.isDown = false;
+		this.spawnButton.on('pointerup', ()=>{
+			ctx.spawnButton.isDown = false;
 		});
 		
 		this.fireTarget;
@@ -69,6 +74,9 @@ class Main extends Phaser.Scene
 			sprintSpeed: 10,
 			attackRadius: 500,
 			fireCD: 50,
+			pierce: 2,
+			bulletSpeed: 5,
+			bulletLife: 60,
 		}
 		
 		const cam = this.cameras.main;
@@ -151,34 +159,37 @@ class Main extends Phaser.Scene
 				}
 			}
 		}
-		class playerBullet extends Phaser.GameObjects.Rectangle
+		class playerBullet extends Phaser.GameObjects.Arc
 		{
 			constructor(scene, x, y) {
-				super(scene, x, y, 25, 25, 0xFF0000, 1);
+				super(scene, x, y, 12.5, 0, 360, false, 0xFF0000, 1);
 				//this.scene = scene;
 				scene.matter.add.gameObject(this);
+				this.setCircle(12.5);
 				this.setDepth(1);
 				this.setFrictionAir(0);
-				this.bulletLife = 60;
+				this.bulletLife = ctx.params.bulletLife;
+				
 				this.setCollisionCategory(3);
 				this.body.isBullet = true;
 				this.scene.events.on('update', this.update, this);
 				var angle = Phaser.Math.Angle.Between(ctx.fireTarget.position.x, ctx.fireTarget.position.y, x, y);
 				// Set a desired speed
-				const speed = 5;
+				const speed = ctx.params.bulletSpeed;
 
 				// Calculate velocity components
 				this.setVelocityX(-Math.cos(angle) * speed);
 				this.setVelocityY(-Math.sin(angle) * speed);
 				this.setCollidesWith(2);
 				this.body.blacklist = [];
-				this.pierce = 0;
+				this.body.pierce = ctx.params.pierce;
 				this.setSensor(true);
 				this.body.isBullet = true;
 			}
 			update() {
 				this.bulletLife -= 1;
-				if(this.bulletLife <= 0) {
+				if(this.bulletLife <= 0 || this.body.pierce <= 0) {
+					this.scene.events.off('update', this.update, this);
 					this.destroy();
 				}
 			}
@@ -191,9 +202,8 @@ class Main extends Phaser.Scene
 			this.add.existing(bull);
 		} 
 		this.enemiesAliveBodies = {};
-		for(var i=0;i<200;i++) {
-			this.createEnemy(0,-100);
-		}
+		
+		this.enemyTimer = 600;
 		
 		
 		this.matter.world.on('collisionstart', (event, bodyA, bodyB) => {
@@ -208,11 +218,13 @@ class Main extends Phaser.Scene
 					if(body2.isEnemy && !body1.blacklist.includes(body2.id)) {
 						body2.gameObject.health -= 1;
 						body1.blacklist.push(body2.id);
+						body1.pierce -= 1;
 					};
 				} else if (body2.isBullet && !body2.blacklist.includes(body1.id)) {
 					if(body1.isEnemy) {
 						body1.gameObject.health -= 1;
 						body2.blacklist.push(body1.id);
+						body2.pierce -= 1;
 					};
 				}
 			}
@@ -221,6 +233,15 @@ class Main extends Phaser.Scene
 	}
 	update() {
 		var playPos = this.player.body.position;
+		
+		
+		this.enemyTimer -= 1;
+		if(this.enemyTimer <= 0) {
+			for(var i=0;i<1000;i++) {
+				this.createEnemy(0,i);
+			}
+			this.enemyTimer = Infinity;
+		}
 
 		let closestBody = null;
 		let minDistance = Infinity;
@@ -249,6 +270,16 @@ class Main extends Phaser.Scene
 			} else {
 				this.fireCD -= 1;
 			}
+			
+			var angle = Phaser.Math.Angle.Between(ctx.fireTarget.position.x, ctx.fireTarget.position.y, playPos.x, playPos.y);
+			var x = -Math.cos(angle) * 20;
+			var y = -Math.sin(angle) * 20;
+			this.pointInScreen.setPosition(config.width/2+x, config.height/2+y);
+			this.connectionLine.setTo(config.width/2, config.height/2, config.width/2+x, config.height/2+y);
+			
+		} else {
+			this.pointInScreen.setPosition(config.width/2, config.height/2);
+			this.connectionLine.setTo(config.width/2, config.height/2, config.width/2, config.height/2);
 		};
 		
 		const { scrollX, scrollY } = this.cameras.main;
@@ -256,7 +287,7 @@ class Main extends Phaser.Scene
 		this.griddy.x = -Phaser.Math.Wrap(scrollX, 0, cellSize);
 		this.griddy.y = -Phaser.Math.Wrap(scrollY, 0, cellSize);
 		
-		if(this.keys["e"].isDown) {
+		if(this.keys["e"].isDown || ctx.spawnButton.isDown) {
 			this.createEnemy(0,0);
 		}
 		
@@ -267,7 +298,7 @@ class Main extends Phaser.Scene
 		
 		var speed;
 		
-		if(this.keys["shift"].isDown || this.sprintButton.isDown) {
+		if(this.keys["shift"].isDown || this.joyStick.force > 100) {
 			speed = this.params.sprintSpeed;
 		} else {
 			speed = this.params.speed;
