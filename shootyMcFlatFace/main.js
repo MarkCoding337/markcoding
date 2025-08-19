@@ -35,17 +35,20 @@ class Main extends Phaser.Scene
 		
 		this.player = this.add.rectangle(0,0,50,50,0xFFFFFF);
 		this.player = this.matter.add.gameObject(this.player).setFrictionAir(0.5).setDepth(5).setCollisionCategory(1);
+		this.player.setFixedRotation(true);
 		this.player.body.isPlayer = true;
+		
+		
 		this.pointInScreen2 = this.add.circle(config.width/2,config.height/2, 4, 0xFF0000).setScrollFactor(0).setDepth(5);
 		this.connectionLine = this.add.line(0,0,0,0,0,0,0xFF0000, 1).setScrollFactor(0).setDepth(6);
 		this.pointInScreen = this.add.circle(config.width/2,config.height/2, 3, 0x000000).setScrollFactor(0).setDepth(7);
-		this.cameras.main.startFollow(this.player, 0, 0.2);
+		this.cameras.main.startFollow(this.player, 0);
 		this.joyStick = this.plugins.get('rexvirtualjoystickplugin').add(this, {
                 x: 150,
                 y: config.height-150,
-                radius: config.height/4,
-                base: this.add.circle(0, 0, 100, 0x888888).setDepth(5),
-                thumb: this.add.circle(0, 0, 50, 0xcccccc).setDepth(5),
+                radius: config.height/5,
+                base: this.add.circle(0, 0, config.height/7, 0x888888).setDepth(5),
+                thumb: this.add.circle(0, 0, config.height/14, 0xcccccc).setDepth(5),
                 // dir: '8dir',   // 'up&down'|0|'left&right'|1|'4dir'|2|'8dir'|3
                 // forceMin: 16,
                 // enable: true
@@ -77,6 +80,7 @@ class Main extends Phaser.Scene
 			pierce: 2,
 			bulletSpeed: 5,
 			bulletLife: 60,
+			bulletNum: 1,
 		}
 		
 		const cam = this.cameras.main;
@@ -161,7 +165,7 @@ class Main extends Phaser.Scene
 		}
 		class playerBullet extends Phaser.GameObjects.Arc
 		{
-			constructor(scene, x, y) {
+			constructor(scene, x, y, speed) {
 				super(scene, x, y, 12.5, 0, 360, false, 0xFF0000, 1);
 				//this.scene = scene;
 				scene.matter.add.gameObject(this);
@@ -173,13 +177,24 @@ class Main extends Phaser.Scene
 				this.setCollisionCategory(3);
 				this.body.isBullet = true;
 				this.scene.events.on('update', this.update, this);
-				var angle = Phaser.Math.Angle.Between(ctx.fireTarget.position.x, ctx.fireTarget.position.y, x, y);
-				// Set a desired speed
-				const speed = ctx.params.bulletSpeed;
+				var bullSpeed;
+				if(speed) {
+					bullSpeed = speed;
+				} else {
+					bullSpeed = ctx.params.bulletSpeed;
+				};
+				if(ctx.fireTarget != null) {
+					var angle = Phaser.Math.Angle.Between(ctx.fireTarget.position.x, ctx.fireTarget.position.y, x, y);
 
-				// Calculate velocity components
-				this.setVelocityX(-Math.cos(angle) * speed);
-				this.setVelocityY(-Math.sin(angle) * speed);
+					// Calculate velocity components
+					this.setVelocityX(-Math.cos(angle) * bullSpeed);
+					this.setVelocityY(-Math.sin(angle) * bullSpeed);
+				} else {
+					var a = Math.floor(Math.random()*2)-1;
+					var b = Math.floor(Math.random()*2)-1;
+					this.setVelocityX(bullSpeed*a);
+					this.setVelocityY(bullSpeed*b);
+				};
 				this.setCollidesWith(2);
 				this.body.blacklist = [];
 				this.body.pierce = ctx.params.pierce;
@@ -197,8 +212,8 @@ class Main extends Phaser.Scene
 		this.createEnemy = function(x, y) {
 			var bull = new enemy1(this, x, y)
 		} 
-		this.createPlayerBullet = function(x, y) {
-			var bull = new playerBullet(this, x, y);
+		this.createPlayerBullet = function(x, y, speed) {
+			var bull = new playerBullet(this, x, y, speed);
 			this.add.existing(bull);
 		} 
 		this.enemiesAliveBodies = {};
@@ -264,18 +279,23 @@ class Main extends Phaser.Scene
 		
 		this.fireTarget = closestBody;
 		if(this.fireTarget != null) {
+			var angle = Phaser.Math.Angle.Between(ctx.fireTarget.position.x, ctx.fireTarget.position.y, playPos.x, playPos.y);
+			var x = -Math.cos(angle) * 50;
+			var y = -Math.sin(angle) * 50;
+			this.pointInScreen.setPosition(config.width/2+x, config.height/2+y);
+			this.connectionLine.setTo(config.width/2, config.height/2, config.width/2+x, config.height/2+y);
 			if(this.fireCD <= 0) {
-				this.createPlayerBullet(playPos.x, playPos.y);
+				for(var i=0;i<this.params.bulletNum;i++) {
+					this.time.delayedCall(10*i, ()=>{this.createPlayerBullet(playPos.x, playPos.y)}, [], this);
+				};
 				this.fireCD = this.params.fireCD;
 			} else {
 				this.fireCD -= 1;
 			}
 			
-			var angle = Phaser.Math.Angle.Between(ctx.fireTarget.position.x, ctx.fireTarget.position.y, playPos.x, playPos.y);
-			var x = -Math.cos(angle) * 20;
-			var y = -Math.sin(angle) * 20;
-			this.pointInScreen.setPosition(config.width/2+x, config.height/2+y);
-			this.connectionLine.setTo(config.width/2, config.height/2, config.width/2+x, config.height/2+y);
+			
+			/*this.pointInScreen.setPosition(ctx.fireTarget.position.x-this.cameras.main.scrollX, ctx.fireTarget.position.y-this.cameras.main.scrollY);
+			this.connectionLine.setTo(config.width/2, config.height/2, ctx.fireTarget.position.x-this.cameras.main.scrollX, ctx.fireTarget.position.y-this.cameras.main.scrollY);*/
 			
 		} else {
 			this.pointInScreen.setPosition(config.width/2, config.height/2);
@@ -340,7 +360,7 @@ var config = {
     physics: {
         default: "matter",
         matter: {
-            debug: true,
+            //debug: true,
 			gravity: {
 				x: 0,
 				y: 0,
