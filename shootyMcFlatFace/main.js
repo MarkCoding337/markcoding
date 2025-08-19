@@ -46,7 +46,7 @@ class Main extends Phaser.Scene
 		this.joyStick = this.plugins.get('rexvirtualjoystickplugin').add(this, {
                 x: 150,
                 y: config.height-150,
-                radius: config.height/5,
+                radius: config.height/10,
                 base: this.add.circle(0, 0, config.height/7, 0x888888).setDepth(5),
                 thumb: this.add.circle(0, 0, config.height/14, 0xcccccc).setDepth(5),
                 // dir: '8dir',   // 'up&down'|0|'left&right'|1|'4dir'|2|'8dir'|3
