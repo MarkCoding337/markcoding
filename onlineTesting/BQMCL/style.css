@@ -1,5 +1,7 @@
 html, body {
 	user-select: none;
+	width: 100%;
+	height: 100%;
 	font-family: "Arial", monospace;
 	margin: 0;
 	padding: 0;
@@ -76,7 +78,6 @@ nav {
 	margin-top: 100px;
 	padding: 0;
 	padding-bottom: 200px;
-	overflow: hidden;
 }
 #list li {
 	height: 100px;
@@ -143,6 +144,7 @@ nav {
 	transition-duration: 0.2s;
 	z-index: 1;
 	border-left: solid black 1px;
+	overflow: hidden;
 }
 .doneSpanContainer:hover {
 	background-color: #CCCCCC;
@@ -168,7 +170,9 @@ nav {
 }
 .listDetail:hover {
 	height: auto;
+	width: 50%;
 	border-bottom: solid black 1px;
+	border-right: solid black 1px;
 	z-index: 2;
 	padding-bottom: 5px;
 }
