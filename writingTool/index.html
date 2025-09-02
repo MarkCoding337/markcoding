@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <!--<link rel="icon" href="https://glitch.com/favicon.ico" />\-->
+    <title>Writing Tool Online</title>
+    <link rel="stylesheet" href="./style.css" />\
+    <script src="./script.js" defer></script>
+  </head>
+  <body>
+    <section class="container">
+      <div id="toolbar">
+        <table>
+          <tr>
+            <td><label>Background Color</label></td>
+            <td><label>Brush Color</label></td>
+            <td><label>Line Width</label></td>
+          </tr>
+          <tr>
+            <td>
+            <input type="color" id="bgcolor" name="bgcolor" value="#FFFFFF">
+            </td>
+            <td>
+            <input type="color" id="color" name="color" value="#000000">
+            </td>
+            <td><input id="lineWidth" name="lineWidth" type="range" step="0.5" value="5" max="10" min="0.75"></td>
+          </tr>
+        </table>
+          <p style="font-size: 20px; margin: 0px;">Tools</p>
+          <input type="button" value="Undo" class="functionTool" style="padding: 10px;">
+          <input type="button" value="Eraser" class="brushTool" style="padding: 10px;">
+          <input type="button" value="Pencil" class="brushTool" style="padding: 10px;">
+          <input type="button" value="Clear" id="clear" style="padding: 10px;">
+        </div>
+          <button id="closeOpenToolbar" onclick="closeToolbar()">Close</button>
+        <div>
+            <canvas id="drawing-board"></canvas>
+        </div>
+    </section>
+    <script src="./index.js"></script>
+  </body>
+</html>
