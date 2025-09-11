@@ -1,0 +1,71 @@
+html, body {
+	margin: 0;
+	padding: 0;
+	font-family: "Arial", monospace;
+}
+canvas {
+	position: fixed;
+	top: 0;
+	left: 0;
+}
+#gameMenu {
+	position: fixed;
+	top: 0;
+	left: -40%;
+	width: 50%;
+	height: 60%;
+	overflow-y: auto;
+	background-color: #6666BB;
+	z-index: 1;
+	transition-duration: 0.2s;
+}
+#gameMenu:hover {
+	left: 0;
+}
+#gameMenu:focus {
+	left: 0;
+}
+#gameMenu h2 {
+	margin: 5px 10px;
+}
+#gameMenu ul {
+	list-style: none;
+	padding: 0;
+	user-select: none;
+	-webkit-user-select: none;
+}
+#gameMenu ul li {
+	background-color: #5555AA;
+	cursor: pointer;
+}
+#gameMenu ul li:hover {
+	background-color: #6666BB;
+}
+#gameMenu ul li:active {
+	cursor: default;
+}
+#gameMenu ul li h3 {
+	line-height: 50px;
+	padding-left: 10px;
+	margin: 0;
+}
+#gameMenu ul li h4 {
+	margin: 0;
+}
+
+#credLabel {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 20%;
+	overflow-x: wrap;
+	font-size: 20px;
+}
+#shop {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: calc(80% - 2px);
+	height: 100%;
+	border-right: solid black 2px;
+}
