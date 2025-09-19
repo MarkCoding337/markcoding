@@ -40,17 +40,17 @@
               <th>Options</th>
             </tr>
             <tr>
-              <td align="center" onclick="game.boxSizes = 170; updateCanvas();">Hard Mode</td>
-              <td align="center" onclick="game.boxSizes = 50; updateCanvas();">Normal Mode</td>
-              <td align="center" onclick="game.boxSizes = 20; updateCanvas();">Easy Mode</td>
+              <td align="center" onclick="game.boxSizes = 170; updateCanvas(game.player.x, game.player.y);">Hard Mode</td>
+              <td align="center" onclick="game.boxSizes = 50; updateCanvas(game.player.x, game.player.y);">Normal Mode</td>
+              <td align="center" onclick="game.boxSizes = 20; updateCanvas(game.player.x, game.player.y);">Easy Mode</td>
             </tr>
             <tr>
-              <td align="center" onclick="game.boxSizes += 1; updateCanvas();">++</td>
-              <td align="center" onclick="game.boxSizes -= 1; updateCanvas();">--</td>
+              <td align="center" onclick="game.boxSizes += 1; updateCanvas(game.player.x, game.player.y);">++</td>
+              <td align="center" onclick="game.boxSizes -= 1; updateCanvas(game.player.x, game.player.y);">--</td>
             </tr>
             <tr>
-              <td align="center" onclick="game.boxSizes += 0.1; updateCanvas();">+</td>
-              <td align="center" onclick="game.boxSizes -= 0.1; updateCanvas();">-</td>
+              <td align="center" onclick="game.boxSizes += 0.1; updateCanvas(game.player.x, game.player.y);">+</td>
+              <td align="center" onclick="game.boxSizes -= 0.1; updateCanvas(game.player.x, game.player.y);">-</td>
             </tr>
             <tr>
               <td align="center"><input type="number" id="xMapInput" placeholder="Input Map Dim" min="0"></td>
