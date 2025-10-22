@@ -17,7 +17,7 @@ var game = {
   shopUpgrades: {
     recursive: [
       {name: "Selling Practice (Automatic)", price: 10n, initialPrice: 10n, priceScale: 4n, scaleT: 1, num: 0n, effects: {moneyPerSec: 2n}, avail: true},
-      {name: "Selling Practice (Manual)", price: 10n, initialPrice: 10n, priceScale: 5n, scaleT: 1, num: 0n, effects: {clickMulti: 1n}, avail: true},
+      {name: "Selling Practice (Manual)", price: 10n, initialPrice: 10n, priceScale: 3n, scaleT: 1, num: 0n, effects: {clickMulti: 1n}, avail: true},
       {name: "Hiring A Handler", price: 10000n, initialPrice: 10000n, priceScale: 7550n, scaleT: 1, num: 0n, effects: {moneyPerSecondMulti: 2n}, avail: true},
     ],
     oneTime: [
