@@ -16,12 +16,12 @@ var game = {
   
   shopUpgrades: {
     recursive: [
-      {name: "Selling Practice (Automatic)", price: 10n, initialPrice: 10n, priceScale: 2n, scaleT: 1, num: 0n, effects: {moneyPerSec: 2n}, avail: true},
-      {name: "Selling Practice (Manual)", price: 10n, initialPrice: 10n, priceScale: 11n, scaleT: 0, num: 0n, effects: {clickMulti: 1n}, avail: true},
+      {name: "Selling Practice (Automatic)", price: 10n, initialPrice: 10n, priceScale: 4n, scaleT: 1, num: 0n, effects: {moneyPerSec: 2n}, avail: true},
+      {name: "Selling Practice (Manual)", price: 10n, initialPrice: 10n, priceScale: 30n, scaleT: 0, num: 0n, effects: {clickMulti: 1n}, avail: true},
       {name: "Hiring A Handler", price: 10000n, initialPrice: 10000n, priceScale: 7550n, scaleT: 1, num: 0n, effects: {moneyPerSecondMulti: 2n}, avail: true},
     ],
     oneTime: [
-      {name: "Selling Practice (Extra)", price: 100n, initialPrice: 100n, priceScale: 55n, scaleT: 0, num: 0n, max: 4n, effects: {clickMulti: 10n}, avail: true},
+      {name: "Selling Practice (Extra)", price: 100n, initialPrice: 100n, priceScale: 100n, scaleT: 0, num: 0n, max: 4n, effects: {clickMulti: 10n}, avail: true},
       {name: "Selling Practice (Extra Extra)", price: 9000n, initialPrice: 9000n, priceScale: 132n, scaleT: 0, num: 0n, max: 20n, effects: {moneyPerSec: 150n}, avail: true},
     ],
   },
