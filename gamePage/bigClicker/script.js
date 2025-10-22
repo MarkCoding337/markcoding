@@ -21,7 +21,7 @@ var game = {
       {name: "Hiring A Handler", price: 10000n, initialPrice: 10000n, priceScale: 7550n, scaleT: 1, num: 0n, effects: {moneyPerSecondMulti: 2n}, avail: true},
     ],
     oneTime: [
-      {name: "Selling Practice (Extra)", price: 100n, initialPrice: 100n, priceScale: 100n, scaleT: 1, num: 0n, max: 4n, effects: {clickMulti: 10n}, avail: true},
+      {name: "Selling Practice (Extra)", price: 100n, initialPrice: 100n, priceScale: 20n, scaleT: 1, num: 0n, max: 4n, effects: {clickMulti: 10n}, avail: true},
       {name: "Selling Practice (Extra Extra)", price: 9000n, initialPrice: 9000n, priceScale: 132n, scaleT: 0, num: 0n, max: 20n, effects: {moneyPerSec: 150n}, avail: true},
     ],
   },
