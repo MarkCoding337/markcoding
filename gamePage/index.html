@@ -50,6 +50,12 @@
 			<h1 class="title">About</h1>
 			<p id="aboutText">&emsp;&emsp;All games shown on this site are made by a single developer (Referred to as "Mark") who makes games like these in his free time. Please do not have extremely high expectations but he sincerely hopes you enjoy them.</p>
 		</div>
-		<footer>Copyright MarkCoding</footer>
+		<footer>
+            <small>&copy; <span id="year"></span> Markathious</small>
+        </footer>
     </body>
+	<script>
+        // small nicety: set current year
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
 </html>
