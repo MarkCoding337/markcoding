@@ -12,8 +12,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:system-
 /* Top nav */
 nav{position:sticky;top:0;left:0;width:100%;display:flex;align-items:center;gap:0.75rem;padding:.4rem 1rem;background:linear-gradient(90deg,rgba(125,211,252,.04),transparent);border-bottom:1px solid rgba(255,255,255,.03);backdrop-filter:blur(6px);}
 nav img#logo{height:44px;display:block}
-nav a{color:var(--text);text-decoration:none;padding:.5rem .75rem;border-radius:8px;background:transparent;border:1px solid transparent;white-space:nowrap;font-weight:600}
+nav a{color:var(--text);text-decoration:none;padding:.5rem .75rem;border-radius:8px;background:transparent;border:1px solid transparent;white-space:nowrap;font-weight:600;transition:transform .15s ease,box-shadow .18s ease,background-color .15s ease,color .15s ease}
 nav a p{margin:0}
+
+/* hover + focus for nav links */
+nav a:hover, nav a:focus-visible{background:rgba(125,211,252,0.08);color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 18px rgba(2,6,23,0.45)}
+nav a:active{transform:translateY(0)}
 
 /* Game grid */
 #gameSelector{margin:1rem auto;padding:0.5rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;max-width:980px}

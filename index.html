@@ -57,12 +57,18 @@
             text-align:center;
             font-size:0.95rem;
             border:1px solid transparent;
+            transition:transform .15s ease,box-shadow .18s ease,background-color .15s ease,color .15s ease;
         }
 
         nav a.primary {
             background:linear-gradient(90deg,rgba(125,211,252,.08),transparent);
             border:1px solid rgba(125,211,252,.08);
+            font-weight:600;
         }
+
+        /* hover + focus for nav links */
+        nav a:hover, nav a:focus-visible { background: rgba(125,211,252,0.08); color:var(--accent); transform: translateY(-2px); box-shadow: 0 8px 18px rgba(2,6,23,0.45); }
+        nav a:active { transform: translateY(0); }
 
         main { margin-top:1.5rem; display:grid; gap:1rem; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); }
 
