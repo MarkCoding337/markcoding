@@ -2037,7 +2037,7 @@ class Level6 extends Level {
         pixelArt: true
       },
         fps: {
-          target: 90,
+          target: 60,
           forceSetTimeOut: true
         },
     };
