@@ -418,15 +418,14 @@ function purchaseUpgrade(rec, self, oneTime) {
       } else if(io.scaleT == 1) {
           io.price = io.initialPrice+((io.priceScale)**(io.num+game.purchaseInterval+1n));
       }*/
-    console.log(io.price);
-    if(oneTime && io.num >= io.max) {
+    /*if(oneTime && io.num >= io.max) {
       self.remove();
     } else {
       self.innerHTML = io.name+" | Price: $"+game.dispNum(io.price*game.purchaseInterval)+" For "+game.dispNum(game.purchaseInterval)+" Unit | Have: "+game.dispNum(io.num);
       if(io.max) {
         self.innerHTML += " | Max: "+game.dispNum(io.max);
       }
-    };
+    };*/
   } 
   } else {
   var io = game.shopUpgrades.oneTime[self.idNUM];
