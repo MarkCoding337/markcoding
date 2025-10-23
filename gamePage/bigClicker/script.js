@@ -422,31 +422,22 @@ function purchaseUpgrade(rec, self, oneTime) {
   } else {
   var io = game.shopUpgrades.oneTime[self.idNUM];
     if(game.cash >= io.price) {
-    console.log(io.price);
-    game.cash -= io.price;
-    io.num += 1n;
-    if(io.effects.hasOwnProperty("moneyPerSec")) {
-      game.moneyPerSecond += io.effects.moneyPerSec;
-    }
-    if(io.effects.hasOwnProperty("clickMulti")) {
-      game.clickMulti += io.effects.clickMulti;
-    }
-    if(io.effects.hasOwnProperty("moneyPerSecondMulti")) {
-      game.moneyPerSecondMulti += io.effects.moneyPerSecondMulti;
-    }
-    if(io.scaleT == 0) {
-          io.price = (io.initialPrice+((io.priceScale*(io.num))));
-      } else if(io.scaleT == 1) {
-          io.price = io.initialPrice+((io.priceScale)**(io.num));
+      console.log(io.price);
+      game.cash -= io.price;
+      io.num += 1n;
+      if(io.effects.hasOwnProperty("moneyPerSec")) {
+        game.moneyPerSecond += io.effects.moneyPerSec;
       }
-    console.log(io.price);
-    if(oneTime && io.num >= io.max) {
-      self.remove();
-    } else {
-      self.innerHTML = io.name+" | Price: $"+game.dispNum(io.price)+" | Have: "+game.dispNum(io.num);
-      if(io.max) {
-        self.innerHTML += " | Max: "+game.dispNum(io.max);
+      if(io.effects.hasOwnProperty("clickMulti")) {
+        game.clickMulti += io.effects.clickMulti;
       }
+      if(io.effects.hasOwnProperty("moneyPerSecondMulti")) {
+        game.moneyPerSecondMulti += io.effects.moneyPerSecondMulti;
+      }
+      game.loadShop();
+      if(oneTime && io.num >= io.max) {
+        self.remove();
+      };
     };
   } 
   };
