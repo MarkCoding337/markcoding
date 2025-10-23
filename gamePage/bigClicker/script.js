@@ -440,8 +440,7 @@ function purchaseUpgrade(rec, self, oneTime) {
       };
     };
   } 
-  };
-}
+ };
 
 game.simplifyNum.onchange = function() {
   if(this.checked) {
