@@ -136,7 +136,7 @@ var game = {
           b[i].price = b[i].initialPrice+((b[i].priceScale)**(b[i].num+game.purchaseInterval+1n));
       }
       console.log(b[i].price);
-      a.innerHTML = b[i].name + " | Price: $"+game.dispNum(b[i].price*game.purchaseInterval)+" For "+game.dispNum(game.purchaseInterval)+" Unit | Have: "+game.dispNum(b[i].num);
+      a.innerHTML = b[i].name + " | Price: $"+game.dispNum(b[i].price)+" For "+game.dispNum(game.purchaseInterval)+" Unit | Have: "+game.dispNum(b[i].num);
       a.idNUM = i;
       a.onclick = function() {
         purchaseUpgrade(true, this, false);
@@ -418,15 +418,7 @@ function purchaseUpgrade(rec, self, oneTime) {
       } else if(io.scaleT == 1) {
           io.price = io.initialPrice+((io.priceScale)**(io.num+game.purchaseInterval+1n));
       }*/
-    /*if(oneTime && io.num >= io.max) {
-      self.remove();
-    } else {
-      self.innerHTML = io.name+" | Price: $"+game.dispNum(io.price*game.purchaseInterval)+" For "+game.dispNum(game.purchaseInterval)+" Unit | Have: "+game.dispNum(io.num);
-      if(io.max) {
-        self.innerHTML += " | Max: "+game.dispNum(io.max);
-      }
-    };*/
-  } 
+   } 
   } else {
   var io = game.shopUpgrades.oneTime[self.idNUM];
     if(game.cash >= io.price) {
