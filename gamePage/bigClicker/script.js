@@ -412,7 +412,7 @@ function purchaseUpgrade(rec, self, oneTime) {
     if(io.effects.hasOwnProperty("moneyPerSecondMulti")) {
       game.moneyPerSecondMulti += io.effects.moneyPerSecondMulti*game.purchaseInterval;
     }
-    game.loadShop();
+    //game.loadShop();
     /*if(io.scaleT == 0) {
           io.price = (io.initialPrice+((io.priceScale*(io.num+game.purchaseInterval))));
       } else if(io.scaleT == 1) {
