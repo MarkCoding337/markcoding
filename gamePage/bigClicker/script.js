@@ -131,9 +131,9 @@ var game = {
         a.className = "";
       };
       if(b[i].scaleT == 0) {
-        b[i].price = (b[i].initialPrice+((b[i].priceScale*(b[i].num+game.purchaseInterval-1n))));
+        b[i].price = (b[i].initialPrice+((b[i].priceScale*(b[i].num+game.purchaseInterval))));
       } else if(b[i].scaleT == 1) {
-        b[i].price = b[i].initialPrice+((b[i].priceScale)**(b[i].num+game.purchaseInterval-1n));
+        b[i].price = b[i].initialPrice+((b[i].priceScale)**(b[i].num+game.purchaseInterval));
       }
       console.log(b[i].price);
       a.innerHTML = b[i].name + " | Price: $"+game.dispNum(b[i].price*game.purchaseInterval)+" For "+game.dispNum(game.purchaseInterval)+" Unit | Have: "+game.dispNum(b[i].num);
