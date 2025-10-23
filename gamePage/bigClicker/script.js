@@ -399,9 +399,9 @@ function convertNumericStringsToBigInt(obj) {
 function purchaseUpgrade(rec, self, oneTime) {
   if(rec) {
   var io = game.shopUpgrades.recursive[self.idNUM];
-    if(game.cash >= io.price*game.purchaseInterval) {
+    if(game.cash >= io.price) {
     console.log(io.price);
-    game.cash -= io.price*game.purchaseInterval;
+    game.cash -= io.price;
     io.num += game.purchaseInterval;
     if(io.effects.hasOwnProperty("moneyPerSec")) {
       game.moneyPerSecond += io.effects.moneyPerSec*game.purchaseInterval;
