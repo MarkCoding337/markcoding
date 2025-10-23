@@ -135,7 +135,6 @@ var game = {
       } else if(b[i].scaleT == 1) {
           b[i].price = b[i].initialPrice+((b[i].priceScale)**(b[i].num+game.purchaseInterval+1n));
       }
-      console.log(b[i].price)
       console.log(b[i].price);
       a.innerHTML = b[i].name + " | Price: $"+game.dispNum(b[i].price*game.purchaseInterval)+" For "+game.dispNum(game.purchaseInterval)+" Unit | Have: "+game.dispNum(b[i].num);
       a.idNUM = i;
@@ -413,11 +412,12 @@ function purchaseUpgrade(rec, self, oneTime) {
     if(io.effects.hasOwnProperty("moneyPerSecondMulti")) {
       game.moneyPerSecondMulti += io.effects.moneyPerSecondMulti*game.purchaseInterval;
     }
-    if(io.scaleT == 0) {
+    game.loadShop();
+    /*if(io.scaleT == 0) {
           io.price = (io.initialPrice+((io.priceScale*(io.num+game.purchaseInterval))));
       } else if(io.scaleT == 1) {
           io.price = io.initialPrice+((io.priceScale)**(io.num+game.purchaseInterval+1n));
-      }
+      }*/
     console.log(io.price);
     if(oneTime && io.num >= io.max) {
       self.remove();
