@@ -7,16 +7,49 @@ html, body {
     justify-content: center;
     align-items: center;
     background-color: #f0f0f0;
+    user-select: none;
+    -webkit-user-select: none;
 }
 #gameboard {
     width: 100%;
     height: 100%;
     background-color: #AAAAAA;
     position: relative;
+    overflow: hidden;
 }
 #cameraViewer {
-    width: 100%;
+    width: 300%;
     height: 100%;
-    background-color: #000000;
+    background: linear-gradient(90deg, #000000 0%, #EEEEEE 100%);
     position: relative;
+    transition-duration: 0.5s;
+}
+.Ind {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 30px;
+    width: 70px;
+    height: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    z-index: 1;
+    border-radius: 8px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+}
+#LeftInd {
+    left: 10px;
+}
+#RightInd {
+    right: 10px;
+}
+.stretch-t {
+    display: inline-block;
+    transform: scaleY(6);
 }
