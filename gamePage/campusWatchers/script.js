@@ -3,7 +3,7 @@ var g = {
 };
 window.onload = function() {
     g.camera.ele = document.getElementById('cameraViewer');
-    g.camera.width = g.camera.ele.clientWidth; // 300% of container
+    g.camera.width = g.camera.ele.clientHeight*3; // 300% of container
     g.camera.height = g.camera.ele.clientHeight; // 100% of container
     g.camera.position = 1;
     g.camera.ele.style.left = `-${g.camera.width/3}px`;
