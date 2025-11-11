@@ -128,6 +128,7 @@ video {
   border: solid 1px;
   color: black;
   background-image: linear-gradient(#eeeeee, #aaaaaa);
+  touch-action: manipulation;
 }
 #clickyButton:hover {
   background-image: linear-gradient(#cccccc, #888888);
