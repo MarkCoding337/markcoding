@@ -11,7 +11,7 @@ html, body {
     -webkit-user-select: none;
 }
 #gameboard {
-    width: 100%;
+    width: 100vh;
     height: 100%;
     background-color: #AAAAAA;
     position: relative;
@@ -20,10 +20,11 @@ html, body {
 #cameraViewer {
     width: 300vh;
     height: 100%;
-    background: url(https://res.cloudinary.com/dohbq0tta/image/upload/v1763495632/Desk_1_saiaxu.jpg) no-repeat center center;
-    background-size: 100% 100%;
+    background: url(https://res.cloudinary.com/dohbq0tta/image/upload/v1763498753/Desk_3_jucusj.jpg) no-repeat;
+    background-size: contain;
     position: relative;
     transition-duration: 0.5s;
+    border-right: solid 2px #000;
 }
 .Ind {
     position: fixed;
@@ -50,7 +51,112 @@ html, body {
 #RightInd {
     right: 10px;
 }
+#monitor {
+    position:absolute;
+    top: 29.5%;
+    left: 38.2%;
+    height: 35%;
+    width: 16.3%;
+    transform: skewY(-0.5deg);
+    box-shadow: outset 0 0 15px #00ff00;
+}
+.crt-effect {
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+              linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  background-size: 100% 2px, 3px 100%; /* Adjust sizes for desired line thickness and spacing */
+  color: #00ff00; /* Green text */
+  background-color: #031e11; /* Dark background */
+  font-family: 'VT323', monospace;
+  text-shadow: 0 0 10px #00ff00; /* Subtle glow */
+  filter: blur(0.5px); /* Slight blur */
+}
+.crt-effect::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+  border-radius: 10px; /* Optional: for rounded screen edges */
+  pointer-events: none; /* Allows interaction with elements below */
+}
+@keyframes flicker {
+  0% { opacity: 0.2; }
+  5% { opacity: 0.3; }
+  10% { opacity: 0.25; }
+  /* Add more keyframes for desired flicker pattern */
+  100% { opacity: 0.2; }
+}
+
+.crt-effect::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(18, 16, 16, 0.1);
+  opacity: 0;
+  animation: flicker 0.15s infinite; /* Adjust timing for desired flicker speed */
+  pointer-events: none;
+}
+#monitor main {
+    margin: 10px;
+    box-sizing: border-box;
+    overflow:auto;
+    height: calc(100% - 20px);
+}
+#monitorOutput {
+    white-space: pre-wrap;
+    line-height: 1.2em;
+    font-size: 1.1em;
+}
+.hide-scrollbar {
+  overflow-y: scroll; /* or overflow: auto; to allow scrolling */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, and Opera */
+}
 .stretch-t {
     display: inline-block;
     transform: scaleY(6);
+}
+.cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1.1em; /* Adjust to match font size */
+    vertical-align: middle;
+    margin-left: 2px; /* Small space between text and cursor */
+    animation: blink 1s infinite steps(1, end);
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+#scrollTop {
+    position: fixed;
+    top: -20px;
+    right: 10px;
+    font-size: 40px;
+    vertical-align: middle;
+    color: #00ff00;
+    user-select: none;
+    -webkit-user-select: none;
+    animation: blink 1s infinite steps(1, end);
+}
+#scrollBottom {
+    position: fixed;
+    bottom: 5px;
+    right: 10px;
+    font-size: 24px;
+    vertical-align: middle;
+    color: #00ff00;
+    user-select: none;
+    -webkit-user-select: none;
+    animation: blink 1s infinite steps(1, end);
 }
