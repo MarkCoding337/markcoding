@@ -2,39 +2,39 @@ var g = {
     camera: {},
     computer: {},
 };
+var gee;
 window.onload = function() {
     //Camera Viewer Setup
     g.camera.ele = document.getElementById('cameraViewer');
-    g.camera.ele.style.width = "${window.innerHeight * 3}px"; // 300% of container
+    g.camera.ele.style.width = `${window.innerHeight * 3}px`; // 300% of container
     g.camera.width = g.camera.ele.clientWidth; // 300% of container
     g.camera.height = g.camera.ele.clientHeight; // 100% of container
     g.camera.position = 1;
     g.camera.ele.style.left = `-${g.camera.width/3}px`;
-    g.camera.ele.onclick = function(e) {
-        if(e.clientX < 100){
+        document.querySelector("#LeftInd").addEventListener("click", function() {
             if(g.camera.position == 1){
-                this.style.left = `0px`;
+                g.camera.ele.style.left = `0px`;
                 console.log("left");
                 g.camera.position = 0;
             }
             else if(g.camera.position == 2){
-                this.style.left = `-${g.camera.width/3}px`;
+                g.camera.ele.style.left = `-${g.camera.width/3}px`;
                 console.log("center");
                 g.camera.position = 1;
             }
-        } else if(e.clientX > window.innerWidth - 100) {
+        });
+        document.querySelector("#RightInd").addEventListener("click", function() {
             if(g.camera.position == 0){
-                this.style.left = `-${g.camera.width/3}px`;
+                g.camera.ele.style.left = `-${g.camera.width/3}px`;
                 console.log("center");
                 g.camera.position = 1;
             }
             else if(g.camera.position == 1){
-                this.style.left = `-${g.camera.width/3*2}px`;
+                g.camera.ele.style.left = `-${g.camera.width/3*2}px`;
                 console.log("right");
                 g.camera.position = 2;
             }
-        }
-    }
+        });
     //Computer Monitor Setup
     g.computer.ele = document.getElementById('monitorOutput');
     g.computer.lines = [
@@ -46,7 +46,7 @@ window.onload = function() {
         "Warning: Unauthorized use of this system is prohibited and may be subject to criminal and civil penalties.",
         ["Further use indicates consent to these terms.", 1000],
         ["Initializing Camera Feeds...", 1000],
-        ["Camera Feeds Online.", ["button", "View Camera Feeds", "document.getElementById('cameraSection').style.display = 'block'; document.getElementById('computerSection').style.display = 'none';"]],
+        ["Camera Feeds Online.", ["button", "View Camera Feeds", ()=>{document.getElementById('cameraMonitor').style.display = 'block'; document.getElementById('monitorMain').style.display = 'none';}]],
     ];
     g.computer.currentLine = 0;
     function typeLine() {
@@ -54,22 +54,17 @@ window.onload = function() {
             g.computer.ele.innerHTML += "> ";
             let line = g.computer.lines[g.computer.currentLine];
             let i = 0;
-            let wait = 500;
+            let wait = 2;
             var button = null;
             if(line instanceof Array) {
-                if(line[1] instanceof Number) {
+                if (typeof line[1] === 'number') {
                     wait = line[1];
                     line = line[0];
-                } else if(line[1] instanceof Array) {
+                } else if (Array.isArray(line[1])) {
                     if(line[1][0] == "button") {
                         button = document.createElement("button");
                         button.innerText = line[1][1];
                         button.functionToRun = line[1][2];
-                        button.onclick = function() {
-                            console.log("Button clicked");
-                            eval(this.functionToRun);
-                            this.disabled = true;
-                        };
                         line = line[0];
                     }
                 } else {
@@ -82,14 +77,21 @@ window.onload = function() {
                     i++;
                 } else {
                     clearInterval(interval);
-                    g.computer.ele.innerHTML += "<br/>";
+                    // append a real <br> element instead of using innerHTML (preserves event listeners)
+                    g.computer.ele.appendChild(document.createElement('br'));
                     g.computer.currentLine++;
-                    let gee;
                     if(button != null) {
+                        button.onclick = function() {
+                            console.log("Button clicked");
+                            this.functionToRun();
+                            return false;
+                        };
                         gee = g.computer.ele.appendChild(button);
-                        g.computer.ele.innerHTML += "<br/>";
+                        // append a line break node instead of mutating innerHTML which would remove
+                        // the button's event listeners
+                        g.computer.ele.appendChild(document.createElement('br'));
                         button = null;
-                        gee.onclick();
+                        //gee.onclick();
                     }
                     setTimeout(typeLine, wait);
                 }
@@ -109,5 +111,10 @@ window.onload = function() {
         } else {
             document.getElementById('scrollBottom').style.display = 'none';
         }
-    }, 10)
+    }, 10);
+
+    cameraCloseBtn.onclick = function() {
+        document.getElementById('cameraMonitor').style.display = 'none';
+        document.getElementById('monitorMain').style.display = 'block';
+    }
 }
