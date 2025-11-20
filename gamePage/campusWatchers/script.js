@@ -5,6 +5,7 @@ var g = {
 window.onload = function() {
     //Camera Viewer Setup
     g.camera.ele = document.getElementById('cameraViewer');
+    g.camera.ele.style.width = "${window.innerHeight * 3}px"; // 300% of container
     g.camera.width = g.camera.ele.clientWidth; // 300% of container
     g.camera.height = g.camera.ele.clientHeight; // 100% of container
     g.camera.position = 1;
