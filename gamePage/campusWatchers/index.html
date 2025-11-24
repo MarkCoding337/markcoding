@@ -10,11 +10,16 @@
         <div id="gameboard">
                <div id="cameraViewer">
                     <div id="monitor" class="crt-effect">
-                        <subsection id="cameraMonitor" class="vhs-effect">
-                            <button id="cameraCloseBtn" class="controlBtn">Close</button>
-                        </subsection>
+                        <section id="cameraMonitor" class="vhs-effect">
+                            <canvas id="cameraCanvas">
+                            </canvas>
+                            <div id="controlsGUI">
+                                <button id="cameraCloseBtn">Close</button>
+                            </div>
+                        </section>
                         <main class="hide-scrollbar" id="monitorMain"><span id="monitorOutput"></span><span class="cursor">|</span><div id="scrollTop">&#8248;</div><div id="scrollBottom">&#8964;</div></main>
                     </div>
+                    <button id="fullscreenComputer"></button>
                     <div id="LeftInd" class="Ind"><span class="stretch-t">&lt;&lt;</span></div>
                     <div id="RightInd" class="Ind"><span class="stretch-t">&gt;&gt;</span></div>
                </div>

@@ -1,9 +1,62 @@
 var g = {
     camera: {},
     computer: {},
+    imgs: {},
+    imgs_to_load: {
+        woodsDef1: "https://res.cloudinary.com/dohbq0tta/image/upload/v1763765144/woodsDef1_l1matw.jpg",
+        woodsLarry1: "https://res.cloudinary.com/dohbq0tta/image/upload/v1763768817/woodsLarry1_l3iwg9.png",
+        woodsLarry2: "https://res.cloudinary.com/dohbq0tta/image/upload/v1763768817/woodsLarry2_hd9yzz.png",
+        woodsLarry3: "https://res.cloudinary.com/dohbq0tta/image/upload/v1763768817/woodsLarry3_oyqcpf.png",
+    },
+    gameVars: {
+        currentCamera: "woods",
+        locations: {
+            woods: {
+                name: "The Woods",
+                description: "A dense forest area located on the outskirts of campus. Known for its tall trees and winding paths, it's a popular spot for students seeking solitude or adventure. However, recent reports of strange sightings have made it a place of intrigue and caution.",
+                img: "woodsDef1",
+            }
+        },
+        enemies: {
+            larry: {
+                name: "Larry the Lurker",
+                description: "A mysterious figure often spotted lurking in the shadows of the woods. Descriptions vary, but many report seeing a tall, thin figure with glowing eyes. Larry is known for his stealth and ability to appear and disappear without a trace.",
+                location: "woods",
+                placementLevel: 0,
+                levelImgs: [
+                    "woodsLarry1",
+                    "woodsLarry2",
+                    "woodsLarry3",
+                ]
+            }
+        }
+    },
 };
 var gee;
 window.onload = function() {
+    g.block = document.createElement('div');
+    g.block.style.position = 'absolute';
+    g.block.style.top = '0';
+    g.block.style.left = '0';
+    g.block.style.width = '100%';
+    g.block.style.height = '100%';
+    g.block.style.backgroundColor = 'black';
+    g.block.style.zIndex = '9999';
+    document.body.appendChild(g.block);
+    g.startButton = document.createElement('button');
+    g.startButton.disabled = true;
+    g.startButton.innerText = "Start Campus Watchers OS";
+    g.startButton.style.position = 'absolute';
+    g.startButton.style.top = '50%';
+    g.startButton.style.left = '50%';
+    g.startButton.style.transform = 'translate(-50%, -50%)';
+    g.startButton.style.padding = '20px 40px';
+    g.startButton.style.fontSize = '24px';
+    g.startButton.onclick = function() {
+        typeLine();
+        g.block.remove();
+    };
+    g.block.appendChild(g.startButton);
     //Camera Viewer Setup
     g.camera.ele = document.getElementById('cameraViewer');
     g.camera.ele.style.width = `${window.innerHeight * 3}px`; // 300% of container
@@ -46,7 +99,7 @@ window.onload = function() {
         "Warning: Unauthorized use of this system is prohibited and may be subject to criminal and civil penalties.",
         ["Further use indicates consent to these terms.", 1000],
         ["Initializing Camera Feeds...", 1000],
-        ["Camera Feeds Online.", ["button", "View Camera Feeds", ()=>{document.getElementById('cameraMonitor').style.display = 'block'; document.getElementById('monitorMain').style.display = 'none';}]],
+        ["Camera Feeds Online.", ["button", "View Camera Feeds", ()=>{document.getElementById('cameraMonitor').style.display = 'block'; document.getElementById('monitorMain').style.display = 'none'; initilizeCanvas();}]],
     ];
     g.computer.currentLine = 0;
     function typeLine() {
@@ -98,7 +151,6 @@ window.onload = function() {
             }, 1);
         }
     }
-    typeLine();
     setInterval(function() {
         let ele = document.getElementById('monitorMain');
         if(ele.scrollTop > 0) {
@@ -117,4 +169,96 @@ window.onload = function() {
         document.getElementById('cameraMonitor').style.display = 'none';
         document.getElementById('monitorMain').style.display = 'block';
     }
+    fullscreenComputer.onclick = function() {
+        if (!document.fullscreenElement) {
+            document.querySelector("#monitor").requestFullscreen();
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+        }
+    };
+
+    document.addEventListener('fullscreenchange', () => {
+        if (!document.fullscreenElement) { // document.fullscreenElement is null when exiting fullscreen
+            const root = document.documentElement;
+            root.style.setProperty('--text-factor', '14px');
+            // Perform any actions needed after exiting fullscreen
+        } else {
+            const root = document.documentElement;
+            root.style.setProperty('--text-factor', '150%');
+        }
+    });
+    //Img Stuffs
+    var imagesToLoad = Object.keys(g.imgs_to_load);
+    loadImg(imagesToLoad, 0)
 }
+
+function loadImg(keyReference, index) {
+    g.imgs[keyReference[index]] = new Image();
+    g.imgs[keyReference[index]].src = g.imgs_to_load[keyReference[index]];
+    if(index + 1 < keyReference.length) {
+        g.imgs[keyReference[index]].onload = function() {
+            loadImg(keyReference, index + 1);
+        };
+    } else {
+        g.startButton.disabled = false;
+    }
+};
+
+function initilizeCanvas() {
+    resizeCanvas();
+    draw();
+    setInterval(() => {
+        g.gameVars.enemies.larry.placementLevel = (Math.floor(Math.random() * 3));
+        drawChange(draw);
+    }, 5000);
+}
+
+const canvas = document.getElementById('cameraCanvas');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+    canvas.width = canvas.clientWidth;
+    canvas.height = canvas.clientHeight;
+    draw();
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    //Background
+    ctx.drawImage(g.imgs[g.gameVars.locations[g.gameVars.currentCamera].img], 0, 0, canvas.width, canvas.height);
+    //Larry
+    ctx.drawImage(g.imgs[g.gameVars.enemies.larry.levelImgs[g.gameVars.enemies.larry.placementLevel]], 0, 0, canvas.width, canvas.height);
+}
+
+function drawChange(latterFunc) {
+    //ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const imageData = ctx.createImageData(canvas.width, canvas.height);
+    const data = imageData.data;
+
+    for (let i = 0; i < data.length; i += 4) {
+        // Generate a random grayscale value (0-255)
+        const color = Math.floor(Math.random() * 125);
+
+        // Set R, G, B channels to the same random value for grayscale static
+        data[i] = color;     // Red
+        data[i + 1] = color; // Green
+        data[i + 2] = color; // Blue
+        data[i + 3] = 100;   // Alpha (full opacity)
+    }
+
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = imageData.width;
+    tempCanvas.height = imageData.height;
+    const tempCtx = tempCanvas.getContext('2d');
+
+    tempCtx.putImageData(imageData, 0, 0);
+    ctx.drawImage(tempCanvas, 0, 0, canvas.width, canvas.height);
+    tempCanvas.remove();
+    setTimeout(() => {
+        latterFunc();
+    }, 100);
+}
+
+window.addEventListener('resize', resizeCanvas);
