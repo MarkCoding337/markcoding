@@ -15,6 +15,11 @@ var g = {
                 name: "The Woods",
                 description: "A dense forest area located on the outskirts of campus. Known for its tall trees and winding paths, it's a popular spot for students seeking solitude or adventure. However, recent reports of strange sightings have made it a place of intrigue and caution.",
                 img: "woodsDef1",
+            },
+            school1A: {
+                name: "The School Entrance",
+                description: "A dense forest area located on the outskirts of campus. Known for its tall trees and winding paths, it's a popular spot for students seeking solitude or adventure. However, recent reports of strange sightings have made it a place of intrigue and caution.",
+                img: "woodsDef1",
             }
         },
         enemies: {
@@ -65,6 +70,7 @@ window.onload = function() {
     g.camera.position = 1;
     g.camera.ele.style.left = `-${g.camera.width/3}px`;
         document.querySelector("#LeftInd").addEventListener("click", function() {
+            setMonitorExpanded(false);
             if(g.camera.position == 1){
                 g.camera.ele.style.left = `0px`;
                 console.log("left");
@@ -77,6 +83,7 @@ window.onload = function() {
             }
         });
         document.querySelector("#RightInd").addEventListener("click", function() {
+            setMonitorExpanded(false);
             if(g.camera.position == 0){
                 g.camera.ele.style.left = `-${g.camera.width/3}px`;
                 console.log("center");
@@ -169,15 +176,63 @@ window.onload = function() {
         document.getElementById('cameraMonitor').style.display = 'none';
         document.getElementById('monitorMain').style.display = 'block';
     }
-    fullscreenComputer.onclick = function() {
-        if (!document.fullscreenElement) {
-            document.querySelector("#monitor").requestFullscreen();
+    // Toggle monitor to fill the #gameboard element (instead of browser fullscreen)
+    const fullscreenComputerEl = document.getElementById('fullscreenComputer');
+    g._monitorExpanded = false;
+    g._monitorOriginalStyles = null;
+
+    function setMonitorExpanded(expanded) {
+        const monitor = document.getElementById('monitor');
+        const cameraViewer = g.camera.ele;
+        const gameboard = document.getElementById('gameboard');
+        if (expanded && g.camera.position == 1) {
+            // store original inline styles so we can revert
+            g._monitorOriginalStyles = {
+                position: monitor.style.position || '',
+                left: monitor.style.left || '',
+                top: monitor.style.top || '',
+                width: monitor.style.width || '',
+                height: monitor.style.height || '',
+                transform: monitor.style.transform || '',
+                zIndex: monitor.style.zIndex || '',
+            };
+            // compute offsets relative to cameraViewer
+            const gameRect = gameboard.getBoundingClientRect();
+            const cameraRect = cameraViewer.getBoundingClientRect();
+            const left = gameRect.left - cameraRect.left;
+            const top = gameRect.top - cameraRect.top;
+            const width = gameRect.width;
+            const height = gameRect.height;
+            // make monitor fill the gameboard area
+            monitor.style.position = 'absolute';
+            monitor.style.left = `${left}px`;
+            monitor.style.top = `${top}px`;
+            monitor.style.width = `${width}px`;
+            monitor.style.height = `${height}px`;
+            monitor.style.transform = 'none';
+            monitor.style.zIndex = '9';
+            g._monitorExpanded = true;
         } else {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
+            // restore saved styles
+            if (g._monitorOriginalStyles) {
+                const s = g._monitorOriginalStyles;
+                monitor.style.position = s.position;
+                monitor.style.left = s.left;
+                monitor.style.top = s.top;
+                monitor.style.width = s.width;
+                monitor.style.height = s.height;
+                monitor.style.transform = s.transform;
+                monitor.style.zIndex = s.zIndex;
             }
+            g._monitorExpanded = false;
         }
-    };
+        // ensure canvas size matches new monitor size
+        setTimeout(resizeCanvas, 20);
+    }
+
+    fullscreenComputerEl.addEventListener('click', function() {
+        setMonitorExpanded(!g._monitorExpanded);
+    });
 
     document.addEventListener('fullscreenchange', () => {
         if (!document.fullscreenElement) { // document.fullscreenElement is null when exiting fullscreen
@@ -192,6 +247,86 @@ window.onload = function() {
     //Img Stuffs
     var imagesToLoad = Object.keys(g.imgs_to_load);
     loadImg(imagesToLoad, 0)
+
+    // Add camera switch UI: [Prev] [Label] [Next]
+    const controls = document.getElementById('controlsGUI');
+    if (controls && g.gameVars.locations) {
+        const keys = Object.keys(g.gameVars.locations);
+        if (keys.length > 0) {
+            const group = document.createElement('div');
+            group.id = 'cameraSwitchGroup';
+            group.style.float = "left";
+            group.style.display = 'flex';
+            group.style.gap = '8px';
+            group.style.justifyContent = 'center';
+            group.style.alignItems = 'center';
+
+            const prevBtn = document.createElement('button');
+            prevBtn.id = 'cameraPrev';
+            prevBtn.textContent = '◀';
+            prevBtn.title = 'Previous camera';
+
+            const nextBtn = document.createElement('button');
+            nextBtn.id = 'cameraNext';
+            nextBtn.textContent = '▶';
+            nextBtn.title = 'Next camera';
+
+            const label = document.createElement('span');
+            label.id = 'cameraNameDisplay';
+            label.style.padding = '0 16px';
+            label.style.color = '#00ff00';
+            label.style.fontFamily = 'VT323, monospace';
+
+            group.appendChild(prevBtn);
+            group.appendChild(label);
+            group.appendChild(nextBtn);
+            controls.appendChild(group);
+
+            function updateActiveCameraLabel() {
+                const cam = g.gameVars.locations[g.gameVars.currentCamera];
+                label.textContent = cam ? cam.name : g.gameVars.currentCamera;
+                // Shrink font size if label is too wide for monitor
+                const monitor = document.getElementById('monitor');
+                if (monitor) {
+                    const maxWidth = monitor.offsetWidth / 2;
+                    label.style.opacity = '0';
+                    nextBtn.style.opacity = '0';
+                    prevBtn.style.opacity = '0';
+                    label.style.fontSize = '1.2em'; // Reset
+                    label.style.whiteSpace = 'nowrap';
+                    label.style.overflow = 'hidden';
+                    label.style.textOverflow = 'ellipsis';
+                    setTimeout(() => {
+                        let fontSize = 1.2;
+                        while (label.offsetWidth > maxWidth && fontSize > 0.6) {
+                            fontSize -= 0.05;
+                            label.style.fontSize = fontSize + 'em';
+                        }
+                        label.style.opacity = '1';
+                        nextBtn.style.opacity = '1';
+                        prevBtn.style.opacity = '1';
+                    }, 0);
+                }
+            }
+
+            prevBtn.addEventListener('click', function () {
+                const idx = keys.indexOf(g.gameVars.currentCamera);
+                const nextIndex = (idx <= 0) ? (keys.length - 1) : (idx - 1);
+                g.gameVars.currentCamera = keys[nextIndex];
+                updateActiveCameraLabel();
+                draw();
+            });
+            nextBtn.addEventListener('click', function () {
+                const idx = keys.indexOf(g.gameVars.currentCamera);
+                const nextIndex = (idx >= keys.length - 1) ? 0 : (idx + 1);
+                g.gameVars.currentCamera = keys[nextIndex];
+                updateActiveCameraLabel();
+                draw();
+            });
+
+            updateActiveCameraLabel();
+        }
+    }
 }
 
 function loadImg(keyReference, index) {
@@ -245,7 +380,7 @@ function drawChange(latterFunc) {
         data[i] = color;     // Red
         data[i + 1] = color; // Green
         data[i + 2] = color; // Blue
-        data[i + 3] = 100;   // Alpha (full opacity)
+        data[i + 3] = 150;   // Alpha (full opacity)
     }
 
     const tempCanvas = document.createElement('canvas');
@@ -258,7 +393,14 @@ function drawChange(latterFunc) {
     tempCanvas.remove();
     setTimeout(() => {
         latterFunc();
-    }, 100);
+    }, 400);
 }
 
-window.addEventListener('resize', resizeCanvas);
+window.addEventListener('resize', function() {
+    if (g._monitorExpanded) {
+        // recompute size to keep it matching the gameboard on resize
+        setMonitorExpanded(true);
+    } else {
+        resizeCanvas();
+    }
+});

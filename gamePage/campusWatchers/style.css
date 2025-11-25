@@ -63,6 +63,7 @@ html, body {
     border-radius: 12px;
     overflow: hidden;
     box-shadow: outset 0 0 15px #00ff00;
+    transition: left 260ms ease, top 260ms ease, width 260ms ease, height 260ms ease, transform 260ms ease;
 }
 .crt-effect {
   background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
@@ -274,19 +275,54 @@ html, body {
     font-size: calc(var(--text-factor));
     z-index: 3;
 }
+#controlsGUI button:not(#cameraCloseBtn) {
+  position: static;
+  margin: 0;
+}
 #cameraCloseBtn {
     top: 10px;
     right: 10px;
+    font-size: calc(var(--text-factor) * 1.5);
 }
 #fullscreenComputer {
-    position: absolute;
-    top: 65.8%;
-    left: 113.4vh;
-    width: 17.1%;
-    border: none;
-    background: transparent;
+    position: fixed;
+    bottom: 0px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 100vh;
+    border: solid 5px black;
+    background: rgba(0, 0, 0, 0.314);
     border-radius: 12px;
-    height: 22vh;
+    height: 10vh;
     cursor: pointer;
-    z-index: 1;
+    z-index: 10;
+}
+#cameraSwitchGroup {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+  margin-left: 10px;
+  font-size: 1.75vw;
+}
+#cameraPrev, #cameraNext {
+  font-size: 1.5em;
+  padding: 4px 12px;
+  background: #222;
+  color: #0f0;
+  border: 1px solid #444;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+#cameraPrev:hover, #cameraNext:hover, #cameraCloseBtn:hover {
+  background: #333;
+}
+#cameraNameDisplay {
+  color: #00ff00;
+  font-family: VT323, monospace;
+  font-size: 1.2em;
+  text-align: center;
 }
