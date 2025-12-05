@@ -16,13 +16,13 @@ var game = {
   
   shopUpgrades: {
     recursive: [
-      {name: "Selling Practice (Automatic)", price: 10n, initialPrice: 10n, priceScale: 4n, scaleT: 1, num: 0n, effects: {moneyPerSec: 2n}, avail: true},
-      {name: "Selling Practice (Manual)", price: 10n, initialPrice: 10n, priceScale: 3n, scaleT: 1, num: 0n, effects: {clickMulti: 1n}, avail: true},
-      {name: "Hiring A Handler", price: 10000n, initialPrice: 10000n, priceScale: 7550n, scaleT: 1, num: 0n, effects: {moneyPerSecondMulti: 2n}, avail: true},
+      {name: "Selling Practice (Automatic)", price: 10n, initialPrice: 10n, priceScale: 6n, scaleT: 1, num: 0n, effects: {moneyPerSec: 1n}, avail: true},
+      {name: "Selling Practice (Manual)", price: 10n, initialPrice: 10n, priceScale: 6n, scaleT: 1, num: 0n, effects: {clickMulti: 1n}, avail: true},
+      {name: "Hiring A Handler", price: 10000n, initialPrice: 10000n, priceScale: 20000n, scaleT: 1, num: 0n, effects: {moneyPerSecondMulti: 1n}, avail: true},
     ],
     oneTime: [
-      {name: "Selling Practice (Extra)", price: 100n, initialPrice: 100n, priceScale: 20n, scaleT: 1, num: 0n, max: 4n, effects: {clickMulti: 10n}, avail: true},
-      {name: "Selling Practice (Extra Extra)", price: 9000n, initialPrice: 9000n, priceScale: 132n, scaleT: 0, num: 0n, max: 20n, effects: {moneyPerSec: 150n}, avail: true},
+      {name: "Selling Practice (Extra)", price: 100n, initialPrice: 100n, priceScale: 40n, scaleT: 1, num: 0n, max: 4n, effects: {clickMulti: 4n}, avail: true},
+      {name: "Selling Practice (Extra Extra)", price: 18000n, initialPrice: 18000n, priceScale: 300n, scaleT: 0, num: 0n, max: 20n, effects: {moneyPerSec: 50n}, avail: true},
     ],
   },
   
@@ -119,6 +119,69 @@ var game = {
       }
     }
   },
+
+  // Compute total cost to buy `qty` units of an upgrade from its current `num`.
+  // Handles linear scaling (scaleT == 0) and exponential scaling (scaleT == 1).
+  computeTotalCost: function(upgrade, qty) {
+    qty = BigInt(qty);
+    const cur = upgrade.num;
+    const initial = upgrade.initialPrice;
+    const scale = upgrade.priceScale;
+    // Linear scaling: price for unit k is initial + scale*(cur + k)
+    if(upgrade.scaleT == 0) {
+      // sum_{k=0..qty-1} (initial + scale*(cur + k))
+      // = qty*initial + scale*(qty*cur + qty*(qty-1)/2)
+      const qtyCur = qty * cur;
+      const qtyPair = (qty * (qty - 1n)) / 2n;
+      return qty * initial + scale * (qtyCur + qtyPair);
+    }
+    // Exponential scaling: price for unit k is initial + scale ** (cur + k)
+    if(upgrade.scaleT == 1) {
+      let total = 0n;
+      for(let k = 0n; k < qty; k++) {
+        total += initial + (scale ** (cur + k));
+      }
+      return total;
+    }
+    // Fallback: treat as single price
+    return upgrade.price || 0n;
+  },
+
+  // Return a human-friendly description of an upgrade's effects for `qty` units.
+  formatEffect: function(upgrade, qty) {
+    qty = BigInt(qty);
+    const eff = upgrade.effects || {};
+    const parts = [];
+    if(eff.hasOwnProperty("moneyPerSec")) {
+      const per = eff.moneyPerSec;
+      const total = per * qty;
+      if(qty > 1n) {
+        parts.push("+"+game.dispNum(per)+"/s each ("+"+"+game.dispNum(total)+" total)");
+      } else {
+        parts.push("+"+game.dispNum(per)+"/s each");
+      }
+    }
+    if(eff.hasOwnProperty("clickMulti")) {
+      const per = eff.clickMulti;
+      const total = per * qty;
+      if(qty > 1n) {
+        parts.push("+"+game.dispNum(per)+"/click each ("+"+"+game.dispNum(total)+" total)");
+      } else {
+        parts.push("+"+game.dispNum(per)+"/click each");
+      }
+    }
+    if(eff.hasOwnProperty("moneyPerSecondMulti")) {
+      const per = eff.moneyPerSecondMulti;
+      const total = per * qty;
+      if(qty > 1n) {
+        parts.push("+"+game.dispNum(per)+" MPS-exp each ("+"+"+game.dispNum(total)+" exp total)");
+      } else {
+        parts.push("+"+game.dispNum(per)+" MPS-exp each");
+      }
+    }
+    if(parts.length === 0) return "(no direct effect)";
+    return parts.join("; ");
+  },
   
   loadShop: function() {
     game.shopRecList.innerHTML = "";
@@ -130,13 +193,10 @@ var game = {
       } else {
         a.className = "";
       };
-      if(b[i].scaleT == 0) {
-          b[i].price = (b[i].initialPrice+((b[i].priceScale*(b[i].num+game.purchaseInterval))));
-      } else if(b[i].scaleT == 1) {
-          b[i].price = b[i].initialPrice+((b[i].priceScale)**(b[i].num+game.purchaseInterval+1n));
-      }
-      console.log(b[i].price);
-      a.innerHTML = b[i].name + " | Price: $"+game.dispNum(b[i].price)+" For "+game.dispNum(game.purchaseInterval)+" Unit | Have: "+game.dispNum(b[i].num);
+        // compute total price for the selected purchase interval
+        b[i].price = game.computeTotalCost(b[i], game.purchaseInterval);
+        var effectHint = game.formatEffect(b[i], game.purchaseInterval);
+        a.innerHTML = b[i].name + " | Price: $"+game.dispNum(b[i].price)+" For "+game.dispNum(game.purchaseInterval)+" Unit | Have: "+game.dispNum(b[i].num)+" | Effect: "+effectHint;
       a.idNUM = i;
       a.onclick = function() {
         purchaseUpgrade(true, this, false);
@@ -153,12 +213,10 @@ var game = {
         } else {
           a.className = "";
         }; 
-        if(b[i].scaleT == 0) {
-          b[i].price = (b[i].initialPrice+((b[i].priceScale*b[i].num)));
-        } else if(b[i].scaleT == 1) {
-          b[i].price = b[i].initialPrice+((b[i].priceScale)**(b[i].num));
-        }
-        a.innerHTML = b[i].name + " | Price: $"+game.dispNum(b[i].price)+" | Have: "+game.dispNum(b[i].num) + " | Max: "+game.dispNum(b[i].max);
+        // one-time purchases always show cost for a single unit
+        b[i].price = game.computeTotalCost(b[i], 1n);
+        var effectHint = game.formatEffect(b[i], 1n);
+        a.innerHTML = b[i].name + " | Price: $"+game.dispNum(b[i].price)+" | Have: "+game.dispNum(b[i].num) + " | Max: "+game.dispNum(b[i].max)+" | Effect: "+effectHint;
         a.idNUM = i;
         a.onclick = function() {
           purchaseUpgrade(false, this, true);
@@ -399,20 +457,20 @@ function convertNumericStringsToBigInt(obj) {
 function purchaseUpgrade(rec, self, oneTime) {
   if(rec) {
   var io = game.shopUpgrades.recursive[self.idNUM];
-    if(game.cash >= io.price) {
-    console.log(io.price);
-    game.cash -= io.price;
-    io.num += game.purchaseInterval;
-    if(io.effects.hasOwnProperty("moneyPerSec")) {
-      game.moneyPerSecond += io.effects.moneyPerSec*game.purchaseInterval;
-    }
-    if(io.effects.hasOwnProperty("clickMulti")) {
-      game.clickMulti += io.effects.clickMulti*game.purchaseInterval;
-    }
-    if(io.effects.hasOwnProperty("moneyPerSecondMulti")) {
-      game.moneyPerSecondMulti += io.effects.moneyPerSecondMulti*game.purchaseInterval;
-    }
-    game.loadShop();
+    const cost = game.computeTotalCost(io, game.purchaseInterval);
+    if(game.cash >= cost) {
+      game.cash -= cost;
+      io.num += game.purchaseInterval;
+      if(io.effects.hasOwnProperty("moneyPerSec")) {
+        game.moneyPerSecond += io.effects.moneyPerSec*game.purchaseInterval;
+      }
+      if(io.effects.hasOwnProperty("clickMulti")) {
+        game.clickMulti += io.effects.clickMulti*game.purchaseInterval;
+      }
+      if(io.effects.hasOwnProperty("moneyPerSecondMulti")) {
+        game.moneyPerSecondMulti += io.effects.moneyPerSecondMulti*game.purchaseInterval;
+      }
+      game.loadShop();
     /*if(io.scaleT == 0) {
           io.price = (io.initialPrice+((io.priceScale*(io.num+game.purchaseInterval))));
       } else if(io.scaleT == 1) {
@@ -421,9 +479,9 @@ function purchaseUpgrade(rec, self, oneTime) {
    } 
   } else {
   var io = game.shopUpgrades.oneTime[self.idNUM];
-    if(game.cash >= io.price) {
-      console.log(io.price);
-      game.cash -= io.price;
+    const cost = game.computeTotalCost(io, 1n);
+    if(game.cash >= cost) {
+      game.cash -= cost;
       io.num += 1n;
       if(io.effects.hasOwnProperty("moneyPerSec")) {
         game.moneyPerSecond += io.effects.moneyPerSec;
