@@ -7,6 +7,7 @@ var g = {
         woodsLarry1: "https://res.cloudinary.com/dohbq0tta/image/upload/v1763768817/woodsLarry1_l3iwg9.png",
         woodsLarry2: "https://res.cloudinary.com/dohbq0tta/image/upload/v1763768817/woodsLarry2_hd9yzz.png",
         woodsLarry3: "https://res.cloudinary.com/dohbq0tta/image/upload/v1763768817/woodsLarry3_oyqcpf.png",
+        schoolEntranceDef1: "https://www.istockphoto.com/photo/dark-creepy-corridor-of-abandoned-hospital-at-night-horror-concept-gm1132260774-300083488",
     },
     gameVars: {
         currentCamera: "woods",
@@ -19,7 +20,7 @@ var g = {
             school1A: {
                 name: "The School Entrance",
                 description: "A dense forest area located on the outskirts of campus. Known for its tall trees and winding paths, it's a popular spot for students seeking solitude or adventure. However, recent reports of strange sightings have made it a place of intrigue and caution.",
-                img: "woodsDef1",
+                img: "schoolEntranceDef1",
             }
         },
         enemies: {
@@ -60,6 +61,14 @@ window.onload = function() {
     g.startButton.onclick = function() {
         typeLine();
         g.block.remove();
+    };
+    document.getElementById("gameFullscreen").onclick = function() {
+        document.body.requestFullscreen();
+        setTimeout(()=>{
+            g.camera.ele.style.width = `${window.innerHeight * 3}px`;
+            g.camera.width = g.camera.ele.clientWidth;
+            g.camera.height = g.camera.ele.clientHeight;
+        }, 100);
     };
     g.block.appendChild(g.startButton);
     //Camera Viewer Setup
@@ -314,14 +323,14 @@ window.onload = function() {
                 const nextIndex = (idx <= 0) ? (keys.length - 1) : (idx - 1);
                 g.gameVars.currentCamera = keys[nextIndex];
                 updateActiveCameraLabel();
-                draw();
+                drawChange(draw);
             });
             nextBtn.addEventListener('click', function () {
                 const idx = keys.indexOf(g.gameVars.currentCamera);
                 const nextIndex = (idx >= keys.length - 1) ? 0 : (idx + 1);
                 g.gameVars.currentCamera = keys[nextIndex];
                 updateActiveCameraLabel();
-                draw();
+                drawChange(draw);
             });
 
             updateActiveCameraLabel();

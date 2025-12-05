@@ -57,7 +57,7 @@ html, body {
 #monitor {
     position:absolute;
     top: 28.9%;
-    left: 113.4vh;
+    left: 113.4vh; /*113.4vh*/
     height: 36.9%;
     width: 17.1%;
     border-radius: 12px;
@@ -325,4 +325,10 @@ html, body {
   font-family: VT323, monospace;
   font-size: 1.2em;
   text-align: center;
+}
+
+#gameFullscreen {
+  position: fixed;
+  bottom: 0;
+  right: 0;
 }
