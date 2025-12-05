@@ -7,9 +7,16 @@ var g = {
         woodsLarry1: "https://res.cloudinary.com/dohbq0tta/image/upload/v1763768817/woodsLarry1_l3iwg9.png",
         woodsLarry2: "https://res.cloudinary.com/dohbq0tta/image/upload/v1763768817/woodsLarry2_hd9yzz.png",
         woodsLarry3: "https://res.cloudinary.com/dohbq0tta/image/upload/v1763768817/woodsLarry3_oyqcpf.png",
-        schoolEntranceDef1: "https://www.istockphoto.com/photo/dark-creepy-corridor-of-abandoned-hospital-at-night-horror-concept-gm1132260774-300083488",
+
+        schoolEntranceDef1: "https://res.cloudinary.com/dohbq0tta/image/upload/v1764962054/schoolEntranceDef1Temp_iiw8qa.png",
+        schoolEntranceLarry1: "https://res.cloudinary.com/dohbq0tta/image/upload/v1764962682/schoolEntranceLarry1_kypm4t.png",
+        schoolEntranceLarry2: "https://res.cloudinary.com/dohbq0tta/image/upload/v1764962881/schoolEntranceLarry2_rcq64r.png",
+        schoolEntranceLarry3: "https://res.cloudinary.com/dohbq0tta/image/upload/v1764963031/schoolEntranceLarry3_la2kld.png",
+
+        cameraViewerDef: "https://res.cloudinary.com/dohbq0tta/image/upload/v1763673279/Desk_3_qcorr7.jpg",
     },
     gameVars: {
+        cameraInitialized: false,
         currentCamera: "woods",
         locations: {
             woods: {
@@ -17,7 +24,7 @@ var g = {
                 description: "A dense forest area located on the outskirts of campus. Known for its tall trees and winding paths, it's a popular spot for students seeking solitude or adventure. However, recent reports of strange sightings have made it a place of intrigue and caution.",
                 img: "woodsDef1",
             },
-            school1A: {
+            schoolEntrance: {
                 name: "The School Entrance",
                 description: "A dense forest area located on the outskirts of campus. Known for its tall trees and winding paths, it's a popular spot for students seeking solitude or adventure. However, recent reports of strange sightings have made it a place of intrigue and caution.",
                 img: "schoolEntranceDef1",
@@ -29,11 +36,18 @@ var g = {
                 description: "A mysterious figure often spotted lurking in the shadows of the woods. Descriptions vary, but many report seeing a tall, thin figure with glowing eyes. Larry is known for his stealth and ability to appear and disappear without a trace.",
                 location: "woods",
                 placementLevel: 0,
-                levelImgs: [
-                    "woodsLarry1",
-                    "woodsLarry2",
-                    "woodsLarry3",
-                ]
+                levelImgs: {
+                    woods: [
+                        "woodsLarry1",
+                        "woodsLarry2",
+                        "woodsLarry3",
+                    ],
+                    schoolEntrance: [
+                        "schoolEntranceLarry1",
+                        "schoolEntranceLarry2",
+                        "schoolEntranceLarry3",
+                    ],
+                }
             }
         }
     },
@@ -62,6 +76,7 @@ window.onload = function() {
         typeLine();
         g.block.remove();
     };
+
     document.getElementById("gameFullscreen").onclick = function() {
         document.body.requestFullscreen();
         setTimeout(()=>{
@@ -104,6 +119,12 @@ window.onload = function() {
                 g.camera.position = 2;
             }
         });
+
+
+    //World Images Setup
+
+    g.camera.ele.style.backgroundImage = "url('https://res.cloudinary.com/dohbq0tta/image/upload/v1763673279/Desk_3_qcorr7.jpg')";
+
     //Computer Monitor Setup
     g.computer.ele = document.getElementById('monitorOutput');
     g.computer.lines = [
@@ -115,7 +136,7 @@ window.onload = function() {
         "Warning: Unauthorized use of this system is prohibited and may be subject to criminal and civil penalties.",
         ["Further use indicates consent to these terms.", 1000],
         ["Initializing Camera Feeds...", 1000],
-        ["Camera Feeds Online.", ["button", "View Camera Feeds", ()=>{document.getElementById('cameraMonitor').style.display = 'block'; document.getElementById('monitorMain').style.display = 'none'; initilizeCanvas();}]],
+        ["Camera Feeds Online.", ["button", "View Camera Feeds", ()=>{document.getElementById('cameraMonitor').style.display = 'block'; document.getElementById('monitorMain').style.display = 'none'; if(g.gameVars.cameraInitialized == false){initilizeCanvas(); g.gameVars.cameraInitialized = true;} }]],
     ];
     g.computer.currentLine = 0;
     function typeLine() {
@@ -354,8 +375,18 @@ function initilizeCanvas() {
     resizeCanvas();
     draw();
     setInterval(() => {
-        g.gameVars.enemies.larry.placementLevel = (Math.floor(Math.random() * 3));
-        drawChange(draw);
+        g.gameVars.enemies.larry.placementLevel = (g.gameVars.enemies.larry.placementLevel + 1);
+        posStill = false;
+        if (g.gameVars.enemies.larry.placementLevel > 2) {
+            g.gameVars.enemies.larry.placementLevel = 0;
+            posStill = g.gameVars.currentCamera == g.gameVars.enemies.larry.location;
+            g.gameVars.enemies.larry.location = (g.gameVars.enemies.larry.location == "woods") ? "schoolEntrance" : "woods";
+        }
+        if(g.gameVars.currentCamera == g.gameVars.enemies.larry.location || posStill) {
+            drawChange(draw);
+        } else {
+            draw();
+        };
     }, 5000);
 }
 
@@ -373,7 +404,9 @@ function draw() {
     //Background
     ctx.drawImage(g.imgs[g.gameVars.locations[g.gameVars.currentCamera].img], 0, 0, canvas.width, canvas.height);
     //Larry
-    ctx.drawImage(g.imgs[g.gameVars.enemies.larry.levelImgs[g.gameVars.enemies.larry.placementLevel]], 0, 0, canvas.width, canvas.height);
+    if(g.gameVars.currentCamera == g.gameVars.enemies.larry.location) {
+        ctx.drawImage(g.imgs[g.gameVars.enemies.larry.levelImgs[g.gameVars.enemies.larry.location][g.gameVars.enemies.larry.placementLevel]], 0, 0, canvas.width, canvas.height);
+    };
 }
 
 function drawChange(latterFunc) {
