@@ -344,14 +344,14 @@ window.onload = function() {
                 const nextIndex = (idx <= 0) ? (keys.length - 1) : (idx - 1);
                 g.gameVars.currentCamera = keys[nextIndex];
                 updateActiveCameraLabel();
-                drawChange(draw);
+                drawChange(draw, 100);
             });
             nextBtn.addEventListener('click', function () {
                 const idx = keys.indexOf(g.gameVars.currentCamera);
                 const nextIndex = (idx >= keys.length - 1) ? 0 : (idx + 1);
                 g.gameVars.currentCamera = keys[nextIndex];
                 updateActiveCameraLabel();
-                drawChange(draw);
+                drawChange(draw, 100);
             });
 
             updateActiveCameraLabel();
@@ -409,10 +409,14 @@ function draw() {
     };
 }
 
-function drawChange(latterFunc) {
+function drawChange(latterFunc, changeTime) {
     //ctx.clearRect(0, 0, canvas.width, canvas.height);
     const imageData = ctx.createImageData(canvas.width, canvas.height);
     const data = imageData.data;
+
+    if (!changeTime) {
+        changeTime = 400;
+    }
 
     for (let i = 0; i < data.length; i += 4) {
         // Generate a random grayscale value (0-255)
@@ -435,7 +439,7 @@ function drawChange(latterFunc) {
     tempCanvas.remove();
     setTimeout(() => {
         latterFunc();
-    }, 400);
+    }, changeTime);
 }
 
 window.addEventListener('resize', function() {
