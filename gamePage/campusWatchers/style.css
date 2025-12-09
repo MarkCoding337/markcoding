@@ -108,8 +108,9 @@ html, body {
 #monitor main {
     margin: 10px;
     box-sizing: border-box;
+    position: relative;
     overflow:auto;
-    height: calc(100% - 20px);
+    height: calc(100% - 35px - var(--text-factor));
 }
 #monitorOutput {
     white-space: pre-wrap;
@@ -140,19 +141,7 @@ html, body {
     display: inline-block;
     transform: scaleY(6);
 }
-.cursor {
-    display: inline-block;
-    width: 2px;
-    height: 1.1em; /* Adjust to match font size */
-    vertical-align: middle;
-    margin-left: 2px; /* Small space between text and cursor */
-    animation: blink 1s infinite steps(1, end);
-}
 
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-}
 #scrollTop {
     position: fixed;
     top: -20px;
@@ -275,15 +264,6 @@ html, body {
     font-size: calc(var(--text-factor));
     z-index: 3;
 }
-#controlsGUI button:not(#cameraCloseBtn) {
-  position: static;
-  margin: 0;
-}
-#cameraCloseBtn {
-    top: 10px;
-    right: 10px;
-    font-size: calc(var(--text-factor) * 1.5);
-}
 #fullscreenComputer {
     position: fixed;
     bottom: 0px;
@@ -331,4 +311,26 @@ html, body {
   position: fixed;
   bottom: 0;
   right: 0;
+}
+
+#CMDInput {
+  height: var(--text-factor);
+  width: calc(100% - 40px);
+  background: none;
+  border: none;
+  position:absolute;
+  bottom: 5px;
+  left: 10px;
+  caret-color: #00ff00; /* Hide default caret */;
+  color: #00ff00;
+  font-family: 'VT323', monospace;
+  font-size: calc(var(--text-factor) * 1.1);
+  outline: none;
+  position: relative;
+  border-bottom: solid 1px #00ff00;
+}
+#CMDInput::before {
+  content: ">";
+  position: absolute;
+  right: 10px;
 }

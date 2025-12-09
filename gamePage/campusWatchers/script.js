@@ -16,6 +16,8 @@ var g = {
         cameraViewerDef: "https://res.cloudinary.com/dohbq0tta/image/upload/v1763673279/Desk_3_qcorr7.jpg",
     },
     gameVars: {
+        commandHistory: [],
+        commandHistoryIndex: -1,
         cameraInitialized: false,
         currentCamera: "woods",
         locations: {
@@ -24,7 +26,7 @@ var g = {
                 description: "A dense forest area located on the outskirts of campus. Known for its tall trees and winding paths, it's a popular spot for students seeking solitude or adventure. However, recent reports of strange sightings have made it a place of intrigue and caution.",
                 img: "woodsDef1",
             },
-            schoolEntrance: {
+            school1: {
                 name: "The School Entrance",
                 description: "A dense forest area located on the outskirts of campus. Known for its tall trees and winding paths, it's a popular spot for students seeking solitude or adventure. However, recent reports of strange sightings have made it a place of intrigue and caution.",
                 img: "schoolEntranceDef1",
@@ -42,7 +44,7 @@ var g = {
                         "woodsLarry2",
                         "woodsLarry3",
                     ],
-                    schoolEntrance: [
+                    school1: [
                         "schoolEntranceLarry1",
                         "schoolEntranceLarry2",
                         "schoolEntranceLarry3",
@@ -73,7 +75,7 @@ window.onload = function() {
     g.startButton.style.padding = '20px 40px';
     g.startButton.style.fontSize = '24px';
     g.startButton.onclick = function() {
-        typeLine();
+        typeLine(g.computer.entranceLines);
         g.block.remove();
     };
 
@@ -85,6 +87,92 @@ window.onload = function() {
             g.camera.height = g.camera.ele.clientHeight;
         }, 100);
     };
+
+    document.getElementById("CMDInput").addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault(); // Prevent default behavior (e.g., form submission)
+            const input = event.target;
+            const command = input.value.trim();
+            if (command.length > 0) {
+                g.computer.ele.innerHTML += `> ${command}<br>`;
+                // Process command here
+                if (command.toLowerCase() === "help") {
+                    attemptNewLine([["Available commands:", 1000], "- help", "- status", "- view_cam [camera_name]", "- list_cams"], true);
+                } else if (command.toLowerCase() === "status") {
+                    attemptNewLine("All systems operational. No anomalies detected.", true);
+                } else if (command.toLowerCase().includes("view_cam")) {
+                    if(command.split(" ").length > 1) {
+                        let camName = command.split(" ")[1];
+                        if(g.gameVars.locations[camName]) {
+                            g.gameVars.currentCamera = camName;
+                            attemptNewLine(`Switched to camera: ${g.gameVars.locations[camName].name}`, true);
+                            document.getElementById("CMDInput").disabled = true;
+                            setTimeout(()=>{
+                                updateActiveCameraLabel();
+                                document.getElementById('cameraMonitor').style.display = 'block';
+                                document.getElementById('monitorMain').style.display = 'none';
+                                if(g.gameVars.cameraInitialized == false){
+                                    initilizeCanvas();
+                                    g.gameVars.cameraInitialized = true;
+                                };
+                                draw();
+                                document.getElementById("cameraMonitor").onclick = function() {
+                                    document.getElementById('cameraMonitor').style.display = 'none';
+                                    document.getElementById('monitorMain').style.display = 'block';
+                                    document.getElementById("CMDInput").disabled = false;
+                                    document.getElementById("CMDInput").focus();
+                                }
+                            }, 500);
+                        } else {
+                            attemptNewLine(`Camera '${camName}' not found.`, true);
+                        }
+                    } else {
+                        attemptNewLine("Please specify a camera name. Usage: view_cams [camera_name]", true);
+                    }
+                    
+                } else if(command.toLowerCase() === "list_cams") {
+                    let camList = ["Available Cameras:"];
+                    for (let cam in g.gameVars.locations) {
+                        camList.push(`- ${cam}: ${g.gameVars.locations[cam].name}`);
+                    }
+                    attemptNewLine(camList, true);
+                } else {
+                    attemptNewLine(`Unknown command: ${command}`);
+                }
+                // Clear input field
+                input.value = "";
+                // Scroll to bottom
+                const monitorMain = document.getElementById("monitorMain");
+                monitorMain.scrollTop = monitorMain.scrollHeight;
+                commandHistoryPush(command);
+            };
+        };
+    });
+
+    function commandHistoryPush(command) {
+        g.gameVars.commandHistory.push(command);
+        g.gameVars.commandHistoryIndex = g.gameVars.commandHistory.length;
+    }
+
+    document.getElementById("CMDInput").addEventListener("keydown", function(event) {
+        if (event.key === "ArrowUp") {
+            if (g.gameVars.commandHistoryIndex > 0) {
+                g.gameVars.commandHistoryIndex--;
+                event.target.value = g.gameVars.commandHistory[g.gameVars.commandHistoryIndex];
+            }
+            event.preventDefault();
+        } else if (event.key === "ArrowDown") {
+            if (g.gameVars.commandHistoryIndex < g.gameVars.commandHistory.length - 1) {
+                g.gameVars.commandHistoryIndex++;
+                event.target.value = g.gameVars.commandHistory[g.gameVars.commandHistoryIndex];
+            } else {
+                g.gameVars.commandHistoryIndex = g.gameVars.commandHistory.length;
+                event.target.value = "";
+            }
+            event.preventDefault();
+        }
+    });
+
     g.block.appendChild(g.startButton);
     //Camera Viewer Setup
     g.camera.ele = document.getElementById('cameraViewer');
@@ -127,7 +215,7 @@ window.onload = function() {
 
     //Computer Monitor Setup
     g.computer.ele = document.getElementById('monitorOutput');
-    g.computer.lines = [
+    g.computer.entranceLines = [
         ["System Booting...", 1000],
         "Loading Campus Watcher OS v0.1.0...",
         "Establishing Secure Connection...",
@@ -136,13 +224,27 @@ window.onload = function() {
         "Warning: Unauthorized use of this system is prohibited and may be subject to criminal and civil penalties.",
         ["Further use indicates consent to these terms.", 1000],
         ["Initializing Camera Feeds...", 1000],
-        ["Camera Feeds Online.", ["button", "View Camera Feeds", ()=>{document.getElementById('cameraMonitor').style.display = 'block'; document.getElementById('monitorMain').style.display = 'none'; if(g.gameVars.cameraInitialized == false){initilizeCanvas(); g.gameVars.cameraInitialized = true;} }]],
+        "Camera Feeds Initialized.",
+        ["Type 'help' for a list of commands.", ["function", function() {document.getElementById("CMDInput").disabled = false; document.getElementById("CMDInput").focus();}]],
     ];
     g.computer.currentLine = 0;
-    function typeLine() {
-        if(g.computer.currentLine < g.computer.lines.length) {
-            g.computer.ele.innerHTML += "> ";
-            let line = g.computer.lines[g.computer.currentLine];
+    attemptNewLine = function(lines, cmd) {
+        if(Array.isArray(lines) == false) {
+            lines = [lines];
+        }
+        if(!g.computer.typing) {
+            typeLine(lines, cmd);
+        }
+    };
+    function typeLine(givenLines, cmd) {
+        if(g.computer.currentLine < givenLines.length) {
+            g.computer.typing = true;
+            if(cmd && g.computer.currentLine == 0) {
+                g.computer.ele.innerHTML += "> ";
+            } else if(!cmd) {
+                g.computer.ele.innerHTML += "> ";
+            }
+            let line = givenLines[g.computer.currentLine];
             let i = 0;
             let wait = 2;
             var button = null;
@@ -155,6 +257,9 @@ window.onload = function() {
                         button = document.createElement("button");
                         button.innerText = line[1][1];
                         button.functionToRun = line[1][2];
+                        line = line[0];
+                    } else if (line[1][0] == "function") {
+                        line[1][1]();
                         line = line[0];
                     }
                 } else {
@@ -183,9 +288,15 @@ window.onload = function() {
                         button = null;
                         //gee.onclick();
                     }
-                    setTimeout(typeLine, wait);
+                    setTimeout(typeLine, wait, givenLines, cmd);
+                    monitorMain = document.getElementById("monitorMain");
+                    monitorMain.scrollTop = monitorMain.scrollHeight;
+                    
                 }
             }, 1);
+        } else {
+            g.computer.currentLine = 0;
+            g.computer.typing = false;
         }
     }
     setInterval(function() {
@@ -200,12 +311,10 @@ window.onload = function() {
         } else {
             document.getElementById('scrollBottom').style.display = 'none';
         }
+
+        document.getElementById("CMDInput").focus();
     }, 10);
 
-    cameraCloseBtn.onclick = function() {
-        document.getElementById('cameraMonitor').style.display = 'none';
-        document.getElementById('monitorMain').style.display = 'block';
-    }
     // Toggle monitor to fill the #gameboard element (instead of browser fullscreen)
     const fullscreenComputerEl = document.getElementById('fullscreenComputer');
     g._monitorExpanded = false;
@@ -291,25 +400,13 @@ window.onload = function() {
             group.style.justifyContent = 'center';
             group.style.alignItems = 'center';
 
-            const prevBtn = document.createElement('button');
-            prevBtn.id = 'cameraPrev';
-            prevBtn.textContent = '◀';
-            prevBtn.title = 'Previous camera';
-
-            const nextBtn = document.createElement('button');
-            nextBtn.id = 'cameraNext';
-            nextBtn.textContent = '▶';
-            nextBtn.title = 'Next camera';
-
             const label = document.createElement('span');
             label.id = 'cameraNameDisplay';
             label.style.padding = '0 16px';
             label.style.color = '#00ff00';
             label.style.fontFamily = 'VT323, monospace';
 
-            group.appendChild(prevBtn);
             group.appendChild(label);
-            group.appendChild(nextBtn);
             controls.appendChild(group);
 
             function updateActiveCameraLabel() {
@@ -320,8 +417,6 @@ window.onload = function() {
                 if (monitor) {
                     const maxWidth = monitor.offsetWidth / 2;
                     label.style.opacity = '0';
-                    nextBtn.style.opacity = '0';
-                    prevBtn.style.opacity = '0';
                     label.style.fontSize = '1.2em'; // Reset
                     label.style.whiteSpace = 'nowrap';
                     label.style.overflow = 'hidden';
@@ -333,26 +428,9 @@ window.onload = function() {
                             label.style.fontSize = fontSize + 'em';
                         }
                         label.style.opacity = '1';
-                        nextBtn.style.opacity = '1';
-                        prevBtn.style.opacity = '1';
                     }, 0);
                 }
             }
-
-            prevBtn.addEventListener('click', function () {
-                const idx = keys.indexOf(g.gameVars.currentCamera);
-                const nextIndex = (idx <= 0) ? (keys.length - 1) : (idx - 1);
-                g.gameVars.currentCamera = keys[nextIndex];
-                updateActiveCameraLabel();
-                drawChange(draw, 100);
-            });
-            nextBtn.addEventListener('click', function () {
-                const idx = keys.indexOf(g.gameVars.currentCamera);
-                const nextIndex = (idx >= keys.length - 1) ? 0 : (idx + 1);
-                g.gameVars.currentCamera = keys[nextIndex];
-                updateActiveCameraLabel();
-                drawChange(draw, 100);
-            });
 
             updateActiveCameraLabel();
         }
@@ -380,7 +458,7 @@ function initilizeCanvas() {
         if (g.gameVars.enemies.larry.placementLevel > 2) {
             g.gameVars.enemies.larry.placementLevel = 0;
             posStill = g.gameVars.currentCamera == g.gameVars.enemies.larry.location;
-            g.gameVars.enemies.larry.location = (g.gameVars.enemies.larry.location == "woods") ? "schoolEntrance" : "woods";
+            g.gameVars.enemies.larry.location = (g.gameVars.enemies.larry.location == "woods") ? "school1" : "woods";
         }
         if(g.gameVars.currentCamera == g.gameVars.enemies.larry.location || posStill) {
             drawChange(draw);
