@@ -20,6 +20,10 @@ var g = {
         commandHistoryIndex: -1,
         cameraInitialized: false,
         currentCamera: "woods",
+        statusData: {
+            energy: 1000,
+            maxEnergy: 1000,
+        },
         locations: {
             woods: {
                 name: "The Woods",
@@ -97,9 +101,14 @@ window.onload = function() {
                 g.computer.ele.innerHTML += `> ${command}<br>`;
                 // Process command here
                 if (command.toLowerCase() === "help") {
-                    attemptNewLine([["Available commands:", 1000], "- help", "- status", "- view_cam [camera_name]", "- list_cams"], true);
+                    attemptNewLine([["Available commands:", 1000], "  - help", "  - status", "  - view_cam [camera_name] *See Camera Names In {list_cams} Command*", "  - list_cams"], true);
                 } else if (command.toLowerCase() === "status") {
-                    attemptNewLine("All systems operational. No anomalies detected.", true);
+                    let statusLines = [
+                        "Facility Status:",
+                        `  Energy: ${g.gameVars.statusData.energy} kJ / ${g.gameVars.statusData.maxEnergy} kJ`,
+                    ];
+                    
+                    attemptNewLine(statusLines, true);
                 } else if (command.toLowerCase().includes("view_cam")) {
                     if(command.split(" ").length > 1) {
                         let camName = command.split(" ")[1];
@@ -133,9 +142,11 @@ window.onload = function() {
                 } else if(command.toLowerCase() === "list_cams") {
                     let camList = ["Available Cameras:"];
                     for (let cam in g.gameVars.locations) {
-                        camList.push(`- ${cam}: ${g.gameVars.locations[cam].name}`);
+                        camList.push(`  - ${cam}: ${g.gameVars.locations[cam].name}`);
                     }
                     attemptNewLine(camList, true);
+                } else if(command === "MarkathiousPort") {
+                    attemptNewLine("Easter Egg Found! Hello, Markathious!", true);
                 } else {
                     attemptNewLine(`Unknown command: ${command}`);
                 }
