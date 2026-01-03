@@ -4,11 +4,16 @@ class Main extends Phaser.Scene
 	constructor() {
 		super("Main");
 	}
+	preload() {
+		this.load.image("road", "https://res.cloudinary.com/dohbq0tta/image/upload/v1767475009/IMG_0065_x8fv3m.jpg");
+	}	
 	create() {
 		ctx = this;
 		this.keys = {};
 		this.UIElements = [];
 		
+		this.roadEntity = this.add.sprite(0,0,"road").setOrigin(0,0).setDepth(-1).setScale(10);
+
 		this.marker = this.add.rectangle(0,0,100,100,0xFF0000);
 		this.marker2 =  this.add.line(0,0,0,0,0,900, 0x0000FF).setOrigin(0.5,0);
 		
@@ -25,7 +30,6 @@ class Main extends Phaser.Scene
 			pointA: {x: 0, y: 50}
 		});
 		
-		
 		this.cart = this.add.rectangle(0, 250, 100, 400, 0xAAAAAA);
 		this.cart = this.matter.add.gameObject(this.cart);
 		this.cart.setCollisionCategory(4);
@@ -36,6 +40,8 @@ class Main extends Phaser.Scene
 		this.hitch = this.matter.add.constraint(this.deck, this.cart, 0, 0.5, {
 			pointB: {x: 0, y: -300},
 		});
+
+		
 		
 		this.carAccel = 0;
 		this.wheelRotation = 0;
@@ -62,6 +68,7 @@ class Main extends Phaser.Scene
 		this.uiCam.ignore(this.car);
 		this.uiCam.ignore(this.cart);
 		this.uiCam.ignore(this.deck);
+		this.uiCam.ignore(this.roadEntity);
 		
 		this.keys["a"] = this.input.keyboard.addKey("a");
 		this.keys["d"] = this.input.keyboard.addKey("d");
@@ -77,6 +84,10 @@ class Main extends Phaser.Scene
 		this.keys["esc"] = this.input.keyboard.addKey("esc");
 	}
 	update() {
+
+				
+				this.add.rectangle(cartXOffset+this.cart.x, cartYOffset+this.cart.y, 20,20, 0x00FF00);
+
 		this.matter.body.setAngle(this.deck.body, Phaser.Math.Angle.Wrap(this.car.rotation));
 		if(this.keys["c"].isDown && this.keyC && this.vehicleGear > 0) {
 			this.vehicleGear -= 1;
@@ -98,9 +109,13 @@ class Main extends Phaser.Scene
 		if(this.keys["e"].isDown && this.keyE) {
 			this.keyE = false;
 			if(this.hitch == null) {
-				this.hitch = this.matter.add.constraint(this.deck, this.cart, 0, 0.5, {
-					pointB: {x: Math.sin(Phaser.Math.DegToRad(this.cart.angle))*300, y: Math.cos(Phaser.Math.DegToRad(this.cart.angle))*-300},
-				});
+				var cartXOffset = Math.sin(Phaser.Math.DegToRad(this.cart.angle))*300;
+				var cartYOffset = Math.cos(Phaser.Math.DegToRad(this.cart.angle))*-300;				
+				if(Phaser.Math.Distance.Between(this.deck.x, this.deck.y, cartXOffset+this.cart.x, cartYOffset+this.cart.y) < 50) {
+					this.hitch = this.matter.add.constraint(this.deck, this.cart, 0, 0.5, {
+						pointB: {x: Math.sin(Phaser.Math.DegToRad(this.cart.angle))*300, y: Math.cos(Phaser.Math.DegToRad(this.cart.angle))*-300},
+					});
+				}
 			} else {
 				this.matter.world.remove(this.hitch);
 				this.hitch = null;
@@ -117,19 +132,19 @@ class Main extends Phaser.Scene
 			} else if(this.vehicleGear == 1) { //N
 				
 			} else if(this.vehicleGear == 2) { //1
-				if(this.carAccel < 0.08) this.carAccel += 0.005;
+				if(this.carAccel < 0.5) this.carAccel += 0.005;
 			} else if(this.vehicleGear == 3) { //2
-				if(this.carAccel < 0.2) this.carAccel += 0.0025;
+				if(this.carAccel < 2) this.carAccel += 0.025;
 			} else if(this.vehicleGear == 4) { //3
-				if(this.carAccel < 0.3) this.carAccel += 0.001;
+				if(this.carAccel < 5) this.carAccel += 0.01;
 			} else if(this.vehicleGear == 5) { //4
-				if(this.carAccel < 0.35) this.carAccel += 0.0005;
+				if(this.carAccel < 10) this.carAccel += 0.005;
 			} else if(this.vehicleGear == 6) { //5
-				if(this.carAccel < 0.4) this.carAccel += 0.0005;
+				if(this.carAccel < 15) this.carAccel += 0.005;
 			} else if(this.vehicleGear == 7) { //6
-				if(this.carAccel < 0.45) this.carAccel += 0.0005;
+				if(this.carAccel < 20) this.carAccel += 0.005;
 			} else if(this.vehicleGear == 8) { //7
-				if(this.carAccel < 0.5) this.carAccel += 0.0005;
+				if(this.carAccel < 25) this.carAccel += 0.005;
 			}
 		};
 		if((this.cursors.down.isDown || this.keys["s"].isDown) && this.car.body.speed > 0) {
@@ -149,6 +164,20 @@ class Main extends Phaser.Scene
 		if(Math.abs(this.carAccel) < 0.005 && !keyed) {
 			this.carAccel = 0;
 		}
+		const speed = this.carAccel;
+
+		const angle = this.car.body.angle;
+
+		// Calculate the x and y components of the forward velocity
+		// cos(angle) gives the x component, sin(angle) gives the y component
+		const velocityX = Math.cos(angle) * speed;
+		const velocityY = Math.sin(angle) * speed;
+
+		// Create the velocity vector
+		const forwardVelocity = { x: velocityX, y: velocityY };
+
+		// Apply the velocity to the body
+		this.matter.body.setVelocity(this.car.body, forwardVelocity);
 		this.car.thrustLeft(this.carAccel);
 		var backOrNo;
 		if(this.carAccel > 0) {
@@ -157,13 +186,26 @@ class Main extends Phaser.Scene
 			backOrNo = -1;
 		}
 		if(this.car.body.speed >= 0.05) {
-			this.matter.body.setAngle(this.car.body, (this.car.body.angle + this.wheelRotation*0.001*this.car.body.speed*backOrNo))
+			this.matter.body.setAngle(this.car.body, (this.car.body.angle + this.wheelRotation*0.01*this.car.body.speed*backOrNo))
 		}
 		if((this.cursors.left.isDown || this.keys["a"].isDown) && this.wheelRotation > -4) {
 			this.wheelRotation -= 0.1;
 		};
 		if((this.cursors.right.isDown || this.keys["d"].isDown) && this.wheelRotation < 4) {
 			this.wheelRotation += 0.1;
+		}
+
+		// Restrict the cart's movement to its independent forward axis (simulate trailer)
+		if (this.cart && this.cart.body) {
+			const a = this.cart.body.angle; // radians
+			const v = this.cart.body.velocity;
+			// forward unit vector for this project's angle convention: x = sin(a), y = -cos(a)
+			const fx = Math.sin(a);
+			const fy = -Math.cos(a);
+			const dot = v.x * fx + v.y * fy;
+			const vx = fx * dot;
+			const vy = fy * dot;
+			this.matter.body.setVelocity(this.cart.body, { x: vx, y: vy });
 		}
 	}
 	setCenterOfMass(body, gameObj, offset) {

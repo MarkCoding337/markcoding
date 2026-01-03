@@ -19,6 +19,7 @@ var g = {
         commandHistory: [],
         commandHistoryIndex: -1,
         cameraInitialized: false,
+        inCam: false,
         currentCamera: "woods",
         statusData: {
             energy: 1000,
@@ -100,55 +101,63 @@ window.onload = function() {
             if (command.length > 0) {
                 g.computer.ele.innerHTML += `> ${command}<br>`;
                 // Process command here
-                if (command.toLowerCase() === "help") {
-                    attemptNewLine([["Available commands:", 1000], "  - help", "  - status", "  - view_cam [camera_name] *See Camera Names In {list_cams} Command*", "  - list_cams", "  - exit_cam"], true);
-                } else if (command.toLowerCase() === "status") {
-                    let statusLines = [
-                        "Facility Status:",
-                        `  Energy: ${g.gameVars.statusData.energy} kJ / ${g.gameVars.statusData.maxEnergy} kJ`,
-                    ];
-                    
-                    attemptNewLine(statusLines, true);
-                } else if (command.toLowerCase().includes("view_cam")) {
-                    if(command.split(" ").length > 1) {
-                        let camName = command.split(" ")[1];
-                        if(g.gameVars.locations[camName]) {
-                            g.gameVars.currentCamera = camName;
-                            attemptNewLine(`Switched to camera: ${g.gameVars.locations[camName].name}`, true);
-                            setTimeout(()=>{
-                                updateActiveCameraLabel();
-                                document.getElementById('cameraMonitor').style.display = 'block';
-                                document.getElementById('monitorMain').style.display = 'none';
-                                if(g.gameVars.cameraInitialized == false){
-                                    initilizeCanvas();
-                                    g.gameVars.cameraInitialized = true;
-                                };
-                                draw();
-                            }, 500);
-                        } else {
-                            attemptNewLine(`Camera '${camName}' not found.`, true);
-                        }
-                    } else {
-                        attemptNewLine("Please specify a camera name. Usage: view_cams [camera_name]", true);
+
+                if(g.gameVars.inCam) {
+                    if(command.toLowerCase() === "exit_cam" || command.toLowerCase() === "exit-cam" || command.toLowerCase() === "exit") {
+                        document.getElementById('cameraMonitor').style.display = 'none';
+                        document.getElementById('monitorMain').style.display = 'block';
+                        document.getElementById("CMDInput").disabled = false;
+                        g.gameVars.inCam = false;
+                        document.getElementById("CMDInput").focus();
+                        attemptNewLine("Exiting camera view.", true);
                     }
-                    
-                } else if(command.toLowerCase() === "list_cams") {
-                    let camList = ["Available Cameras:"];
-                    for (let cam in g.gameVars.locations) {
-                        camList.push(`  - ${cam}: ${g.gameVars.locations[cam].name}`);
-                    }
-                    attemptNewLine(camList, true);
-                } else if(command.toLowerCase() === "exit_cam") {
-                    document.getElementById('cameraMonitor').style.display = 'none';
-                    document.getElementById('monitorMain').style.display = 'block';
-                    document.getElementById("CMDInput").disabled = false;
-                    document.getElementById("CMDInput").focus();
-                    attemptNewLine("Exiting camera view.", true);
-                } if(command === "MarkathiousPort") {
-                    attemptNewLine("Easter Egg Found! Hello, Markathious!", true);
                 } else {
-                    attemptNewLine(`Unknown command: ${command}`);
-                }
+
+                    if (command.toLowerCase() === "help") {
+                        attemptNewLine([["Available commands:", 1000], "  - help", "  - status", "  - view_cam [camera_name] *See Camera Names In {list_cams} Command*", "  - list_cams", "  - exit_cam"], true);
+                    } else if (command.toLowerCase() === "status") {
+                        let statusLines = [
+                            "Facility Status:",
+                            `  Energy: ${g.gameVars.statusData.energy} kJ / ${g.gameVars.statusData.maxEnergy} kJ`,
+                        ];
+                        
+                        attemptNewLine(statusLines, true);
+                    } else if (command.toLowerCase().includes("view_cam") || command.toLowerCase().includes("view-cam")) {
+                        if(command.split(" ").length > 1) {
+                            let camName = command.split(" ")[1];
+                            if(g.gameVars.locations[camName]) {
+                                g.gameVars.currentCamera = camName;
+                                attemptNewLine(`Switched to camera: ${g.gameVars.locations[camName].name}`, true);
+                                setTimeout(()=>{
+                                    updateActiveCameraLabel();
+                                    document.getElementById('cameraMonitor').style.display = 'block';
+                                    g.gameVars.inCam = true;
+                                    document.getElementById('monitorMain').style.display = 'none';
+                                    if(g.gameVars.cameraInitialized == false){
+                                        initilizeCanvas();
+                                        g.gameVars.cameraInitialized = true;
+                                    };
+                                    draw();
+                                }, 500);
+                            } else {
+                                attemptNewLine(`Camera '${camName}' not found.`, true);
+                            }
+                        } else {
+                            attemptNewLine("Please specify a camera name. Usage: view_cams [camera_name]", true);
+                        }
+                        
+                    } else if(command.toLowerCase() === "list_cams" || command.toLowerCase() === "list-cams") {
+                        let camList = ["Available Cameras:"];
+                        for (let cam in g.gameVars.locations) {
+                            camList.push(`  - ${cam}: ${g.gameVars.locations[cam].name}`);
+                        }
+                        attemptNewLine(camList, true);
+                    } else if(command === "MarkathiousPort") {
+                        attemptNewLine("Easter Egg Found! Hello, Markathious!", true);
+                    } else {
+                        attemptNewLine(`Unknown command: ${command}`);
+                    }
+                };
                 // Clear input field
                 input.value = "";
                 // Scroll to bottom
@@ -351,7 +360,7 @@ window.onload = function() {
             const left = gameRect.left - cameraRect.left;
             const top = gameRect.top - cameraRect.top;
             const width = gameRect.width;
-            const height = gameRect.height;
+            const height = gameRect.height-(window.innerHeight/10);
             // make monitor fill the gameboard area
             monitor.style.position = 'absolute';
             monitor.style.left = `${left}px`;
