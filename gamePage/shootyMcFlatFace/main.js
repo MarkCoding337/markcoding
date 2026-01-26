@@ -364,7 +364,8 @@ var config = {
 			gravity: {
 				x: 0,
 				y: 0,
-			}
+			},
+			enableSleeping: true,
         },
     },
 	loader: {

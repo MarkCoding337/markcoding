@@ -23,12 +23,12 @@ class Main extends Phaser.Scene
 		this.car.setFrictionAir(0.2);
 		this.car.setCollisionCategory(2);
 		this.car.setCollidesWith([4]);
-		this.setCenterOfMass(this.car.body, this.car, {x: 0, y: 75});
+		this.setCenterOfMass(this.car.body, this.car, {x: 0, y: 125});
 		this.deck = this.add.rectangle(200,0,100,100, 0x999999);
 		this.deck = this.matter.add.gameObject(this.deck, {});
 		this.deck.setCollisionCategory(8);
 		this.truckConnection = this.matter.add.constraint(this.car, this.deck, 0, 0.5, {
-			pointA: {x: 0, y: 50}
+			pointA: {x: 0, y: 0}
 		});
 		
 		this.cart = this.add.rectangle(0, 250, 100, 400, 0xAAAAAA);
@@ -151,6 +151,11 @@ class Main extends Phaser.Scene
 		if(Math.abs(this.engineRPM) < 0.005 && !keyed) {
 			this.engineRPM = 0;
 		}
+
+		if(this.isBetween(this.engineRPM, 0.5, 0.7)) {
+			
+		}
+
 		const speed = this.engineRPM*100;
 
 		const angle = this.car.body.angle - Math.PI / 2;
@@ -201,6 +206,14 @@ class Main extends Phaser.Scene
 		const originX = gameObj.originX + ( offset.x / gameObj.displayWidth );
 		const originY = gameObj.originY + ( offset.y / gameObj.displayHeight );
 		gameObj.setOrigin( originX, originY );
+	}
+	isBetween(value, num1, num2) {
+		// Use Math.min and Math.max to handle cases where num1 > num2.
+		const min = Math.min(num1, num2);
+		const max = Math.max(num1, num2);
+		
+		// The condition directly returns the boolean result.
+		return (value >= min && value <= max);
 	}
 }
 
