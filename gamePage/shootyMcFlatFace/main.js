@@ -133,34 +133,38 @@ class Main extends Phaser.Scene
 				this.idleTimer = 0;
 				this.following = false;
 				this.speed = Math.random()*2+2;
+				this.frameCount = 0;
 				this.distDePlayer;
 				this.body.density = 1;
 				ctx.enemiesAliveBodies[""+this.body.id] = (this.body);
 			}
 			update() {
-				var playPos = ctx.player.body.position;
-				var thisPos = this.body.position;
-				this.distDePlayer = Phaser.Math.Distance.BetweenPoints(playPos, thisPos);
-				
-				if(this.distDePlayer < 500) {
-					this.following = true;
-				};
-				if(this.following) {
-					if(playPos.x > thisPos.x+2) this.setVelocityX(this.speed); else if(playPos.x < thisPos.x-2) this.setVelocityX(-this.speed); else this.setVelocityX(0);
-					if(playPos.y > thisPos.y+2) this.setVelocityY(this.speed); else if(playPos.y < thisPos.y-2) this.setVelocityY(-this.speed); else this.setVelocityY(0);
-				} else {
-					if(this.idleTimer <= 0) {
-						this.setVelocityX((Math.random()*4)-2);
-						this.setVelocityY((Math.random()*4)-2);
-						this.idleTimer = Math.random()*120;
+				this.frameCount += 1;
+				if(this.frameCount % 5 == 0) {
+					var playPos = ctx.player.body.position;
+					var thisPos = this.body.position;
+					this.distDePlayer = Phaser.Math.Distance.BetweenPoints(playPos, thisPos);
+					
+					if(this.distDePlayer < 500) {
+						this.following = true;
+					};
+					if(this.following) {
+						if(playPos.x > thisPos.x+2) this.setVelocityX(this.speed); else if(playPos.x < thisPos.x-2) this.setVelocityX(-this.speed); else this.setVelocityX(0);
+						if(playPos.y > thisPos.y+2) this.setVelocityY(this.speed); else if(playPos.y < thisPos.y-2) this.setVelocityY(-this.speed); else this.setVelocityY(0);
+					} else {
+						if(this.idleTimer <= 0) {
+							this.setVelocityX((Math.random()*4)-2);
+							this.setVelocityY((Math.random()*4)-2);
+							this.idleTimer = Math.random()*120;
+						}
+						this.idleTimer -= 1;
+					};
+					if(this.health <= 0) {
+						this.scene.events.off('update', this.update, this);
+						delete ctx.enemiesAliveBodies[""+this.body.id];
+						this.destroy();
 					}
-					this.idleTimer -= 1;
 				};
-				if(this.health <= 0) {
-					this.scene.events.off('update', this.update, this);
-					delete ctx.enemiesAliveBodies[""+this.body.id];
-					this.destroy();
-				}
 			}
 		}
 		class playerBullet extends Phaser.GameObjects.Arc
