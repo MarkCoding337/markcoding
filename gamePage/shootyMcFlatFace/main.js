@@ -36,6 +36,7 @@ class Main extends Phaser.Scene
 		this.player = this.add.rectangle(0,0,50,50,0xFFFFFF);
 		this.player = this.matter.add.gameObject(this.player).setFrictionAir(0.5).setDepth(5).setCollisionCategory(1);
 		this.player.setFixedRotation(true);
+		this.player.body.sleepThreshold = -1;
 		this.player.body.isPlayer = true;
 		
 		
@@ -132,7 +133,7 @@ class Main extends Phaser.Scene
 				this.body.attackCD = 0;
 				this.idleTimer = 0;
 				this.following = false;
-				this.speed = Math.random()*2+2;
+				this.speed = (Math.random()*2+2)*1.2;
 				this.frameCount = 0;
 				this.distDePlayer;
 				this.body.density = 1;
@@ -147,10 +148,15 @@ class Main extends Phaser.Scene
 					
 					if(this.distDePlayer < 500) {
 						this.following = true;
+						Phaser.Physics.Matter.Matter.Sleeping.set(this.body, false);
+					};
+					if(this.distDePlayer > 1000) {
+						this.following = false;
+						Phaser.Physics.Matter.Matter.Sleeping.set(this.body, true);
 					};
 					if(this.following) {
-						if(playPos.x > thisPos.x+2) this.setVelocityX(this.speed); else if(playPos.x < thisPos.x-2) this.setVelocityX(-this.speed); else this.setVelocityX(0);
-						if(playPos.y > thisPos.y+2) this.setVelocityY(this.speed); else if(playPos.y < thisPos.y-2) this.setVelocityY(-this.speed); else this.setVelocityY(0);
+						if(Phaser.Math.Fuzzy.GreaterThan(playPos.x, thisPos.x, 20)) this.setVelocityX(this.speed); else if(Phaser.Math.Fuzzy.LessThan(playPos.x, thisPos.x, 20)) this.setVelocityX(-this.speed); else this.setVelocityX(0);
+						if(Phaser.Math.Fuzzy.GreaterThan(playPos.y, thisPos.y, 20)) this.setVelocityY(this.speed); else if(Phaser.Math.Fuzzy.LessThan(playPos.y, thisPos.y, 20)) this.setVelocityY(-this.speed); else this.setVelocityY(0);
 					} else {
 						if(this.idleTimer <= 0) {
 							this.setVelocityX((Math.random()*4)-2);
