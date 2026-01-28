@@ -49,6 +49,7 @@ class Main extends Phaser.Scene
 		this.vehicleGear = 1;
 		this.engineStress = 0;
 		this.vehicleGearIndex = ["R","N","1","2","3","4","5","6","7"]
+		this.gearRatios = [-12.69, 0, 12.69, 9.29, 6.75, 4.90, 3.62, 2.59, 1.90];
 		this.cameras.main.startFollow(this.car);
 		this.cameras.main.zoomTo(0.76);
 		this.cursors = this.input.keyboard.createCursorKeys();
@@ -92,7 +93,7 @@ class Main extends Phaser.Scene
 
 				
 		this.add.rectangle(cartXOffset+this.cart.x, cartYOffset+this.cart.y, 20,20, 0x00FF00);
-		this.rpmIndicator.setText(Math.round(this.engineRPM*1000)+" RPM");
+		this.rpmIndicator.setText(Math.round(this.engineRPM*10)+" RPM");
 		this.matter.body.setAngle(this.deck.body, Phaser.Math.Angle.Wrap(this.car.rotation));
 		if(this.keys["c"].isDown && this.keyC && this.vehicleGear > 0) {
 			this.vehicleGear -= 1;
@@ -132,31 +133,35 @@ class Main extends Phaser.Scene
 		var keyed = false;
 		if(this.cursors.up.isDown || this.keys["w"].isDown) {
 			keyed = true;
-			this.engineRPM += 0.002;
+			this.engineRPM += 1;
 		};
 		if((this.cursors.down.isDown || this.keys["s"].isDown) && this.car.body.speed > 0) {
 			if(this.engineRPM > 0) {
-				this.engineRPM -= 0.001;
+				this.engineRPM -= 0.5;
 			} else {
-				this.engineRPM += 0.001;
+				this.engineRPM += 0.5;
 			};
 		};
 		if(this.keys["space"].isDown && this.car.body.speed > 0) {
 			if(this.engineRPM > 0) {
-				this.engineRPM -= 0.005;
+				this.engineRPM -= 1;
 			} else {
-				this.engineRPM += 0.005;
+				this.engineRPM += 1;
 			};
 		}
-		if(Math.abs(this.engineRPM) < 0.005 && !keyed) {
+		if(Math.abs(this.engineRPM) < 1 && !keyed) {
 			this.engineRPM = 0;
 		}
 
 		if(this.isBetween(this.engineRPM, 0.5, 0.7)) {
 			
 		}
-
-		const speed = this.engineRPM*100;
+		var speed;
+		if (this.gearRatios[this.vehicleGear] != 0) {
+			speed = this.engineRPM/this.gearRatios[this.vehicleGear];
+		} else {
+			speed = 0;
+		};
 
 		const angle = this.car.body.angle - Math.PI / 2;
 

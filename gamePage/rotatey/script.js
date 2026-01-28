@@ -162,11 +162,12 @@ class Main extends Phaser.Scene {
 		this.rotateBaseline -= a*this.args.fullRotation;
 		this.args.credits += a;
 		for(var i=0;i<a;i++) {
-			var b = config.width/2 + (Math.random()*400-200);
-			var d = -Math.random()*100;
-			var c = this.physics.add.existing(this.add.rectangle(b, config.height/2-100,10,10,0xFFFFFF));
+			var b = (Math.random()*config.width);
+			var d = -Math.random()*150;
+			var c = this.physics.add.existing(this.add.rectangle(b, config.height,10,10,0xFFFFFF));
+			c.setDepth(-1);
 			c.body.velocity.y = -100+d;
-			this.time.delayedCall(1000, function(){this.destroy();}, null, c);
+			this.time.delayedCall(8000, function(){this.destroy();}, null, c);
 		}
 		document.getElementById("credLabel").innerHTML = "Credits:<br>&emsp; "+this.args.credits;
 		if(this.rotateAmt > 0.05) {
