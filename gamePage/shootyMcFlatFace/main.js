@@ -1,11 +1,11 @@
-screen.orientation.lock("landscape")
+/*screen.orientation.lock("landscape")
         .then(() => {
             console.log("Screen locked to landscape.");
         })
         .catch((error) => {
             console.error("Failed to lock screen orientation:", error);
         });
-
+*/
 var ctx;
 var cellSize = 500;
 
@@ -28,18 +28,30 @@ class Main extends Phaser.Scene
 		super("Main");
 	}
 	preload() {
+		this.load.spritesheet("enemy1", "https://ik.imagekit.io/markathious/ShootyMcFlatFace/IMG_0066.png", {frameWidth: 16, frameHeight: 16});
 		this.load.plugin('rexvirtualjoystickplugin', "https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js", true);
+		//this.load.plugin('rextoggleswitchplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rextoggleswitchplugin.min.js', true);
 	}
 	create() {
 		ctx = this;
-		
+		this.game.canvas.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
 		this.player = this.add.rectangle(0,0,50,50,0xFFFFFF);
 		this.player = this.matter.add.gameObject(this.player).setFrictionAir(0.5).setDepth(5).setCollisionCategory(1);
 		this.player.setFixedRotation(true);
 		this.player.body.sleepThreshold = -1;
 		this.player.body.isPlayer = true;
 		
+		this.animationPrep();
 		
+		this.waveBar = this.add.rectangle(0,0,config.width,20,0x88FF88).setScrollFactor(0).setDepth(10).setOrigin(0,0);
+		this.waveBarBG = this.add.rectangle(0,0,config.width,21,0x000000).setScrollFactor(0).setDepth(9).setOrigin(0,0);
+		this.waveProgress = 0;
+		this.nextWaveTimer = 600;
+		this.waveLevel = 1;
+
+		this.enemieNum = 0;
+		this.enemieTracker = this.add.text(10,30,"Enemies: 0",{fontSize: '20px', fill: '#FFFFFF'}).setScrollFactor(0).setDepth(10);
+
 		this.pointInScreen2 = this.add.circle(config.width/2,config.height/2, 4, 0xFF0000).setScrollFactor(0).setDepth(5);
 		this.connectionLine = this.add.line(0,0,0,0,0,0,0xFF0000, 1).setScrollFactor(0).setDepth(6);
 		this.pointInScreen = this.add.circle(config.width/2,config.height/2, 3, 0x000000).setScrollFactor(0).setDepth(7);
@@ -69,6 +81,10 @@ class Main extends Phaser.Scene
 		this.spawnButton.on('pointerup', ()=>{
 			ctx.spawnButton.isDown = false;
 		});
+		this.mouse = this.input.activePointer;
+		/*this.input.on('pointermove', function (pointer) {
+        	ctx.mouse = pointer;
+    	});*/
 		
 		this.fireTarget;
 		this.fireCD = 0;
@@ -112,27 +128,31 @@ class Main extends Phaser.Scene
 			constructor(scene, x, y) {
 				super(scene.matter.world, x, y);
 				this.scene = scene;
-				this.setTexture("");
+				this.setTexture("enemy1");
 				this.setDisplaySize(25,25);
-				
+				this.texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
 				this.setBody({
 					shape: "rectangle",
-					width: 25,
-					height: 25,
+					width: 15,
+					height: 20,
 				});
 				this.body.isEnemy = true;
+				this.body.sleepThreshold = -1;
 				this.health = 2;//Math.floor(Math.random()*5+5);
 				this.setFrictionAir(0.05);
 				this.setFriction(0.05);
 				this.setMass(0.15);
-				this.setAngle(90);
+				this.setAngle(0);
 				this.setFixedRotation(true);
+				this.setScale(Math.random()*0.5+3);
 				this.scene.events.on('update', this.update, this);
 				scene.add.existing(this);
 				this.setCollisionCategory(2);
 				this.body.attackCD = 0;
 				this.idleTimer = 0;
+				this.despawnTimer = 0;
 				this.following = false;
+				ctx.enemieNum += 1;
 				this.speed = (Math.random()*2+2)*1.2;
 				this.frameCount = 0;
 				this.distDePlayer;
@@ -152,30 +172,65 @@ class Main extends Phaser.Scene
 					};
 					if(this.distDePlayer > 1000) {
 						this.following = false;
+					};
+					if(this.distDePlayer > 2000) {
 						Phaser.Physics.Matter.Matter.Sleeping.set(this.body, true);
+						this.anims.stop();
 					};
 					if(this.following) {
-						if(Phaser.Math.Fuzzy.GreaterThan(playPos.x, thisPos.x, 20)) this.setVelocityX(this.speed); else if(Phaser.Math.Fuzzy.LessThan(playPos.x, thisPos.x, 20)) this.setVelocityX(-this.speed); else this.setVelocityX(0);
-						if(Phaser.Math.Fuzzy.GreaterThan(playPos.y, thisPos.y, 20)) this.setVelocityY(this.speed); else if(Phaser.Math.Fuzzy.LessThan(playPos.y, thisPos.y, 20)) this.setVelocityY(-this.speed); else this.setVelocityY(0);
-					} else {
+						const angle = Phaser.Math.Angle.Between(
+							thisPos.x, thisPos.y,
+							playPos.x, playPos.y
+						);
+						this.setVelocity(
+							Math.cos(angle) * this.speed,
+							Math.sin(angle) * this.speed
+						)
+						
+					} else if(this.distDePlayer <= 2000) {
 						if(this.idleTimer <= 0) {
-							this.setVelocityX((Math.random()*4)-2);
-							this.setVelocityY((Math.random()*4)-2);
-							this.idleTimer = Math.random()*120;
+							this.setVelocityX((Math.random()*5)-2.5);
+							this.setVelocityY((Math.random()*5)-2.5);
+							this.idleTimer = Math.random()*5;
 						}
 						this.idleTimer -= 1;
 					};
 					if(this.health <= 0) {
 						this.scene.events.off('update', this.update, this);
 						delete ctx.enemiesAliveBodies[""+this.body.id];
+						ctx.enemieNum -= 1;
 						this.destroy();
 					}
+					//Animation
+					const absVelX = Math.abs(this.body.velocity.x);
+					const absVelY = Math.abs(this.body.velocity.y);
+					if(absVelX < 0.5 && absVelY < 0.5) {
+						//Idle
+						this.anims.stop();
+					} else {
+						//Moving
+						if(absVelX > absVelY) {
+							//Moving sideways
+							if(this.body.velocity.x > 0) {
+								this.anims.play('e1WalkRight', true);
+							} else {
+								this.anims.play('e1WalkLeft', true);
+							}
+						} else {
+							//Moving up/down
+							if(this.body.velocity.y > 0) {
+								this.anims.play('e1WalkDown', true);
+							} else {
+								this.anims.play('e1WalkUp', true);
+							}
+						}
+					};
 				};
 			}
 		}
 		class playerBullet extends Phaser.GameObjects.Arc
 		{
-			constructor(scene, x, y, speed) {
+			constructor(scene, x, y, speed, angle) {
 				super(scene, x, y, 12.5, 0, 360, false, 0xFF0000, 1);
 				//this.scene = scene;
 				scene.matter.add.gameObject(this);
@@ -188,12 +243,14 @@ class Main extends Phaser.Scene
 				this.body.isBullet = true;
 				this.scene.events.on('update', this.update, this);
 				var bullSpeed;
-				if(speed) {
+				if(speed != null) {
 					bullSpeed = speed;
 				} else {
 					bullSpeed = ctx.params.bulletSpeed;
 				};
-				if(ctx.fireTarget != null) {
+				this.setVelocityX(-Math.cos(angle) * bullSpeed);
+				this.setVelocityY(-Math.sin(angle) * bullSpeed);
+				/*if(ctx.fireTarget != null) {
 					var angle = Phaser.Math.Angle.Between(ctx.fireTarget.position.x, ctx.fireTarget.position.y, x, y);
 
 					// Calculate velocity components
@@ -204,7 +261,7 @@ class Main extends Phaser.Scene
 					var b = Math.floor(Math.random()*2)-1;
 					this.setVelocityX(bullSpeed*a);
 					this.setVelocityY(bullSpeed*b);
-				};
+				};*/
 				this.setCollidesWith(2);
 				this.body.blacklist = [];
 				this.body.pierce = ctx.params.pierce;
@@ -222,8 +279,8 @@ class Main extends Phaser.Scene
 		this.createEnemy = function(x, y) {
 			var bull = new enemy1(this, x, y)
 		} 
-		this.createPlayerBullet = function(x, y, speed) {
-			var bull = new playerBullet(this, x, y, speed);
+		this.createPlayerBullet = function(x, y, speed, angle) {
+			var bull = new playerBullet(this, x, y, speed, angle);
 			this.add.existing(bull);
 		} 
 		this.enemiesAliveBodies = {};
@@ -258,16 +315,56 @@ class Main extends Phaser.Scene
 	}
 	update() {
 		var playPos = this.player.body.position;
-		
-		
-		this.enemyTimer -= 1;
-		if(this.enemyTimer <= 0) {
-			for(var i=0;i<1000;i++) {
-				this.createEnemy(0,i);
+
+		this.enemieTracker.setText("Enemies: " + this.enemieNum);
+
+		this.waveBar.width = (this.waveProgress / this.nextWaveTimer) * config.width;
+		if(this.waveProgress >= this.nextWaveTimer) {
+			this.waveProgress = 0;
+			this.waveLevel += 1;
+			this.nextWaveTimer += 300;
+		} else {
+			this.waveProgress += 1;
+		};
+		if(this.enemyTimer > 0) {
+			this.enemyTimer -= 1;
+		} else {
+			this.enemyTimer = 60;
+		};
+		if(this.enemyTimer == 1) {
+			for(var i=0;i<this.waveLevel*5;i++) {
+				var angle = Math.random()*Math.PI*2;
+				var dist = Math.random()*500+500;
+				var x = playPos.x + Math.cos(angle)*dist;
+				var y = playPos.y + Math.sin(angle)*dist;
+				this.createEnemy(x,y);
 			}
-			this.enemyTimer = Infinity;
+		};
+
+		let dx = (this.mouse.x - config.width/2) * 0.05;
+		let dy = (this.mouse.y - config.height/2) * 0.05;
+
+		this.cameras.main.followOffset.x = -dx;
+		this.cameras.main.followOffset.y = -dy;
+
+		var angle = Phaser.Math.Angle.Between(this.mouse.x, this.mouse.y, config.width/2, config.height/2);
+		
+		var x = -Math.cos(angle) * 50;
+		var y = -Math.sin(angle) * 50;
+		this.pointInScreen.setPosition(config.width/2+x-dx, config.height/2+y-dy);
+		this.pointInScreen2.setPosition(config.width/2-dx, config.height/2-dy);
+		this.connectionLine.setTo(config.width/2-dx, config.height/2-dy, config.width/2+x-dx, config.height/2+y-dy);
+		if(this.fireCD <= 0) {
+			for(var i=0;i<this.params.bulletNum;i++) {
+				this.time.delayedCall(10*i, ()=>{this.createPlayerBullet(playPos.x, playPos.y, null, angle)}, [], this);
+			};
+			this.fireCD = this.params.fireCD;
+		} else {
+			this.fireCD -= 1;
 		}
 
+		/*
+		//Automatic targeting and firing
 		let closestBody = null;
 		let minDistance = Infinity;
 
@@ -296,7 +393,7 @@ class Main extends Phaser.Scene
 			this.connectionLine.setTo(config.width/2, config.height/2, config.width/2+x, config.height/2+y);
 			if(this.fireCD <= 0) {
 				for(var i=0;i<this.params.bulletNum;i++) {
-					this.time.delayedCall(10*i, ()=>{this.createPlayerBullet(playPos.x, playPos.y)}, [], this);
+					this.time.delayedCall(10*i, ()=>{this.createPlayerBullet(playPos.x, playPos.y, null, angle)}, [], this);
 				};
 				this.fireCD = this.params.fireCD;
 			} else {
@@ -304,31 +401,31 @@ class Main extends Phaser.Scene
 			}
 			
 			
-			/*this.pointInScreen.setPosition(ctx.fireTarget.position.x-this.cameras.main.scrollX, ctx.fireTarget.position.y-this.cameras.main.scrollY);
-			this.connectionLine.setTo(config.width/2, config.height/2, ctx.fireTarget.position.x-this.cameras.main.scrollX, ctx.fireTarget.position.y-this.cameras.main.scrollY);*/
+			//this.pointInScreen.setPosition(ctx.fireTarget.position.x-this.cameras.main.scrollX, ctx.fireTarget.position.y-this.cameras.main.scrollY);
+			//this.connectionLine.setTo(config.width/2, config.height/2, ctx.fireTarget.position.x-this.cameras.main.scrollX, ctx.fireTarget.position.y-this.cameras.main.scrollY);
 			
 		} else {
 			this.pointInScreen.setPosition(config.width/2, config.height/2);
 			this.connectionLine.setTo(config.width/2, config.height/2, config.width/2, config.height/2);
 		};
-		
+		*/
 		const { scrollX, scrollY } = this.cameras.main;
 
 		this.griddy.x = -Phaser.Math.Wrap(scrollX, 0, cellSize);
 		this.griddy.y = -Phaser.Math.Wrap(scrollY, 0, cellSize);
 		
 		if(this.keys["e"].isDown || ctx.spawnButton.isDown) {
-			this.createEnemy(0,0);
+			this.createEnemy(playPos.x,playPos.y-200);
 		}
 		
-		var down = this.cursorKeys.down.isDown || this.keys["s"].isDown || this.joyStickCursor.down.isDown;
-		var up = this.cursorKeys.up.isDown || this.keys["w"].isDown || this.joyStickCursor.up.isDown;
-		var right = this.cursorKeys.right.isDown || this.keys["d"].isDown || this.joyStickCursor.right.isDown;
-		var left = this.cursorKeys.left.isDown || this.keys["a"].isDown || this.joyStickCursor.left.isDown;
+		var down = this.cursorKeys.down.isDown || this.keys["s"].isDown// || this.joyStickCursor.down.isDown;
+		var up = this.cursorKeys.up.isDown || this.keys["w"].isDown// || this.joyStickCursor.up.isDown;
+		var right = this.cursorKeys.right.isDown || this.keys["d"].isDown// || this.joyStickCursor.right.isDown;
+		var left = this.cursorKeys.left.isDown || this.keys["a"].isDown// || this.joyStickCursor.left.isDown;
 		
 		var speed;
 		
-		if(this.keys["shift"].isDown || this.joyStick.force > 100) {
+		if(this.keys["shift"].isDown || this.joyStick.force > 80) {
 			speed = this.params.sprintSpeed;
 		} else {
 			speed = this.params.speed;
@@ -345,6 +442,19 @@ class Main extends Phaser.Scene
 		if(left) {
 			this.player.setVelocityX(-speed);
 		}
+		if(this.joyStick.force < 10 && !down && !up) {
+			this.player.setVelocityY(0);
+		}
+		if(this.joyStick.force < 10 && !right && !left) {
+			this.player.setVelocityX(0);
+		}
+		if(this.joyStick.force >= 10) {
+			const angle = Phaser.Math.DegToRad(this.joyStick.angle);
+			this.player.setVelocity(
+				Math.cos(angle) * speed,
+				Math.sin(angle) * speed
+			);
+		}
 	}
 	setCenterOfMass(body, gameObj, offset) {
 		this.matter.body.setCentre( body, offset, true );
@@ -352,6 +462,32 @@ class Main extends Phaser.Scene
 		const originX = gameObj.originX + ( offset.x / gameObj.displayWidth );
 		const originY = gameObj.originY + ( offset.y / gameObj.displayHeight );
 		gameObj.setOrigin( originX, originY );
+	}
+	animationPrep() {
+		this.anims.create({
+			key: 'e1WalkDown',
+			frames: this.anims.generateFrameNumbers('enemy1', { start: 0, end: 3 }),
+			frameRate: 10,
+			repeat: -1 // -1 means loop forever
+		});
+		this.anims.create({
+			key: 'e1WalkUp',
+			frames: this.anims.generateFrameNumbers('enemy1', { start: 4, end: 7 }),
+			frameRate: 10,
+			repeat: -1 // -1 means loop forever
+		});
+		this.anims.create({
+			key: 'e1WalkRight',
+			frames: this.anims.generateFrameNumbers('enemy1', { start: 8, end: 11 }),
+			frameRate: 10,
+			repeat: -1 // -1 means loop forever
+		});
+		this.anims.create({
+			key: 'e1WalkLeft',
+			frames: this.anims.generateFrameNumbers('enemy1', { start: 12, end: 15 }),
+			frameRate: 10,
+			repeat: -1 // -1 means loop forever
+		});
 	}
 }
 
@@ -363,6 +499,11 @@ var config = {
     backgroundColor: "#666666",
     //mipmapFilter: 'LINEAR_MIPMAP_LINEAR',
     maxLights: 40,
+	input: {
+    	touch: {
+      		capture: false
+    	}
+  	},
     fps: {
       forceSetTimeOut: true,
       target: 60
