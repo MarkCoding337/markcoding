@@ -34,6 +34,9 @@ class Main extends Phaser.Scene
 	}
 	create() {
 		ctx = this;
+
+		this.mobile = this.sys.game.device.input.touch;
+
 		this.game.canvas.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
 		this.player = this.add.rectangle(0,0,50,50,0xFFFFFF);
 		this.player = this.matter.add.gameObject(this.player).setFrictionAir(0.5).setDepth(5).setCollisionCategory(1);
@@ -47,28 +50,43 @@ class Main extends Phaser.Scene
 		this.waveBarBG = this.add.rectangle(0,0,config.width,21,0x000000).setScrollFactor(0).setDepth(9).setOrigin(0,0);
 		this.waveProgress = 0;
 		this.nextWaveTimer = 600;
-		this.waveLevel = 1;
+		this.waveLevel = 0;
 
 		this.enemieNum = 0;
 		this.enemieTracker = this.add.text(10,30,"Enemies: 0",{fontSize: '20px', fill: '#FFFFFF'}).setScrollFactor(0).setDepth(10);
+
+		this.waveTracker = this.add.text(10,50,"Wave: 0",{fontSize: '20px', fill: '#FFFFFF'}).setScrollFactor(0).setDepth(10);
 
 		this.pointInScreen2 = this.add.circle(config.width/2,config.height/2, 4, 0xFF0000).setScrollFactor(0).setDepth(5);
 		this.connectionLine = this.add.line(0,0,0,0,0,0,0xFF0000, 1).setScrollFactor(0).setDepth(6);
 		this.pointInScreen = this.add.circle(config.width/2,config.height/2, 3, 0x000000).setScrollFactor(0).setDepth(7);
 		this.cameras.main.startFollow(this.player, 0);
-		this.joyStick = this.plugins.get('rexvirtualjoystickplugin').add(this, {
-                x: 150,
-                y: config.height-150,
-                radius: config.height/10,
-                base: this.add.circle(0, 0, config.height/7, 0x888888).setDepth(5),
-                thumb: this.add.circle(0, 0, config.height/14, 0xcccccc).setDepth(5),
-                // dir: '8dir',   // 'up&down'|0|'left&right'|1|'4dir'|2|'8dir'|3
-                // forceMin: 16,
-                // enable: true
-            });
-			this.joyStickCursor = this.joyStick.createCursorKeys();
-			this.input.addPointer(1);
-		this.spawnButton = this.add.rectangle(config.width - 150, config.height - 150, 100, 100, 0xcccccc).setDepth(5).setInteractive().setScrollFactor(0).setAlpha(0.5);
+		if(this.mobile) {
+			this.joyStick = this.plugins.get('rexvirtualjoystickplugin').add(this, {
+					x: 150,
+					y: config.height-150,
+					radius: config.height/10,
+					base: this.add.circle(0, 0, config.height/7, 0x888888).setDepth(5),
+					thumb: this.add.circle(0, 0, config.height/14, 0xcccccc).setDepth(5),
+					// dir: '8dir',   // 'up&down'|0|'left&right'|1|'4dir'|2|'8dir'|3
+					// forceMin: 16,
+					// enable: true
+				});
+				this.input.addPointer(1);
+			this.aimJoyStick = this.plugins.get('rexvirtualjoystickplugin').add(this, {
+					x: config.width-150,
+					y: config.height-150,
+					radius: config.height/10,
+					base: this.add.circle(0, 0, config.height/7, 0x888888).setDepth(5),
+					thumb: this.add.circle(0, 0, config.height/14, 0xcccccc).setDepth(5),
+					// dir: '8dir',   // 'up&down'|0|'left&right'|1|'4dir'|2|'8dir'|3
+					// forceMin: 16,
+					// enable: true
+				});
+				this.input.addPointer(1);
+		};
+		
+		/*this.spawnButton = this.add.rectangle(config.width - 150, config.height - 150, 100, 100, 0xcccccc).setDepth(5).setInteractive().setScrollFactor(0).setAlpha(0.5);
 		this.spawnButton.on('pointerover', ()=>{
 			ctx.spawnButton.isDown = true;
 		});
@@ -80,11 +98,8 @@ class Main extends Phaser.Scene
 		});
 		this.spawnButton.on('pointerup', ()=>{
 			ctx.spawnButton.isDown = false;
-		});
+		});*/
 		this.mouse = this.input.activePointer;
-		/*this.input.on('pointermove', function (pointer) {
-        	ctx.mouse = pointer;
-    	});*/
 		
 		this.fireTarget;
 		this.fireCD = 0;
@@ -99,6 +114,12 @@ class Main extends Phaser.Scene
 			bulletLife: 60,
 			bulletNum: 1,
 		}
+		
+		this.aimMem = {
+			angle: 0,
+			dx: 0,
+			dy: 0,
+		};
 		
 		const cam = this.cameras.main;
 
@@ -166,17 +187,7 @@ class Main extends Phaser.Scene
 					var thisPos = this.body.position;
 					this.distDePlayer = Phaser.Math.Distance.BetweenPoints(playPos, thisPos);
 					
-					if(this.distDePlayer < 500) {
-						this.following = true;
-						Phaser.Physics.Matter.Matter.Sleeping.set(this.body, false);
-					};
-					if(this.distDePlayer > 1000) {
-						this.following = false;
-					};
-					if(this.distDePlayer > 2000) {
-						Phaser.Physics.Matter.Matter.Sleeping.set(this.body, true);
-						this.anims.stop();
-					};
+					//Movement
 					if(this.following) {
 						const angle = Phaser.Math.Angle.Between(
 							thisPos.x, thisPos.y,
@@ -195,12 +206,7 @@ class Main extends Phaser.Scene
 						}
 						this.idleTimer -= 1;
 					};
-					if(this.health <= 0) {
-						this.scene.events.off('update', this.update, this);
-						delete ctx.enemiesAliveBodies[""+this.body.id];
-						ctx.enemieNum -= 1;
-						this.destroy();
-					}
+
 					//Animation
 					const absVelX = Math.abs(this.body.velocity.x);
 					const absVelY = Math.abs(this.body.velocity.y);
@@ -225,6 +231,33 @@ class Main extends Phaser.Scene
 							}
 						}
 					};
+
+					//Player Tracking
+					if(this.distDePlayer < 500) {
+						this.following = true;
+						Phaser.Physics.Matter.Matter.Sleeping.set(this.body, false);
+					};
+					if(this.distDePlayer > 1000) {
+						this.following = false;
+					};
+					if(this.distDePlayer > 2000) {
+						Phaser.Physics.Matter.Matter.Sleeping.set(this.body, true);
+						this.anims.stop();
+					};
+					if(this.distDePlayer > 2500) {
+						this.scene.events.off('update', this.update, this);
+						delete ctx.enemiesAliveBodies[""+this.body.id];
+						ctx.enemieNum -= 1;
+						this.destroy();
+					};
+					
+					if(this.health <= 0) {
+						this.scene.events.off('update', this.update, this);
+						delete ctx.enemiesAliveBodies[""+this.body.id];
+						ctx.enemieNum -= 1;
+						this.destroy();
+					}
+					
 				};
 			}
 		}
@@ -285,7 +318,7 @@ class Main extends Phaser.Scene
 		} 
 		this.enemiesAliveBodies = {};
 		
-		this.enemyTimer = 600;
+		this.enemyTimer = 60;
 		
 		
 		this.matter.world.on('collisionstart', (event, bodyA, bodyB) => {
@@ -322,17 +355,18 @@ class Main extends Phaser.Scene
 		if(this.waveProgress >= this.nextWaveTimer) {
 			this.waveProgress = 0;
 			this.waveLevel += 1;
-			this.nextWaveTimer += 300;
+			this.waveTracker.setText("Wave: " + this.waveLevel);
+			this.nextWaveTimer += 300*this.waveLevel;
 		} else {
 			this.waveProgress += 1;
 		};
 		if(this.enemyTimer > 0) {
 			this.enemyTimer -= 1;
 		} else {
-			this.enemyTimer = 60;
+			this.enemyTimer = 120 - (this.waveLevel*2);
 		};
 		if(this.enemyTimer == 1) {
-			for(var i=0;i<this.waveLevel*5;i++) {
+			for(var i=0;i<this.waveLevel*2;i++) {
 				var angle = Math.random()*Math.PI*2;
 				var dist = Math.random()*500+500;
 				var x = playPos.x + Math.cos(angle)*dist;
@@ -341,14 +375,39 @@ class Main extends Phaser.Scene
 			}
 		};
 
-		let dx = (this.mouse.x - config.width/2) * 0.05;
-		let dy = (this.mouse.y - config.height/2) * 0.05;
+		var dx;
+		var dy;
 
-		this.cameras.main.followOffset.x = -dx;
-		this.cameras.main.followOffset.y = -dy;
+		var angle;
+		if(this.mobile) {
+			if(this.aimJoyStick.force >= 10) {
+				angle = Phaser.Math.DegToRad(this.aimJoyStick.angle+180);
 
-		var angle = Phaser.Math.Angle.Between(this.mouse.x, this.mouse.y, config.width/2, config.height/2);
-		
+				this.aimMem.angle = angle;
+
+				dx = (this.aimJoyStick.forceX) * 0.05;
+				dy = (this.aimJoyStick.forceY) * 0.05;
+
+				this.aimMem.dx = dx;
+				this.aimMem.dy = dy;
+
+				this.cameras.main.followOffset.x = -dx;
+				this.cameras.main.followOffset.y = -dy;
+			} else {
+				angle = this.lastAimAngle;
+				dx = this.aimMem.dx;
+				dy = this.aimMem.dy;
+			};
+		} else {
+			angle = Phaser.Math.Angle.Between(this.mouse.x, this.mouse.y, config.width/2, config.height/2);
+			
+			dx = (this.mouse.x - config.width/2) * 0.05;
+			dy = (this.mouse.y - config.height/2) * 0.05;
+
+			this.cameras.main.followOffset.x = -dx;
+			this.cameras.main.followOffset.y = -dy;
+		};
+
 		var x = -Math.cos(angle) * 50;
 		var y = -Math.sin(angle) * 50;
 		this.pointInScreen.setPosition(config.width/2+x-dx, config.height/2+y-dy);
@@ -414,15 +473,15 @@ class Main extends Phaser.Scene
 		this.griddy.x = -Phaser.Math.Wrap(scrollX, 0, cellSize);
 		this.griddy.y = -Phaser.Math.Wrap(scrollY, 0, cellSize);
 		
-		if(this.keys["e"].isDown || ctx.spawnButton.isDown) {
+		if(this.keys["e"].isDown) {
 			this.createEnemy(playPos.x,playPos.y-200);
 		}
 		
-		var down = this.cursorKeys.down.isDown || this.keys["s"].isDown// || this.joyStickCursor.down.isDown;
-		var up = this.cursorKeys.up.isDown || this.keys["w"].isDown// || this.joyStickCursor.up.isDown;
-		var right = this.cursorKeys.right.isDown || this.keys["d"].isDown// || this.joyStickCursor.right.isDown;
-		var left = this.cursorKeys.left.isDown || this.keys["a"].isDown// || this.joyStickCursor.left.isDown;
-		
+		var down = this.cursorKeys.down.isDown || this.keys["s"].isDown;
+		var up = this.cursorKeys.up.isDown || this.keys["w"].isDown;
+		var right = this.cursorKeys.right.isDown || this.keys["d"].isDown;
+		var left = this.cursorKeys.left.isDown || this.keys["a"].isDown;
+
 		var speed;
 		
 		if(this.keys["shift"].isDown || this.joyStick.force > 80) {
