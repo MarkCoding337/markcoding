@@ -110,7 +110,7 @@ class Main extends Phaser.Scene
 			attackRadius: 500,
 			fireCD: 50,
 			pierce: 2,
-			bulletSpeed: 5,
+			bulletSpeed: 10,
 			bulletLife: 60,
 			bulletNum: 1,
 		}
@@ -394,7 +394,7 @@ class Main extends Phaser.Scene
 				this.cameras.main.followOffset.x = -dx;
 				this.cameras.main.followOffset.y = -dy;
 			} else {
-				angle = this.lastAimAngle;
+				angle = this.aimMem.angle;
 				dx = this.aimMem.dx;
 				dy = this.aimMem.dy;
 			};
@@ -407,7 +407,6 @@ class Main extends Phaser.Scene
 			this.cameras.main.followOffset.x = -dx;
 			this.cameras.main.followOffset.y = -dy;
 		};
-
 		var x = -Math.cos(angle) * 50;
 		var y = -Math.sin(angle) * 50;
 		this.pointInScreen.setPosition(config.width/2+x-dx, config.height/2+y-dy);
@@ -483,12 +482,25 @@ class Main extends Phaser.Scene
 		var left = this.cursorKeys.left.isDown || this.keys["a"].isDown;
 
 		var speed;
-		
-		if(this.keys["shift"].isDown || this.joyStick.force > 80) {
-			speed = this.params.sprintSpeed;
+		if(this.mobile) {
+			this.joyStick.force > 80 || this.keys["shift"].isDown ? speed = this.params.sprintSpeed : speed = this.params.speed;
+			if(this.joyStick.force < 10 && !down && !up) {
+				this.player.setVelocityY(0);
+			}
+			if(this.joyStick.force < 10 && !right && !left) {
+				this.player.setVelocityX(0);
+			}
+			if(this.joyStick.force >= 10) {
+				const angle = Phaser.Math.DegToRad(this.joyStick.angle);
+				this.player.setVelocity(
+					Math.cos(angle) * speed,
+					Math.sin(angle) * speed
+				);
+			}
 		} else {
-			speed = this.params.speed;
+			this.keys["shift"].isDown ? speed = this.params.sprintSpeed : speed = this.params.speed;
 		}
+
 		if(down) {
 			this.player.setVelocityY(speed);
 		}
@@ -501,19 +513,7 @@ class Main extends Phaser.Scene
 		if(left) {
 			this.player.setVelocityX(-speed);
 		}
-		if(this.joyStick.force < 10 && !down && !up) {
-			this.player.setVelocityY(0);
-		}
-		if(this.joyStick.force < 10 && !right && !left) {
-			this.player.setVelocityX(0);
-		}
-		if(this.joyStick.force >= 10) {
-			const angle = Phaser.Math.DegToRad(this.joyStick.angle);
-			this.player.setVelocity(
-				Math.cos(angle) * speed,
-				Math.sin(angle) * speed
-			);
-		}
+		
 	}
 	setCenterOfMass(body, gameObj, offset) {
 		this.matter.body.setCentre( body, offset, true );
