@@ -18,8 +18,93 @@ class Menu extends Phaser.Scene
 		super("Menu");
 	}
 	create() {
-		this.add.rectangle(0,0,100,100,0x000000);
+		this.fullscreenButton = this.add.text(config.width - 20, 20, "Fullscreen", {fontFamily: 'Arial', fontSize: '30px', fill: '#FFFFFF'}).setOrigin(1,0).setInteractive();
+		this.fullscreenButton.on('pointerdown', ()=> {
+			if (!this.scale.isFullscreen) {
+				this.scale.startFullscreen();
+				//this.scale.resize(window.innerWidth, window.innerHeight);
+			} else {
+				this.scale.stopFullscreen();
+				//this.scale.resize(window.innerWidth, window.innerHeight);
+			}
+		});
+		this.scale.on('resize', function (gameSize) {
+			const width = gameSize.width;
+			const height = gameSize.height;
+			// 1. Update Camera
+			this.cameras.resize(width, height);
+			config.width = window.innerWidth;
+			config.height = window.innerHeight;
+			this.resizeStuff();
+		}, this);
+		this.add.text(config.width/2, config.height/2, "Shooty McFlatFace", {fontFamily: 'Arial', fontSize: '40px', fill: '#FFFFFF'}).setOrigin(0.5);
+		this.startText = this.add.text(config.width/2, config.height/2 + 100, "Tap to Start", {fontFamily: 'Arial', fontSize: '20px', fill: '#FFFFFF'}).setOrigin(0.5).setInteractive();
+		this.tweens.add({
+			targets: this.startText,
+			scaleX: 1.1,
+			scaleY: 1.1,
+			duration: 500,
+			yoyo: true,
+			repeat: -1
+		});
+		this.startText.on('pointerdown', ()=> {
+			this.scene.stop("Menu");
+			this.scene.start("Main");
+		});
 	}
+	resizeStuff() {
+		this.fullscreenButton.setPosition(config.width - 20, 20);
+		this.startText.setPosition(config.width/2, config.height/2 + 100);
+	}
+}
+
+class pauseMenu extends Phaser.Scene
+{
+	constructor() {
+		super("pauseMenu");
+	}
+	create() {
+		this.background = this.add.rectangle(0,0,config.width,config.height,0x000000,0.5).setOrigin(0,0);
+		this.fullscreenButton = this.add.text(config.width - 20, 20, "Fullscreen", {fontFamily: 'Arial', fontSize: '30px', fill: '#FFFFFF'}).setOrigin(1,0).setInteractive();
+		this.fullscreenButton.on('pointerdown', ()=> {
+			if (!this.scale.isFullscreen) {
+				this.scale.startFullscreen();
+			} else {
+				this.scale.stopFullscreen();
+			}
+		});
+		this.scale.on('resize', function (gameSize) {
+			const width = gameSize.width;
+			const height = gameSize.height;
+			// 1. Update Camera
+			ctx.cameras.resize(width, height);
+			config.width = window.innerWidth;
+			config.height = window.innerHeight;
+			ctx.resizeStuff();
+			this.resizeStuff();
+		}, this);
+		this.labelText = this.add.text(config.width/2, config.height/2, "Paused", {fontFamily: 'Arial', fontSize: '40px', fill: '#FFFFFF', stroke: '#000000', strokeThickness: 6}).setOrigin(0.5);
+		this.startText = this.add.text(config.width/2, config.height/2 + 100, "Tap to Resume", {fontFamily: 'Arial', fontSize: '20px', fill: '#FFFFFF'}).setOrigin(0.5).setInteractive();
+		this.tweens.add({
+			targets: this.startText,
+			scaleX: 1.1,
+			scaleY: 1.1,
+			duration: 500,
+			yoyo: true,
+			repeat: -1
+		});
+		this.startText.on('pointerdown', ()=> {
+			this.scene.stop("pauseMenu");
+			this.scene.resume("Main");
+		});
+	}
+	resizeStuff() {
+		this.background.width = config.width;
+		this.background.height = config.height;
+		this.fullscreenButton.setPosition(config.width - 20, 20);
+		this.startText.setPosition(config.width/2, config.height/2 + 100);
+		this.labelText.setPosition(config.width/2, config.height/2);
+	};
 }
 
 class Main extends Phaser.Scene
@@ -29,6 +114,7 @@ class Main extends Phaser.Scene
 	}
 	preload() {
 		this.load.spritesheet("enemy1", "https://ik.imagekit.io/markathious/ShootyMcFlatFace/IMG_0066.png", {frameWidth: 16, frameHeight: 16});
+		this.load.image("pauseButton", "https://ik.imagekit.io/markathious/ShootyMcFlatFace/pauseButton.png");
 		this.load.plugin('rexvirtualjoystickplugin', "https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js", true);
 		//this.load.plugin('rextoggleswitchplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rextoggleswitchplugin.min.js', true);
 	}
@@ -45,6 +131,13 @@ class Main extends Phaser.Scene
 		this.player.body.isPlayer = true;
 		
 		this.animationPrep();
+
+		this.pauseButton = this.add.image(config.width - 10, 30, "pauseButton").setOrigin(1,0).setScrollFactor(0).setDepth(10).setInteractive();
+		if (!this.mobile) this.pauseButton.setDisplaySize(70,70); else this.pauseButton.setDisplaySize(50,50);
+		this.pauseButton.on('pointerdown', () => {
+			this.scene.pause("Main");
+			this.scene.launch("pauseMenu");
+		});
 		
 		this.waveBar = this.add.rectangle(0,0,config.width,20,0x88FF88).setScrollFactor(0).setDepth(10).setOrigin(0,0);
 		this.waveBarBG = this.add.rectangle(0,0,config.width,21,0x000000).setScrollFactor(0).setDepth(9).setOrigin(0,0);
@@ -53,9 +146,9 @@ class Main extends Phaser.Scene
 		this.waveLevel = 0;
 
 		this.enemieNum = 0;
-		this.enemieTracker = this.add.text(10,30,"Enemies: 0",{fontSize: '20px', fill: '#FFFFFF'}).setScrollFactor(0).setDepth(10);
+		this.enemieTracker = this.add.text(10,30,"Enemies: 0",{fontFamily: 'Arial', fontSize: '20px', fill: '#FFFFFF'}).setScrollFactor(0).setDepth(10);
 
-		this.waveTracker = this.add.text(10,50,"Wave: 0",{fontSize: '20px', fill: '#FFFFFF'}).setScrollFactor(0).setDepth(10);
+		this.waveTracker = this.add.text(10,50,"Wave: 0",{fontFamily: 'Arial', fontSize: '20px', fill: '#FFFFFF'}).setScrollFactor(0).setDepth(10);
 
 		this.pointInScreen2 = this.add.circle(config.width/2,config.height/2, 4, 0xFF0000).setScrollFactor(0).setDepth(5);
 		this.connectionLine = this.add.line(0,0,0,0,0,0,0xFF0000, 1).setScrollFactor(0).setDepth(6);
@@ -126,7 +219,7 @@ class Main extends Phaser.Scene
 		const { width, height } = cam;
 		
 		this.griddy = this.add
-		.grid(0, 0, width + cellSize, height + cellSize, cellSize, cellSize, 0x000000, 1, 0xFFFFFF, 1)
+		.grid(0, 0, width*2 + cellSize, height*2 + cellSize, cellSize, cellSize, 0x000000, 1, 0xFFFFFF, 1)
 		.setAlpha(0.2)
 		.setOrigin(0,0)
 		.setScrollFactor(0)
@@ -522,6 +615,22 @@ class Main extends Phaser.Scene
 		const originY = gameObj.originY + ( offset.y / gameObj.displayHeight );
 		gameObj.setOrigin( originX, originY );
 	}
+	resizeStuff() {
+		this.cameras.resize(config.width, config.height);
+		this.pauseButton.setPosition(config.width - 10, 30);
+		this.waveBarBG.width = config.width;
+		this.waveBar.width = (this.waveProgress / this.nextWaveTimer) * config.width;
+		this.pointInScreen2.setPosition(config.width/2, config.height/2);
+		this.connectionLine.setTo(config.width/2, config.height/2, config.width/2, config.height/2);
+		this.pointInScreen.setPosition(config.width/2, config.height/2);
+		if(this.mobile) {
+			this.pauseButton.setDisplaySize(50,50);
+			this.joyStick.setPosition(150, config.height-150);
+			this.aimJoyStick.setPosition(config.width-150, config.height-150);
+		} else {
+			this.pauseButton.setDisplaySize(70,70);
+		}
+	};
 	animationPrep() {
 		this.anims.create({
 			key: 'e1WalkDown',
@@ -581,7 +690,13 @@ var config = {
 	loader: {
 		crossOrigin: "anonymous",
 	},
-    scene: [Main],
+	scale: {
+		mode: Phaser.Scale.RESIZE,
+		parent: 'body',
+		width: window.innerWidth,
+		height: window.innerHeight,
+	},
+    scene: [Menu, Main,pauseMenu],
 }
 
 var game = new Phaser.Game(config)
