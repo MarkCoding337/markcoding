@@ -37,6 +37,17 @@ class Menu extends Phaser.Scene
 			config.height = window.innerHeight;
 			this.resizeStuff();
 		}, this);
+		this.scale.on('enterfullscreen', () => {
+			if (navigator.keyboard && navigator.keyboard.lock) {
+				navigator.keyboard.lock(['Escape']).catch(e => console.warn(e));
+			}
+		});
+
+		this.scale.on('leavefullscreen', () => {
+			if (navigator.keyboard && navigator.keyboard.unlock) {
+				navigator.keyboard.unlock();
+			}
+		});
 		this.add.text(config.width/2, config.height/2, "Shooty McFlatFace", {fontFamily: 'Arial', fontSize: '40px', fill: '#FFFFFF'}).setOrigin(0.5);
 		this.startText = this.add.text(config.width/2, config.height/2 + 100, "Tap to Start", {fontFamily: 'Arial', fontSize: '20px', fill: '#FFFFFF'}).setOrigin(0.5).setInteractive();
 		this.tweens.add({
@@ -71,6 +82,17 @@ class pauseMenu extends Phaser.Scene
 				this.scale.startFullscreen();
 			} else {
 				this.scale.stopFullscreen();
+			}
+		});
+		this.scale.on('enterfullscreen', () => {
+			if (navigator.keyboard && navigator.keyboard.lock) {
+				navigator.keyboard.lock(['Escape']).catch(e => console.warn(e));
+			}
+		});
+
+		this.scale.on('leavefullscreen', () => {
+			if (navigator.keyboard && navigator.keyboard.unlock) {
+				navigator.keyboard.unlock();
 			}
 		});
 		this.scale.on('resize', function (gameSize) {
@@ -137,6 +159,18 @@ class Main extends Phaser.Scene
 		this.pauseButton.on('pointerdown', () => {
 			this.scene.pause("Main");
 			this.scene.launch("pauseMenu");
+		});
+
+		this.scale.on('enterfullscreen', () => {
+			if (navigator.keyboard && navigator.keyboard.lock) {
+				navigator.keyboard.lock(['Escape']).catch(e => console.warn(e));
+			}
+		});
+
+		this.scale.on('leavefullscreen', () => {
+			if (navigator.keyboard && navigator.keyboard.unlock) {
+				navigator.keyboard.unlock();
+			}
 		});
 		
 		this.waveBar = this.add.rectangle(0,0,config.width,20,0x88FF88).setScrollFactor(0).setDepth(10).setOrigin(0,0);
@@ -233,6 +267,7 @@ class Main extends Phaser.Scene
 			"s": ctx.input.keyboard.addKey("s"),
 			"shift": ctx.input.keyboard.addKey("shift"),
 			"e": ctx.input.keyboard.addKey("e"),
+			"esc": ctx.input.keyboard.addKey("esc"),
 		};
 		
 		//Enemies
@@ -568,7 +603,12 @@ class Main extends Phaser.Scene
 		if(this.keys["e"].isDown) {
 			this.createEnemy(playPos.x,playPos.y-200);
 		}
-		
+
+		if(this.keys["esc"].isDown) {
+			this.scene.pause();
+			this.scene.launch("pauseMenu");
+		}
+
 		var down = this.cursorKeys.down.isDown || this.keys["s"].isDown;
 		var up = this.cursorKeys.up.isDown || this.keys["w"].isDown;
 		var right = this.cursorKeys.right.isDown || this.keys["d"].isDown;
