@@ -136,6 +136,7 @@ class Main extends Phaser.Scene
 	}
 	preload() {
 		this.load.spritesheet("enemy1", "https://ik.imagekit.io/markathious/ShootyMcFlatFace/IMG_0066.png", {frameWidth: 16, frameHeight: 16});
+		this.load.spritesheet("player", "https://ik.imagekit.io/markathious/ShootyMcFlatFace/playerCharacter.png", {frameWidth: 64, frameHeight: 96});
 		this.load.image("pauseButton", "https://ik.imagekit.io/markathious/ShootyMcFlatFace/pauseButton.png");
 		this.load.plugin('rexvirtualjoystickplugin', "https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js", true);
 		//this.load.plugin('rextoggleswitchplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rextoggleswitchplugin.min.js', true);
@@ -146,8 +147,11 @@ class Main extends Phaser.Scene
 		this.mobile = this.sys.game.device.input.touch;
 
 		this.game.canvas.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
-		this.player = this.add.rectangle(0,0,50,50,0xFFFFFF);
-		this.player = this.matter.add.gameObject(this.player).setFrictionAir(0.5).setDepth(5).setCollisionCategory(1);
+		//this.player = this.add.rectangle(0,0,50,50,0xFFFFFF);
+		//this.player = this.matter.add.gameObject(this.player).setFrictionAir(0.5).setDepth(5).setCollisionCategory(1);
+		this.player = this.matter.add.sprite(0,0,"player").setFrictionAir(0.5).setDepth(10).setCollisionCategory(1);
+		this.player.setDisplaySize(50,75);
+		this.player.texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
 		this.player.setFixedRotation(true);
 		this.player.body.sleepThreshold = -1;
 		this.player.body.isPlayer = true;
@@ -614,6 +618,10 @@ class Main extends Phaser.Scene
 		var right = this.cursorKeys.right.isDown || this.keys["d"].isDown;
 		var left = this.cursorKeys.left.isDown || this.keys["a"].isDown;
 
+		var keyPressed = false;
+
+		if (down||up||right||left) keyPressed = true; 
+		this.mobile ? this.joyStick.isDown ? keyPressed = true : null : null;
 		var speed;
 		if(this.mobile) {
 			this.joyStick.force > 80 || this.keys["shift"].isDown ? speed = this.params.sprintSpeed : speed = this.params.speed;
@@ -646,7 +654,41 @@ class Main extends Phaser.Scene
 		if(left) {
 			this.player.setVelocityX(-speed);
 		}
-		
+		let play = this.player;
+		if(keyPressed) {
+			const absVelX = Math.abs(play.body.velocity.x);
+			const absVelY = Math.abs(play.body.velocity.y);
+			if(absVelX < 0.5 && absVelY < 0.5) {
+				//Idle
+				if(!play.anims.currentAnim) return;
+				let currFrame = play.anims.currentFrame.textureFrame;
+				play.setFrame(currFrame - (currFrame % 4));
+				play.anims.stop();
+			} else {
+				//Moving
+				if(absVelX > absVelY) {
+					//Moving sideways
+					if(play.body.velocity.x > 0) {
+						play.anims.play('playerWalkRight', true);
+					} else {
+						play.anims.play('playerWalkLeft', true);
+					}
+				} else {
+					//Moving up/down
+					if(play.body.velocity.y > 0) {
+						play.anims.play('playerWalkDown', true);
+					} else {
+						play.anims.play('playerWalkUp', true);
+					}
+				}
+			};
+		} else {
+			if(!play.anims.currentAnim) return;
+			let currFrame = play.anims.currentFrame.textureFrame;
+			play.setFrame(currFrame - (currFrame % 4));
+			play.anims.stop();
+		};
+
 	}
 	setCenterOfMass(body, gameObj, offset) {
 		this.matter.body.setCentre( body, offset, true );
@@ -694,6 +736,31 @@ class Main extends Phaser.Scene
 			key: 'e1WalkLeft',
 			frames: this.anims.generateFrameNumbers('enemy1', { start: 12, end: 15 }),
 			frameRate: 10,
+			repeat: -1 // -1 means loop forever
+		});
+		//Player
+		this.anims.create({
+			key: 'playerWalkDown',
+			frames: this.anims.generateFrameNumbers('player', { start: 0, end: 3 }),
+			frameRate: 5,
+			repeat: -1 // -1 means loop forever
+		});
+		this.anims.create({
+			key: 'playerWalkUp',
+			frames: this.anims.generateFrameNumbers('player', { start: 4, end: 7 }),
+			frameRate: 5,
+			repeat: -1 // -1 means loop forever
+		});
+		this.anims.create({
+			key: 'playerWalkRight',
+			frames: this.anims.generateFrameNumbers('player', { start: 8, end: 11 }),
+			frameRate: 5,
+			repeat: -1 // -1 means loop forever
+		});
+		this.anims.create({
+			key: 'playerWalkLeft',
+			frames: this.anims.generateFrameNumbers('player', { start: 12, end: 15 }),
+			frameRate: 5,
 			repeat: -1 // -1 means loop forever
 		});
 	}
