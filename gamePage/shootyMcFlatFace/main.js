@@ -76,7 +76,7 @@ class pauseMenu extends Phaser.Scene
 	}
 	create() {
 		this.background = this.add.rectangle(0,0,config.width,config.height,0x000000,0.5).setOrigin(0,0);
-		this.fullscreenButton = this.add.text(config.width - 20, 20, "Fullscreen", {fontFamily: 'Arial', fontSize: '30px', fill: '#FFFFFF'}).setOrigin(1,0).setInteractive();
+		this.fullscreenButton = this.add.text(config.width - 20, config.height - 20, "Fullscreen", {fontFamily: 'Arial', fontSize: '30px', fill: '#FFFFFF'}).setOrigin(1,1).setInteractive();
 		this.fullscreenButton.on('pointerdown', ()=> {
 			if (!this.scale.isFullscreen) {
 				this.scale.startFullscreen();
@@ -123,7 +123,7 @@ class pauseMenu extends Phaser.Scene
 	resizeStuff() {
 		this.background.width = config.width;
 		this.background.height = config.height;
-		this.fullscreenButton.setPosition(config.width - 20, 20);
+		this.fullscreenButton.setPosition(config.width - 20, config.height - 20);
 		this.startText.setPosition(config.width/2, config.height/2 + 100);
 		this.labelText.setPosition(config.width/2, config.height/2);
 	};
