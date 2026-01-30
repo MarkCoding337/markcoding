@@ -8,6 +8,7 @@
 */
 var ctx;
 var cellSize = 500;
+var mobile;
 
 var Phaser;
 
@@ -28,6 +29,15 @@ class Menu extends Phaser.Scene
 				//this.scale.resize(window.innerWidth, window.innerHeight);
 			}
 		});
+
+		mobile = this.sys.game.device.input.touch;
+
+		this.mobileButton = this.add.text(20, 20, "Mobile: " + mobile, {fontFamily: 'Arial', fontSize: '30px', fill: '#FFFFFF'}).setOrigin(0,0).setInteractive();
+		this.mobileButton.on('pointerdown', ()=> {
+			mobile = !mobile;
+			this.mobileButton.setText("Mobile: " + mobile);
+		});
+
 		this.scale.on('resize', function (gameSize) {
 			const width = gameSize.width;
 			const height = gameSize.height;
@@ -76,7 +86,7 @@ class pauseMenu extends Phaser.Scene
 	}
 	create() {
 		this.background = this.add.rectangle(0,0,config.width,config.height,0x000000,0.5).setOrigin(0,0);
-		this.fullscreenButton = this.add.text(config.width - 20, config.height - 20, "Fullscreen", {fontFamily: 'Arial', fontSize: '30px', fill: '#FFFFFF'}).setOrigin(1,1).setInteractive();
+		this.fullscreenButton = this.add.text(config.width/2, config.height/2 + 200, "Fullscreen", {fontFamily: 'Arial', fontSize: '30px', fill: '#FFFFFF'}).setOrigin(0.5,0.5).setInteractive();
 		this.fullscreenButton.on('pointerdown', ()=> {
 			if (!this.scale.isFullscreen) {
 				this.scale.startFullscreen();
@@ -119,11 +129,18 @@ class pauseMenu extends Phaser.Scene
 			this.scene.stop("pauseMenu");
 			this.scene.resume("Main");
 		});
+		this.escapeKey = this.input.keyboard.addKey('ESC');
+	}
+	update() {
+		if(this.escapeKey.isDown) {
+			this.scene.stop("pauseMenu");
+			this.scene.resume("Main");
+		};
 	}
 	resizeStuff() {
 		this.background.width = config.width;
 		this.background.height = config.height;
-		this.fullscreenButton.setPosition(config.width - 20, config.height - 20);
+		this.fullscreenButton.setPosition(config.width/2, config.height/2 + 200);
 		this.startText.setPosition(config.width/2, config.height/2 + 100);
 		this.labelText.setPosition(config.width/2, config.height/2);
 	};
@@ -138,13 +155,13 @@ class Main extends Phaser.Scene
 		this.load.spritesheet("enemy1", "https://ik.imagekit.io/markathious/ShootyMcFlatFace/IMG_0066.png", {frameWidth: 16, frameHeight: 16});
 		this.load.spritesheet("player", "https://ik.imagekit.io/markathious/ShootyMcFlatFace/playerCharacter.png", {frameWidth: 64, frameHeight: 96});
 		this.load.image("pauseButton", "https://ik.imagekit.io/markathious/ShootyMcFlatFace/pauseButton.png");
+		this.load.image("commonUpgradeCard", "https://ik.imagekit.io/markathious/ShootyMcFlatFace/UpgradeCard-Common.png");
 		this.load.plugin('rexvirtualjoystickplugin', "https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js", true);
 		//this.load.plugin('rextoggleswitchplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rextoggleswitchplugin.min.js', true);
 	}
 	create() {
 		ctx = this;
-
-		this.mobile = this.sys.game.device.input.touch;
+		this.mobile = mobile;
 
 		this.game.canvas.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
 		//this.player = this.add.rectangle(0,0,50,50,0xFFFFFF);
@@ -158,7 +175,7 @@ class Main extends Phaser.Scene
 		
 		this.animationPrep();
 
-		this.pauseButton = this.add.image(config.width - 10, 30, "pauseButton").setOrigin(1,0).setScrollFactor(0).setDepth(10).setInteractive();
+		this.pauseButton = this.add.image(config.width - 10, 40, "pauseButton").setOrigin(1,0).setScrollFactor(0).setDepth(10).setInteractive();
 		if (!this.mobile) this.pauseButton.setDisplaySize(70,70); else this.pauseButton.setDisplaySize(50,50);
 		this.pauseButton.on('pointerdown', () => {
 			this.scene.pause("Main");
@@ -183,10 +200,13 @@ class Main extends Phaser.Scene
 		this.nextWaveTimer = 600;
 		this.waveLevel = 0;
 
-		this.enemieNum = 0;
-		this.enemieTracker = this.add.text(10,30,"Enemies: 0",{fontFamily: 'Arial', fontSize: '20px', fill: '#FFFFFF'}).setScrollFactor(0).setDepth(10);
+		this.expBar = this.add.rectangle(0,21,config.width,10,0x8888FF).setScrollFactor(0).setDepth(10).setOrigin(0,0);
+		this.expBarBG = this.add.rectangle(0,21,config.width,11,0x000000).setScrollFactor(0).setDepth(9).setOrigin(0,0);
 
-		this.waveTracker = this.add.text(10,50,"Wave: 0",{fontFamily: 'Arial', fontSize: '20px', fill: '#FFFFFF'}).setScrollFactor(0).setDepth(10);
+		this.enemieNum = 0;
+		this.enemieTracker = this.add.text(10,40,"Enemies: 0",{fontFamily: 'Arial', fontSize: '20px', fill: '#FFFFFF'}).setScrollFactor(0).setDepth(10);
+
+		this.waveTracker = this.add.text(10,60,"Wave: 0",{fontFamily: 'Arial', fontSize: '20px', fill: '#FFFFFF'}).setScrollFactor(0).setDepth(10);
 
 		this.pointInScreen2 = this.add.circle(config.width/2,config.height/2, 4, 0xFF0000).setScrollFactor(0).setDepth(5);
 		this.connectionLine = this.add.line(0,0,0,0,0,0,0xFF0000, 1).setScrollFactor(0).setDepth(6);
@@ -235,6 +255,17 @@ class Main extends Phaser.Scene
 		this.fireTarget;
 		this.fireCD = 0;
 		
+		this.liveParams = {
+			exp: 0,
+			playerLevel: 1,
+			expToNextLevel: 100,
+			health: 100,
+			maxHealth: 100,
+			armor: 0,
+			stamina: 100,
+			maxStamina: 100,
+		};
+
 		this.params = {
 			speed: 5,
 			sprintSpeed: 10,
@@ -305,6 +336,7 @@ class Main extends Phaser.Scene
 				this.idleTimer = 0;
 				this.despawnTimer = 0;
 				this.following = false;
+				this.expValue = 10;
 				ctx.enemieNum += 1;
 				this.speed = (Math.random()*2+2)*1.2;
 				this.frameCount = 0;
@@ -384,6 +416,7 @@ class Main extends Phaser.Scene
 					};
 					
 					if(this.health <= 0) {
+						ctx.liveParams.exp += this.expValue;
 						this.scene.events.off('update', this.update, this);
 						delete ctx.enemiesAliveBodies[""+this.body.id];
 						ctx.enemieNum -= 1;
@@ -413,8 +446,11 @@ class Main extends Phaser.Scene
 				} else {
 					bullSpeed = ctx.params.bulletSpeed;
 				};
-				this.setVelocityX(-Math.cos(angle) * bullSpeed);
-				this.setVelocityY(-Math.sin(angle) * bullSpeed);
+				let spray = ctx.params.bulletNum > 1 ? Phaser.Math.Between(-5*ctx.params.bulletNum,5*ctx.params.bulletNum) : 0;
+				spray = Phaser.Math.DegToRad(spray);
+				let finalAngle = angle + spray;
+				this.setVelocityX(-Math.cos(finalAngle) * bullSpeed);
+				this.setVelocityY(-Math.sin(finalAngle) * bullSpeed);
 				/*if(ctx.fireTarget != null) {
 					var angle = Phaser.Math.Angle.Between(ctx.fireTarget.position.x, ctx.fireTarget.position.y, x, y);
 
@@ -482,6 +518,16 @@ class Main extends Phaser.Scene
 		var playPos = this.player.body.position;
 
 		this.enemieTracker.setText("Enemies: " + this.enemieNum);
+
+		if(this.liveParams.exp >= this.liveParams.expToNextLevel) {
+			this.liveParams.playerLevel += 1;
+			this.liveParams.exp -= this.liveParams.expToNextLevel;
+			this.liveParams.expToNextLevel = Math.floor(this.liveParams.expToNextLevel * 1.5);
+			this.scene.pause();
+			this.scene.launch("levelUpMenu");
+		};
+
+		this.expBar.width = (this.liveParams.exp / this.liveParams.expToNextLevel) * config.width;
 
 		this.waveBar.width = (this.waveProgress / this.nextWaveTimer) * config.width;
 		if(this.waveProgress >= this.nextWaveTimer) {
@@ -699,9 +745,11 @@ class Main extends Phaser.Scene
 	}
 	resizeStuff() {
 		this.cameras.resize(config.width, config.height);
-		this.pauseButton.setPosition(config.width - 10, 30);
+		this.pauseButton.setPosition(config.width - 10, 40);
 		this.waveBarBG.width = config.width;
 		this.waveBar.width = (this.waveProgress / this.nextWaveTimer) * config.width;
+		this.expBarBG.width = config.width;
+		this.expBar.width = (this.liveParams.exp / this.liveParams.expToNextLevel) * config.width;
 		this.pointInScreen2.setPosition(config.width/2, config.height/2);
 		this.connectionLine.setTo(config.width/2, config.height/2, config.width/2, config.height/2);
 		this.pointInScreen.setPosition(config.width/2, config.height/2);
@@ -765,6 +813,172 @@ class Main extends Phaser.Scene
 		});
 	}
 }
+class levelUpMenu extends Phaser.Scene
+{
+	constructor() {
+		super("levelUpMenu");
+	}
+	create() {
+
+		this.options = this.getLevelUpOptions();
+
+		this.option1Val = this.options[Math.floor(Math.random()*this.options.length)];
+		this.options = this.options.filter(item => item !== this.option1Val);
+		this.option2Val = this.options[Math.floor(Math.random()*this.options.length)];
+		this.options = this.options.filter(item => item !== this.option2Val);
+		this.option3Val = this.options[Math.floor(Math.random()*this.options.length)];
+		this.options = this.options.filter(item => item !== this.option3Val);
+
+		this.background = this.add.rectangle(0,0,config.width,config.height,0x000000,0.5).setOrigin(0,0);
+		this.mainLabel = this.add.text(100,100,"You Leveled Up!",{fontFamily: 'Arial', fontSize: '40px', fill: '#FFFFFF'});
+		var graphics = this.add.graphics();
+		graphics.fillStyle(0x000000, 1);
+		
+		this.option1 = this.add.image(config.width/4, config.height, "commonUpgradeCard").setDisplaySize(config.width/9*2, config.height/5*3).setOrigin(0.5,0.5).setInteractive();
+		this.option1Text = this.add.text(config.width/4,config.height+40,this.option1Val.name+"\n"+this.option1Val.description,{fontFamily: 'Arial', fontSize: '27px', align: 'center', fill: '#FFFFFF'}).setOrigin(0.5,0);
+		this.option1.on('pointerdown', ()=> {
+			this.option1Val.apply();
+			this.scene.stop("levelUpMenu");
+			this.scene.resume("Main");
+		});
+
+		this.tweens.chain({
+			targets: [this.option1, this.option1Text],
+			tweens: [
+				{
+					y: "-="+config.height/2,            // Final Y position
+					duration: 1000,      // Time in ms
+					ease: 'Power2',      // Smooth acceleration/deceleration
+					yoyo: false,         // Set true to make it go back down
+					delay: 150,           // Optional delay
+					
+				},
+				{
+					scale: "+=0.005",
+					duration: 500,
+					ease: 'Sine.easeInOut',
+					yoyo: true,
+					repeat: -1,
+				}
+			]
+		});
+		
+		this.option2 = this.add.image(config.width/4*2, config.height, "commonUpgradeCard").setDisplaySize(config.width/9*2, config.height/5*3).setOrigin(0.5,0.5).setInteractive();
+		this.option2Text = this.add.text(config.width/4*2,config.height+40,this.option2Val.name+"\n"+this.option2Val.description,{fontFamily: 'Arial', fontSize: '27px', align: 'center', fill: '#FFFFFF'}).setOrigin(0.5,0);
+		this.option2.on('pointerdown', ()=> {
+			this.option2Val.apply();
+			this.scene.stop("levelUpMenu");
+			this.scene.resume("Main");
+		});
+
+		this.tweens.chain({
+			targets: [this.option2, this.option2Text],
+			tweens: [
+				{
+					y: "-="+config.height/2,            // Final Y position
+					duration: 1000,      // Time in ms
+					ease: 'Power2',      // Smooth acceleration/deceleration
+					yoyo: false,         // Set true to make it go back down
+					delay: 250,           // Optional delay
+					
+				},
+				{
+					scale: "+=0.005",
+					duration: 500,
+					ease: 'Sine.easeInOut',
+					yoyo: true,
+					repeat: -1,
+				}
+			]
+		});
+		
+		this.option3 = this.add.image(config.width/4*3, config.height, "commonUpgradeCard").setDisplaySize(config.width/9*2, config.height/5*3).setOrigin(0.5,0.5).setInteractive();
+		this.option3Text = this.add.text(config.width/4*3,config.height+40,this.option3Val.name+"\n"+this.option3Val.description,{fontFamily: 'Arial', fontSize: '27px', align: 'center', fill: '#FFFFFF'}).setOrigin(0.5,0);
+		this.option3.on('pointerdown', ()=> {
+			this.option3Val.apply();
+			this.scene.stop("levelUpMenu");
+			this.scene.resume("Main");
+		});
+
+		this.tweens.chain({
+			targets: [this.option3, this.option3Text],
+			tweens: [
+				{
+					y: "-="+config.height/2,            // Final Y position
+					duration: 1000,      // Time in ms
+					ease: 'Power2',      // Smooth acceleration/deceleration
+					yoyo: false,         // Set true to make it go back down
+					delay: 350,           // Optional delay
+					
+				},
+				{
+					scale: "+=0.005",
+					duration: 500,
+					ease: 'Sine.easeInOut',
+					yoyo: true,
+					repeat: -1,
+				}
+			]
+		});
+
+		this.scale.on('resize', function (gameSize) {
+			const width = gameSize.width;
+			const height = gameSize.height;
+			// 1. Update Camera
+			ctx.cameras.resize(width, height);
+			config.width = window.innerWidth;
+			config.height = window.innerHeight;
+			ctx.resizeStuff();
+			this.resizeStuff();
+		}, this);
+
+	}
+	resizeStuff() {
+		this.background.width = config.width;
+		this.background.height = config.height;
+	};
+	getLevelUpOptions() {
+		var options = [
+			{
+				name: "Bullet Pierce",
+				description: "+1",
+				apply: function() {
+					ctx.params.pierce += 1;
+				}
+			},
+			{
+				name: "Fire Rate",
+				description: "+10%",
+				apply: function() {
+					ctx.params.fireCD = Math.floor(ctx.params.fireCD * 0.9);
+				}
+			},
+			{
+				name: "Bullet Speed",
+				description: "+2",
+				apply: function() {
+					ctx.params.bulletSpeed += 2;
+				}
+			},
+			{
+				name: "Bullet Number",
+				description: "+1",
+				apply: function() {
+					ctx.params.bulletNum += 1;
+				}
+			},
+			{
+				name: "Movement Speed",
+				description: "+1",
+				apply: function() {
+					ctx.params.speed += 1;
+					ctx.params.sprintSpeed += 1;
+				}
+			}
+		];
+		return options;
+	}
+};
 
 var config = {
 	type: Phaser.AUTO,
@@ -803,7 +1017,7 @@ var config = {
 		width: window.innerWidth,
 		height: window.innerHeight,
 	},
-    scene: [Menu, Main,pauseMenu],
+    scene: [Menu, Main, pauseMenu, levelUpMenu],
 }
 
 var game = new Phaser.Game(config)
