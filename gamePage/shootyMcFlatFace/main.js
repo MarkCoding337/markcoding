@@ -255,10 +255,12 @@ class Main extends Phaser.Scene
 		this.fireTarget;
 		this.fireCD = 0;
 		
+		this.waveUpdateParams = this.getWaveProgressParams();
+
 		this.liveParams = {
 			exp: 0,
 			playerLevel: 1,
-			expToNextLevel: 100,
+			expToNextLevel: 60,
 			health: 100,
 			maxHealth: 100,
 			armor: 0,
@@ -275,6 +277,15 @@ class Main extends Phaser.Scene
 			bulletSpeed: 10,
 			bulletLife: 60,
 			bulletNum: 1,
+			bulletDamage: 1,
+		}
+
+		this.enemieParams = {
+			baseHealth: 2,
+			healthVariation: 2,
+			baseSpeed: 2,
+			speedVariation: 2,
+			baseExpValue: 10,
 		}
 		
 		this.aimMem = {
@@ -322,7 +333,7 @@ class Main extends Phaser.Scene
 				});
 				this.body.isEnemy = true;
 				this.body.sleepThreshold = -1;
-				this.health = 2;//Math.floor(Math.random()*5+5);
+				this.health = Math.floor(Math.random()*ctx.enemieParams.healthVariation+ctx.enemieParams.baseHealth);
 				this.setFrictionAir(0.05);
 				this.setFriction(0.05);
 				this.setMass(0.15);
@@ -336,9 +347,9 @@ class Main extends Phaser.Scene
 				this.idleTimer = 0;
 				this.despawnTimer = 0;
 				this.following = false;
-				this.expValue = 10;
+				this.expValue = ctx.enemieParams.baseExpValue;
 				ctx.enemieNum += 1;
-				this.speed = (Math.random()*2+2)*1.2;
+				this.speed = (Math.random()*ctx.enemieParams.speedVariation+ctx.enemieParams.baseSpeed);
 				this.frameCount = 0;
 				this.distDePlayer;
 				this.body.density = 1;
@@ -499,13 +510,43 @@ class Main extends Phaser.Scene
 				// Check if either of the bodies belongs to your array
 				if (body1.isBullet) {
 					if(body2.isEnemy && !body1.blacklist.includes(body2.id)) {
-						body2.gameObject.health -= 1;
+						body2.gameObject.health -= this.params.bulletDamage;
+						let popup = this.add.text(body2.gameObject.x, body2.gameObject.y - 20, '-' + this.params.bulletDamage, {
+							font: '700 20px Inter',
+							fill: '#ff0000',
+							stroke: '#000000', strokeThickness: 2
+						});
+						this.tweens.add({
+							targets: popup,
+							y: popup.y - 50, // Move up
+							alpha: 0,        // Fade out
+							duration: 1000,  // Duration in ms
+							ease: 'Quint.easeIn',
+							onComplete: () => {
+								popup.destroy(); // Destroy when done
+							}
+						});
 						body1.blacklist.push(body2.id);
 						body1.pierce -= 1;
 					};
 				} else if (body2.isBullet && !body2.blacklist.includes(body1.id)) {
 					if(body1.isEnemy) {
-						body1.gameObject.health -= 1;
+						body1.gameObject.health -= this.params.bulletDamage;
+						let popup = this.add.text(body2.gameObject.x, body2.gameObject.y - 20, '-' + this.params.bulletDamage, {
+							font: '700 20px Inter',
+							fill: '#ff0000',
+							stroke: '#000000', strokeThickness: 2
+						});
+						this.tweens.add({
+							targets: popup,
+							y: popup.y - 50, // Move up
+							alpha: 0,        // Fade out
+							duration: 1000,  // Duration in ms
+							ease: 'Quint.easeIn',
+							onComplete: () => {
+								popup.destroy(); // Destroy when done
+							}
+						});
 						body2.blacklist.push(body1.id);
 						body2.pierce -= 1;
 					};
@@ -522,7 +563,7 @@ class Main extends Phaser.Scene
 		if(this.liveParams.exp >= this.liveParams.expToNextLevel) {
 			this.liveParams.playerLevel += 1;
 			this.liveParams.exp -= this.liveParams.expToNextLevel;
-			this.liveParams.expToNextLevel = Math.floor(this.liveParams.expToNextLevel * 1.5);
+			this.liveParams.expToNextLevel = Math.floor(this.liveParams.expToNextLevel * 1.25);
 			this.scene.pause();
 			this.scene.launch("levelUpMenu");
 		};
@@ -533,6 +574,7 @@ class Main extends Phaser.Scene
 		if(this.waveProgress >= this.nextWaveTimer) {
 			this.waveProgress = 0;
 			this.waveLevel += 1;
+			this.waveUpdateParams[Math.floor(this.waveLevel/4)]();
 			this.waveTracker.setText("Wave: " + this.waveLevel);
 			this.nextWaveTimer += 300*this.waveLevel;
 		} else {
@@ -743,6 +785,52 @@ class Main extends Phaser.Scene
 		const originY = gameObj.originY + ( offset.y / gameObj.displayHeight );
 		gameObj.setOrigin( originX, originY );
 	}
+	getWaveProgressParams() {
+		return [
+			() => {
+				this.enemieParams.baseHealth = 2;
+				this.enemieParams.healthVariation = 2;
+				this.enemieParams.baseSpeed = 2;
+				this.enemieParams.speedVariation = 2;
+				this.enemieParams.baseExpValue = 10;
+			},
+			() => {
+				this.enemieParams.baseHealth = 4;
+				this.enemieParams.healthVariation = 3;
+				this.enemieParams.baseSpeed = 2;
+				this.enemieParams.speedVariation = 2.25;
+				this.enemieParams.baseExpValue = 15;
+			},
+			() => {
+				this.enemieParams.baseHealth = 5;
+				this.enemieParams.healthVariation = 4;
+				this.enemieParams.baseSpeed = 2;
+				this.enemieParams.speedVariation = 2.5;
+				this.enemieParams.baseExpValue = 30;
+			},
+			() => {
+				this.enemieParams.baseHealth = 7;
+				this.enemieParams.healthVariation = 5;
+				this.enemieParams.baseSpeed = 2;
+				this.enemieParams.speedVariation = 3;
+				this.enemieParams.baseExpValue = 60;
+			},
+			() => {
+				this.enemieParams.baseHealth = 10;
+				this.enemieParams.healthVariation = 6;
+				this.enemieParams.baseSpeed = 3;
+				this.enemieParams.speedVariation = 3.5;
+				this.enemieParams.baseExpValue = 25;
+			},
+			() => {
+				this.enemieParams.baseHealth = 15;
+				this.enemieParams.healthVariation = 8;
+				this.enemieParams.baseSpeed = 3;
+				this.enemieParams.speedVariation = 4;
+				this.enemieParams.baseExpValue = 30;
+			},
+		]
+	}
 	resizeStuff() {
 		this.cameras.resize(config.width, config.height);
 		this.pauseButton.setPosition(config.width - 10, 40);
@@ -821,13 +909,12 @@ class levelUpMenu extends Phaser.Scene
 	create() {
 
 		this.options = this.getLevelUpOptions();
+		
+		this.pickedOptions = this.pickWeighted(this.options, 3);
 
-		this.option1Val = this.options[Math.floor(Math.random()*this.options.length)];
-		this.options = this.options.filter(item => item !== this.option1Val);
-		this.option2Val = this.options[Math.floor(Math.random()*this.options.length)];
-		this.options = this.options.filter(item => item !== this.option2Val);
-		this.option3Val = this.options[Math.floor(Math.random()*this.options.length)];
-		this.options = this.options.filter(item => item !== this.option3Val);
+		this.option1Val = this.pickedOptions[0];
+		this.option2Val = this.pickedOptions[1];
+		this.option3Val = this.pickedOptions[2];
 
 		this.background = this.add.rectangle(0,0,config.width,config.height,0x000000,0.5).setOrigin(0,0);
 		this.mainLabel = this.add.text(100,100,"You Leveled Up!",{fontFamily: 'Arial', fontSize: '40px', fill: '#FFFFFF'});
@@ -937,6 +1024,33 @@ class levelUpMenu extends Phaser.Scene
 		this.background.width = config.width;
 		this.background.height = config.height;
 	};
+	pickWeighted(options, count) {
+		// Make a shallow copy so we don’t mutate the original array
+		const pool = [...options];
+		const results = [];
+
+		for (let i = 0; i < count && pool.length > 0; i++) {
+			// Calculate total weight
+			let totalWeight = pool.reduce(
+				(sum, opt) => sum + (opt.weight ?? 1),
+				0
+			);
+
+			let rand = Math.random() * totalWeight;
+
+			for (let j = 0; j < pool.length; j++) {
+				rand -= pool[j].weight ?? 1;
+
+				if (rand <= 0) {
+					results.push(pool[j]);
+					pool.splice(j, 1); // remove to prevent duplicates
+					break;
+				}
+			}
+		}
+
+		return results;
+	}
 	getLevelUpOptions() {
 		var options = [
 			{
@@ -944,28 +1058,31 @@ class levelUpMenu extends Phaser.Scene
 				description: "+1",
 				apply: function() {
 					ctx.params.pierce += 1;
-				}
+				},
+				weight: 2,
 			},
 			{
 				name: "Fire Rate",
 				description: "+10%",
 				apply: function() {
 					ctx.params.fireCD = Math.floor(ctx.params.fireCD * 0.9);
-				}
+				},
+				weight: 4,
 			},
 			{
 				name: "Bullet Speed",
 				description: "+2",
 				apply: function() {
 					ctx.params.bulletSpeed += 2;
-				}
+				},
+				weight: 2,
 			},
 			{
 				name: "Bullet Number",
 				description: "+1",
 				apply: function() {
 					ctx.params.bulletNum += 1;
-				}
+				}, weight: 2,
 			},
 			{
 				name: "Movement Speed",
@@ -973,8 +1090,17 @@ class levelUpMenu extends Phaser.Scene
 				apply: function() {
 					ctx.params.speed += 1;
 					ctx.params.sprintSpeed += 1;
-				}
-			}
+				},
+				weight: 4,
+			},
+			{
+				name: "Bullet Damage",
+				description: "+1",
+				apply: function() {
+					ctx.params.bulletDamage += 1;
+				},
+				weight: 2,
+			},
 		];
 		return options;
 	}
