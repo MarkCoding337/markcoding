@@ -62,28 +62,28 @@ class Start extends Phaser.Scene {
     super("Start");
   }
   preload() {
-    imgVars.logo = this.load.spritesheet('logo', 'https://cdn.glitch.global/d330f292-4635-4d3c-a075-245caf1e456b/weirdTacoSpriteSheet.png?v=1715193893256', { frameWidth: 144, frameHeight: 180});
-    imgVars.tortila = this.load.spritesheet('tortila', 'https://cdn.glitch.global/d330f292-4635-4d3c-a075-245caf1e456b/evilTortilla.png?v=1715190132163', {frameWidth: 115, frameHeight: 115});
-    imgVars.hats = this.load.spritesheet('hats', 'https://cdn.glitch.global/da457fbd-19c6-422a-863f-6fe780ba1e42/htas.png?v=1738254821048', {frameWidth: 43, frameHeight: 30})
+    imgVars.logo = this.load.spritesheet('logo', 'https://ik.imagekit.io/markathious/SalsaJumper/weirdTacoSpriteSheet.png', { frameWidth: 144, frameHeight: 180});
+    imgVars.tortila = this.load.spritesheet('tortila', 'https://ik.imagekit.io/markathious/SalsaJumper/evilTortilla.png', {frameWidth: 115, frameHeight: 115});
+    imgVars.hats = this.load.spritesheet('hats', 'https://ik.imagekit.io/markathious/SalsaJumper/image.png', {frameWidth: 43, frameHeight: 30})
     imgVars.white = this.load.image('white', 'https://labs.phaser.io/assets/particles/white.png');
-    imgVars.jump = this.load.image('jump', 'https://cdn.glitch.global/d330f292-4635-4d3c-a075-245caf1e456b/jump.png?v=1715281936309');
-    imgVars.left = this.load.image('left', 'https://cdn.glitch.global/d330f292-4635-4d3c-a075-245caf1e456b/left.png?v=1715281936718');
-    imgVars.right = this.load.image('right', 'https://cdn.glitch.global/d330f292-4635-4d3c-a075-245caf1e456b/right.png?v=1715281937146');
-    imgVars.dashing = this.load.image('dashButt', 'https://cdn.glitch.global/d330f292-4635-4d3c-a075-245caf1e456b/dash.png?v=1715281937594');
-    imgVars.red = this.load.image('red', 'https://cdn.glitch.global/858db69c-3fe7-4e63-b52d-9c6a074110bd/0ef1ae9e-640e-4d80-8f09-dc01adb03384.image.png?v=1711050928809');
-    imgVars.taco = this.load.image('taco', 'https://cdn.glitch.global/858db69c-3fe7-4e63-b52d-9c6a074110bd/703fb1c0-2bad-43b4-89ab-0124e5740d7b.image.png?v=1711081923349');
+    imgVars.jump = this.load.image('jump', 'https://ik.imagekit.io/markathious/SalsaJumper/jump.png');
+    imgVars.left = this.load.image('left', 'https://ik.imagekit.io/markathious/SalsaJumper/left.png');
+    imgVars.right = this.load.image('right', 'https://ik.imagekit.io/markathious/SalsaJumper/right.png');
+    imgVars.dashing = this.load.image('dashButt', 'https://ik.imagekit.io/markathious/SalsaJumper/dash.png');
+    imgVars.red = this.load.image('red', 'https://labs.phaser.io/assets/particles/red.png');
+    imgVars.taco = this.load.image('taco', 'https://ik.imagekit.io/markathious/SalsaJumper/taco.png');
     
     imgVars.salsa = this.load.image('salsa', 'https://cdn.glitch.global/da457fbd-19c6-422a-863f-6fe780ba1e42/salsa.png?v=1737666565901');
     imgVars.cheese = this.load.image('cheese', 'https://cdn.glitch.global/da457fbd-19c6-422a-863f-6fe780ba1e42/cheese.png?v=1737675731025');
     imgVars.beans = this.load.image('beans', 'https://cdn.glitch.global/da457fbd-19c6-422a-863f-6fe780ba1e42/beans.png?v=1737676175066');
     
-    imgVars.bricks = this.load.image('bricks', 'https://cdn.glitch.global/858db69c-3fe7-4e63-b52d-9c6a074110bd/2baf4e0e-c320-4ace-b0cf-70b2d8836012.image.png?v=1712692347075');
-    imgVars.dash = this.load.image('dash', 'https://cdn.glitch.global/858db69c-3fe7-4e63-b52d-9c6a074110bd/9ea0e513-d298-4964-ba71-7fcfe344dc8a.image.png?v=1712065474048');
-    imgVars.pepper = this.load.image('pepper', 'https://cdn.glitch.global/858db69c-3fe7-4e63-b52d-9c6a074110bd/BeFunky-design%20(14).png?v=1712070984107');
-    imgVars.smoke = this.load.image('smoke', 'https://cdn.glitch.global/858db69c-3fe7-4e63-b52d-9c6a074110bd/ea84c167-a334-4bfc-84c9-802ffb358a4f.image.png?v=1712071348834');
+    imgVars.bricks = this.load.image('bricks', 'https://ik.imagekit.io/markathious/SalsaJumper/bricks.png');
+    imgVars.dash = this.load.image('dash', 'https://ik.imagekit.io/markathious/SalsaJumper/dash.png');
+    imgVars.pepper = this.load.image('pepper', 'https://ik.imagekit.io/markathious/SalsaJumper/pepper.png');
+    imgVars.smoke = this.load.image('smoke', 'https://ik.imagekit.io/markathious/SalsaJumper/smoke.png');
     imgVars.menuButt = this.load.image('menuButt', 'https://cdn.glitch.global/94a99e8b-0f5f-45b4-869d-757542429668/BeFunky-design%20(8).png?v=1728915234756');
 
-    imgVars.bricks = this.load.image("bricksSet", "https://cdn.glitch.global/da457fbd-19c6-422a-863f-6fe780ba1e42/bricks_Padded.png?v=1737730525170");
+    imgVars.bricks = this.load.image("bricksSet", "https://ik.imagekit.io/markathious/SalsaJumper/bricks_Padded.png");
 
     this.load.tilemapTiledJSON('level1', './js/levels/level1.json');
     this.load.tilemapTiledJSON('level2', './js/levels/level2.json');
@@ -93,9 +93,9 @@ class Start extends Phaser.Scene {
     this.load.tilemapTiledJSON('level6', './js/levels/level6.json');
     this.load.tilemapTiledJSON('level7', './js/levels/level7.json');
 
-    this.load.audio('music', 'https://cdn.glitch.global/858db69c-3fe7-4e63-b52d-9c6a074110bd/latin-reggaeton-hip-hop-mexican-background-music-caliente-flow-146085.mp3?v=1712160266663');
-    this.load.audio('dashSFX', 'https://cdn.glitch.global/858db69c-3fe7-4e63-b52d-9c6a074110bd/quick-swhooshing-noise-80898.mp3?v=1712179809498');
-    this.load.audio('jumpSFX', 'https://cdn.glitch.global/858db69c-3fe7-4e63-b52d-9c6a074110bd/arcade-game-jump-epic-stock-media-1-00-00.mp3?v=1712181503146');
+    this.load.audio('music', 'https://ik.imagekit.io/markathious/SalsaJumper/latin-reggaeton-hip-hop-mexican-background-music-caliente-flow-146085.mp3');
+    this.load.audio('dashSFX', 'https://ik.imagekit.io/markathious/SalsaJumper/dashSFX.mp3');
+    this.load.audio('jumpSFX', 'https://ik.imagekit.io/markathious/SalsaJumper/jump.mp3');
   }
   create() {
     sceneControllerExternal = this.scene;
