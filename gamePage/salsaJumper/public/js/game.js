@@ -310,8 +310,8 @@ class hatMenu extends Phaser.Scene {
     super("hatMenu");
   }
   preload() {
-    this.load.image('arrowLeft', 'https://cdn.glitch.global/da457fbd-19c6-422a-863f-6fe780ba1e42/arrow-left.png?v=1738075257599');
-    this.load.image('arrowRight', 'https://cdn.glitch.global/da457fbd-19c6-422a-863f-6fe780ba1e42/arrow-right.png?v=1738075201827');
+    this.load.image('arrowLeft', 'https://ik.imagekit.io/markathious/SalsaJumper/left.png');
+    this.load.image('arrowRight', 'https://ik.imagekit.io/markathious/SalsaJumper/right.png');
   }
   create() {
     this.add.rectangle(0, 0, config.width, config.height, 0x000000, 90).setOrigin(0, 0);
