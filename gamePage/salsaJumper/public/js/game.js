@@ -64,7 +64,7 @@ class Start extends Phaser.Scene {
   preload() {
     imgVars.logo = this.load.spritesheet('logo', 'https://ik.imagekit.io/markathious/SalsaJumper/weirdTacoSpriteSheet.png', { frameWidth: 144, frameHeight: 180});
     imgVars.tortila = this.load.spritesheet('tortila', 'https://ik.imagekit.io/markathious/SalsaJumper/evilTortilla.png', {frameWidth: 115, frameHeight: 115});
-    imgVars.hats = this.load.spritesheet('hats', 'https://ik.imagekit.io/markathious/SalsaJumper/image.png', {frameWidth: 43, frameHeight: 30})
+    imgVars.hats = this.load.spritesheet('hats', 'https://ik.imagekit.io/markathious/SalsaJumper/image.png', {frameWidth: 86, frameHeight: 60})
     imgVars.white = this.load.image('white', 'https://labs.phaser.io/assets/particles/white.png');
     imgVars.jump = this.load.image('jump', 'https://ik.imagekit.io/markathious/SalsaJumper/jump.png');
     imgVars.left = this.load.image('left', 'https://ik.imagekit.io/markathious/SalsaJumper/left.png');
