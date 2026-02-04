@@ -1248,7 +1248,7 @@ class Level extends Phaser.Scene
           
             gameState.body = this.add.sprite(0, 0, 'logo').setDisplaySize(72, 90).setDepth(2);
           
-            gameState.hat = this.add.sprite(0,-28,'hats').setScale(1.40).anims.play(gameState.hatI).setDepth(2);
+            gameState.hat = this.add.sprite(0,-28,'hats').setScale(0.7).anims.play(gameState.hatI).setDepth(2);
           
             gameState.hatChange = function(hat) {
               gameState.hatI = hat;
