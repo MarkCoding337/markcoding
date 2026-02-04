@@ -409,11 +409,12 @@ class hatMenu extends Phaser.Scene {
       hatAvatar.anims.play(hatIndex[cHatIndex]);
     });
     
-    const rightButton = this.add.image(config.width/2, config.height*0.48, 'arrowRight').setScale(5).setOrigin(-1,0.5);
+    const rightButton = this.add.image(config.width/2, config.height*0.48, 'arrowRight').setDisplaySize(50,50).setOrigin(-1,0.5);
     
     this.rightButtonTween = this.tweens.add({
       targets: rightButton,
-      scale: 5.5,
+      displayWidth: `+= 20`,
+      displayHeight: `+= 20`,
       yoyo: true,
       duration: 600,
       ease: 'ease-in-out',
