@@ -371,7 +371,8 @@ class hatMenu extends Phaser.Scene {
     
     this.leftButtonTween = this.tweens.add({
       targets: leftButton,
-      scale: 5.5,
+      width: `+= 10`,
+      height: `+= 10`,
       yoyo: true,
       duration: 600,
       ease: 'ease-in-out',
