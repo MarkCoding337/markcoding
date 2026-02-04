@@ -1,6 +1,6 @@
 var express = require('express');
 var app = express();
-//var server = require('http').Server(app);
+var server = require('http').Server(app);
 var io = require('socket.io')("https://markcoding.onrender.com");
 
 var players = {};
@@ -62,6 +62,6 @@ io.on('connection', function (socket) {
 	});
 });
 
-/*server.listen(process.env.PORT, function () {
+server.listen(process.env.PORT, function () {
   console.log(`Listening on ${server.address().port}`);
-});*/
+});
