@@ -367,7 +367,7 @@ class hatMenu extends Phaser.Scene {
     const playerAvatar = this.add.sprite(config.width/2, config.height*0.5, 'logo').anims.play("idle");
     const hatAvatar = this.add.sprite(config.width/2, config.height*0.5, 'hats').setOrigin(0.55,1.20).setScale(2.4).anims.play(hatIndex[cHatIndex]);
     
-    const leftButton = this.add.image(config.width/2, config.height*0.48, 'arrowLeft').setScale(1).setOrigin(2,0.5);
+    const leftButton = this.add.image(config.width/2, config.height*0.48, 'arrowLeft').setDisplaySize(50,50).setOrigin(2,0.5);
     
     this.leftButtonTween = this.tweens.add({
       targets: leftButton,
