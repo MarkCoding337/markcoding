@@ -102,6 +102,7 @@ class Start extends Phaser.Scene {
     if(window.location.href.includes("onrender")) {} else {
       document.getElementById("enter").disabled = true;
     }
+    alert(window.location.href);
     if(document.getElementById("Login")) {
       document.getElementById("Login").style.display = "none";
       document.getElementById("Login").style.zIndex = 10;
