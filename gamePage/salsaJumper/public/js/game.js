@@ -1807,7 +1807,7 @@ class Level extends Phaser.Scene
         var otherPlayerS = this.add.sprite(0, 0, 'logo').setDisplaySize(72, 90);
         otherPlayerS.name = "animSprite";
         otherPlayerS.setTint("0x878787");
-        var otherPlayerH = this.add.sprite(0,-28,'hats').setTint("0x878787").setScale(1.4).anims.play('defHat');
+        var otherPlayerH = this.add.sprite(0,-28,'hats').setTint("0x878787").setScale(0.7).anims.play('defHat');
         var otherPlayer = this.add.container(0,0, [otherPlayerS,otherPlayerH]).setDepth(2);
         otherPlayer.userLabel = this.add.text(0, 0, playerInfo.userNamer, { align: "center", font: "16px Arial", fill: "#FFFF00" }).setDepth(2);
         otherPlayer.animSpriteLL = otherPlayerS;
