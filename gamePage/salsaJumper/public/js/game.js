@@ -12,6 +12,7 @@ const levels = {
   'level5': {name: "Level 5"},
   'level6': {name: "Level 6"},
   'level7': {name: "Level 7"},
+  'level9': {name: "Level 9"},
 }
 
 const hatIndex = ["defHat", "topHat", "hardHat", "baseballHat", "policeHat", "safariHat"];
@@ -92,6 +93,7 @@ class Start extends Phaser.Scene {
     this.load.tilemapTiledJSON('level5', './js/levels/level5.json');
     this.load.tilemapTiledJSON('level6', './js/levels/level6.json');
     this.load.tilemapTiledJSON('level7', './js/levels/level7.json');
+    this.load.tilemapTiledJSON('level9', './js/levels/level9.json');
 
     this.load.audio('music', 'https://ik.imagekit.io/markathious/SalsaJumper/latin-reggaeton-hip-hop-mexican-background-music-caliente-flow-146085.mp3');
     this.load.audio('dashSFX', 'https://ik.imagekit.io/markathious/SalsaJumper/dashSFX.mp3');
