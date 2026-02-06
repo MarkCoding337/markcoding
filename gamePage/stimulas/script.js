@@ -18,13 +18,13 @@ class Start extends Phaser.Scene {
   }
   preload() {
     this.load.image("particle","https://cdn.glitch.global/16759f38-d101-4b36-ba93-dc7b873629ca/particle.png?v=1724899988378");
-    this.load.image("red", "https://cdn.glitch.global/16759f38-d101-4b36-ba93-dc7b873629ca/image_2024-08-29_132609369.png?v=1724955970277");
-    this.load.image("white", "https://cdn.glitch.global/16759f38-d101-4b36-ba93-dc7b873629ca/image_2024-08-29_132621354.png?v=1724955981895");
+    this.load.image("red", "https://labs.phaser.io/assets/particles/red.png");
+    this.load.image("white", "https://labs.phaser.io/assets/particles/white.png");
     this.load.image("happyGreen", "https://cdn.glitch.global/16759f38-d101-4b36-ba93-dc7b873629ca/particle%20(1).png?v=1725907280961");
-	this.load.image("backButton", "https://res.cloudinary.com/dohbq0tta/image/upload/v1750624635/backButton_gzkrpj.png");
-    this.load.audio("button1", "https://cdn.glitch.global/16759f38-d101-4b36-ba93-dc7b873629ca/mixkit-arcade-game-jump-coin-216.wav?v=1724899093217");
-    this.load.audio("button2", "https://cdn.glitch.global/16759f38-d101-4b36-ba93-dc7b873629ca/audiomass-output%20(7).mp3?v=1724901939238");
-    this.load.audio('button3', "https://cdn.glitch.global/16759f38-d101-4b36-ba93-dc7b873629ca/audiomass-output%20(8).mp3?v=1724902388902");
+	this.load.image("backButton", "https://ik.imagekit.io/markathious/Stimulas/backButton.png");
+    this.load.audio("button1", "https://ik.imagekit.io/markathious/Stimulas/dragon-studio-pop-402323.mp3");
+    this.load.audio("button2", "https://ik.imagekit.io/markathious/Stimulas/dragon-studio-clean-minimal-pop-467466.mp3");
+    this.load.audio('button3', "https://ik.imagekit.io/markathious/Stimulas/dragon-studio-pop-402324.mp3");
     this.load.audio('secretHehe', 'https://cdn.glitch.global/16759f38-d101-4b36-ba93-dc7b873629ca/audiomass-output%20(9).mp3?v=1725907730905');
 	
   }
