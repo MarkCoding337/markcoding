@@ -87,7 +87,7 @@ class Start extends Phaser.Scene {
     imgVars.jump = this.load.image('jump', 'https://ik.imagekit.io/markathious/SalsaJumper/jump.png');
     imgVars.left = this.load.image('left', 'https://ik.imagekit.io/markathious/SalsaJumper/left.png');
     imgVars.right = this.load.image('right', 'https://ik.imagekit.io/markathious/SalsaJumper/right.png');
-    imgVars.dashing = this.load.image('dashButt', 'https://ik.imagekit.io/markathious/SalsaJumper/dash.png');
+    imgVars.dashing = this.load.image('dashButt', 'https://ik.imagekit.io/markathious/SalsaJumper/dashButt.png');
     imgVars.red = this.load.image('red', 'https://labs.phaser.io/assets/particles/red.png');
     imgVars.taco = this.load.image('taco', 'https://ik.imagekit.io/markathious/SalsaJumper/taco.png');
     
@@ -122,6 +122,8 @@ class Start extends Phaser.Scene {
     if(window.location.href.includes("onrender")) {} else {
       document.getElementById("enter").disabled = true;
     }
+		  var mobile = this.sys.game.device.input.touch;
+      document.getElementById("mobile").checked = mobile;
     if(document.getElementById("Login")) {
       document.getElementById("Login").style.display = "none";
       document.getElementById("Login").style.zIndex = 10;
@@ -1024,6 +1026,9 @@ class Level extends Phaser.Scene
           gameState.phaser = this;
           //console.log(yourRoom);
           this.map2 = this.make.tilemap({ key: gameState.currLevel});
+
+          this.textures.get('bricksSet')
+            .setFilter(Phaser.Textures.FilterMode.NEAREST)
     
           const tileset1 = this.map2.addTilesetImage("bricksv1", "bricksSet");
           
@@ -2045,7 +2050,7 @@ class Level6 extends Level {
           }
         },
       render: {
-        pixelArt: true
+        //pixelArt: true
       },
         fps: {
           target: 70,
