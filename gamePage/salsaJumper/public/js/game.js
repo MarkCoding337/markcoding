@@ -13,7 +13,24 @@ const levels = {
   'level6': {name: "Level 6"},
   'level7': {name: "Level 7"},
   'level8': {name: "Level 8"},
+  'level9': {name: "Level 9"},
 }
+
+const nextLevel = {
+				'level1': 'level2',
+				'level2': 'level3',
+				'level3': 'level4',
+        'level4': 'level5',
+        'level5': 'level6',
+        'level6': 'level7',
+        'level7': 'level8',
+        'level8': 'level9',
+        'level9': 'level10',
+        'level10': 'level11',
+        'level11': 'level12',
+        'level12': 'level13',
+        'level13': 'level14',
+			};
 
 const hatIndex = ["defHat", "topHat", "hardHat", "baseballHat", "policeHat", "safariHat"];
 var cHatIndex = 0;
@@ -94,6 +111,7 @@ class Start extends Phaser.Scene {
     this.load.tilemapTiledJSON('level6', './js/levels/level6.json');
     this.load.tilemapTiledJSON('level7', './js/levels/level7.json');
     this.load.tilemapTiledJSON('level8', './js/levels/level8.json');
+    this.load.tilemapTiledJSON('level9', './js/levels/level9.json');
 
     this.load.audio('music', 'https://ik.imagekit.io/markathious/SalsaJumper/latin-reggaeton-hip-hop-mexican-background-music-caliente-flow-146085.mp3');
     this.load.audio('dashSFX', 'https://ik.imagekit.io/markathious/SalsaJumper/dashSFX.mp3');
@@ -991,22 +1009,8 @@ var socketsMade = false;
 class Level extends Phaser.Scene
     {
         constructor() {
-			super("Level");
-			this.nextLevel = {
-				'level1': 'level2',
-				'level2': 'level3',
-				'level3': 'level4',
-        'level4': 'level5',
-        'level5': 'level6',
-        'level6': 'level7',
-        'level7': 'level8',
-        'level8': 'level9',
-        'level9': 'level10',
-        'level10': 'level11',
-        'level11': 'level12',
-        'level12': 'level13',
-        'level13': 'level14',
-			}
+          super("Level");
+          this.nextLevel = nextLevel;
         }
         
         preload ()
