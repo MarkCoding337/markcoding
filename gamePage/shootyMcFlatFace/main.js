@@ -471,6 +471,8 @@ class Main extends Phaser.Scene
 				this.despawnTimer = 0;
 				this.following = false;
 				ctx.enemieNum += 1;
+				this.body.defAttackCD = 30;
+				this.body.attackDamage = 5;
 				if(type == 0) {
 					this.speed = (Math.random()*ctx.enemieParams.speedVariation+ctx.enemieParams.baseSpeed);
 					this.health = Math.floor(Math.random()*ctx.enemieParams.healthVariation+ctx.enemieParams.baseHealth);
@@ -511,6 +513,10 @@ class Main extends Phaser.Scene
 						}
 						this.idleTimer -= 1;
 					};
+
+					if(this.body.attackCD > 0) {
+						this.body.attackCD -= 1;
+					}
 
 					//Animation
 					const absVelX = Math.abs(this.body.velocity.x);
@@ -647,7 +653,7 @@ class Main extends Phaser.Scene
 						body2.gameObject.health -= this.params.bulletDamage;
 						let popup = this.add.text(body2.gameObject.x, body2.gameObject.y - 20, '-' + this.params.bulletDamage, {
 							font: '700 20px Inter',
-							fill: '#ff0000',
+							fill: '#ffffff',
 							stroke: '#000000', strokeThickness: 2
 						});
 						this.tweens.add({
@@ -668,7 +674,7 @@ class Main extends Phaser.Scene
 						body1.gameObject.health -= this.params.bulletDamage;
 						let popup = this.add.text(body2.gameObject.x, body2.gameObject.y - 20, '-' + this.params.bulletDamage, {
 							font: '700 20px Inter',
-							fill: '#ff0000',
+							fill: '#ffffff',
 							stroke: '#000000', strokeThickness: 2
 						});
 						this.tweens.add({
@@ -684,7 +690,34 @@ class Main extends Phaser.Scene
 						body2.blacklist.push(body1.id);
 						body2.pierce -= 1;
 					};
-				}
+				} else if((body1.isPlayer && body2.isEnemy) || (body2.isPlayer && body1.isEnemy)) {
+					let enemyBody;
+					if(body1.isEnemy) {
+						enemyBody = body1;
+					} else {
+						enemyBody = body2;
+					};
+					if(enemyBody.attackCD <= 0) {
+						ctx.liveParams.health -= enemyBody.attackDamage;
+						enemyBody.attackCD = enemyBody.defAttackCD;
+						let popup = ctx.add.text(enemyBody.gameObject.x, enemyBody.gameObject.y - 20, '-' + enemyBody.attackDamage, {
+							font: '700 20px Inter',
+							fill: '#ff0000',
+							stroke: '#000000', strokeThickness: 2
+						});
+						ctx.tweens.add({
+							targets: popup,
+							y: popup.y - 50, // Move up
+							alpha: 0,        // Fade out
+							duration: 1000,  // Duration in ms
+							ease: 'Quint.easeIn',
+							onComplete: () => {
+								popup.destroy(); // Destroy when done
+							}
+						});
+					};
+				};
+				
 			}
 		});
 		
