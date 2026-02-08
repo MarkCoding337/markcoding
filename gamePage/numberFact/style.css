@@ -1,0 +1,158 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+}
+header {
+    background-color: #818181;
+    color: white;
+    padding: 10px 0;
+    padding-left: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+#numInventory {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin: 20px 10px;
+    border: 1px outset #ccc;
+    padding: 20px;
+    padding-top: 0px;
+    background-color: #f9f9f9;
+    height: 300px;
+}
+#numInventory h2 {
+    font-size: 24px;
+    margin: 5px 0;
+    padding: 10px 0;
+    text-align: center;
+    width: 100%;
+    color: #333;
+    border-bottom: 1px solid #ccc;
+}
+#numInventory ul {
+    list-style-type: none;
+    padding: 0;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+}
+#numInventory li {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    font-size: 18px;
+    color: #555;
+    padding-left: 10%;
+}
+
+#operations {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin: 20px 10px;
+    border: 1px outset #ccc;
+    padding: 20px;
+    padding-top: 0px;
+    background-color: #f9f9f9;
+    height: 300px;
+}
+#operations h2 {
+    font-size: 24px;
+    margin: 5px 0;
+    padding: 10px 0;
+    text-align: center;
+    width: 100%;
+    color: #333;
+    border-bottom: 1px solid #ccc;
+}
+#operations ul {
+    list-style-type: none;
+    padding: 0;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+}
+#operations li {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    font-size: 18px;
+    color: #555;
+    text-align: center;
+    padding-left: 10%;
+}
+#operations li input {
+    width: 20%;
+}
+#operations li button {
+    padding: 5px 10px;
+    font-size: 14px;
+    background-color: #ccc;
+    color: #000;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+#operations li button:hover {
+    background-color: #bbb;
+}
+#operations li button:active {
+    background-color: #aaa;
+    cursor: default;
+}
+#research {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin: 20px 10px;
+    border: 1px outset #ccc;
+    padding: 20px;
+    padding-top: 0px;
+    background-color: #f9f9f9;
+    height: 300px;
+}
+#research h2 {
+    font-size: 24px;
+    margin: 5px 0;
+    padding: 10px 0;
+    text-align: center;
+    width: 100%;
+    color: #333;
+    border-bottom: 1px solid #ccc;
+}
+#research ul {
+    list-style-type: none;
+    padding: 0;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+}
+#research li {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    font-size: 18px;
+    color: #555;
+    text-align: center;
+}
+#research li button {
+    padding: 5px 10px;
+    font-size: 14px;
+    width: calc(100% - 20px);
+    background-color: #ccc;
+    color: #000;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+#research li button:hover {
+    background-color: #bbb;
+}
+#research li button:active {
+    background-color: #aaa;
+    cursor: default;
+}

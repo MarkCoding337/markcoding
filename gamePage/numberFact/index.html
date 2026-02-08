@@ -4,18 +4,37 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Number Factory Game</title>
-        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="style.css">
     </head>
     <body>
         <header>
-            <h1>Welcome to the Number Factory Game!</h1>
+            <h1>Number Factory #</h1>
         </header>
         <main>
-            <section id="game-intro">
-                <p>In this game, you'll learn interesting facts about numbers while having fun!</p>
-            </section>
             <section id="game-area">
-                <!-- Game content will go here -->
+                <div id="numInventory">
+                    <h2>Number Inventory</h2>
+                    <ul id="number-list">
+                        <li>1: 0</li>
+                        <li>1: 0</li>
+                    </ul>
+                </div>
+                <div id="operations">
+                    <h2>Operations</h2>
+                    <ul id="operations-list">
+                        <li>
+                            <input type="number" id="add-input1" placeholder="Number...">
+                            <button>+</button>
+                            <input type="number" id="add-input2" placeholder="Number...">
+                        </li>
+                        <li>1: 0</li>
+                    </ul>
+                </div>
+                <div id="research">
+                    <h2>Research | <span id="research-points">r: 0</span></h2>
+                    <ul id="research-list">
+                        <li><button id="concept-1">The Concept of 1<br>Cost: 10r</button></li>
+                    </ul>
             </section>
         </main>
         <footer>
