@@ -163,6 +163,8 @@ class Main extends Phaser.Scene
 		ctx = this;
 		this.mobile = mobile;
 
+		this.enemiesSpawn = true;
+
 		this.game.canvas.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
 		//this.player = this.add.rectangle(0,0,50,50,0xFFFFFF);
 		//this.player = this.matter.add.gameObject(this.player).setFrictionAir(0.5).setDepth(5).setCollisionCategory(1);
@@ -317,8 +319,8 @@ class Main extends Phaser.Scene
 		};
 		
 		//Enemies
-		
-		class enemy1 extends Phaser.Physics.Matter.Sprite
+
+		class enemy2 extends Phaser.Physics.Matter.Sprite
 		{
 			constructor(scene, x, y) {
 				super(scene.matter.world, x, y);
@@ -333,13 +335,12 @@ class Main extends Phaser.Scene
 				});
 				this.body.isEnemy = true;
 				this.body.sleepThreshold = -1;
-				this.health = Math.floor(Math.random()*ctx.enemieParams.healthVariation+ctx.enemieParams.baseHealth);
 				this.setFrictionAir(0.05);
 				this.setFriction(0.05);
 				this.setMass(0.15);
 				this.setAngle(0);
 				this.setFixedRotation(true);
-				this.setScale(Math.random()*0.5+3);
+				this.setScale(Math.random()*0.5+2);
 				this.scene.events.on('update', this.update, this);
 				scene.add.existing(this);
 				this.setCollisionCategory(2);
@@ -348,8 +349,137 @@ class Main extends Phaser.Scene
 				this.despawnTimer = 0;
 				this.following = false;
 				this.expValue = ctx.enemieParams.baseExpValue;
-				ctx.enemieNum += 1;
+				this.health = Math.floor((Math.random()*ctx.enemieParams.healthVariation+ctx.enemieParams.baseHealth));
 				this.speed = (Math.random()*ctx.enemieParams.speedVariation+ctx.enemieParams.baseSpeed);
+				ctx.enemieNum += 1;
+				this.frameCount = 0;
+				this.distDePlayer;
+				this.body.density = 1;
+				ctx.enemiesAliveBodies[""+this.body.id] = (this.body);
+			}
+			update() {
+				this.frameCount += 1;
+				if(this.frameCount % 5 == 0) {
+					var playPos = ctx.player.body.position;
+					var thisPos = this.body.position;
+					this.distDePlayer = Phaser.Math.Distance.BetweenPoints(playPos, thisPos);
+					
+					//Movement
+					if(this.following) {
+						const angle = Phaser.Math.Angle.Between(
+							thisPos.x, thisPos.y,
+							playPos.x, playPos.y
+						);
+						this.setVelocity(
+							Math.cos(angle) * this.speed,
+							Math.sin(angle) * this.speed
+						)
+						
+					} else if(this.distDePlayer <= 2000) {
+						if(this.idleTimer <= 0) {
+							this.setVelocityX((Math.random()*5)-2.5);
+							this.setVelocityY((Math.random()*5)-2.5);
+							this.idleTimer = Math.random()*5;
+						}
+						this.idleTimer -= 1;
+					};
+
+					//Animation
+					const absVelX = Math.abs(this.body.velocity.x);
+					const absVelY = Math.abs(this.body.velocity.y);
+					if(absVelX < 0.5 && absVelY < 0.5) {
+						//Idle
+						this.anims.stop();
+					} else {
+						//Moving
+						if(absVelX > absVelY) {
+							//Moving sideways
+							if(this.body.velocity.x > 0) {
+								this.anims.play('e1WalkRight', true);
+							} else {
+								this.anims.play('e1WalkLeft', true);
+							}
+						} else {
+							//Moving up/down
+							if(this.body.velocity.y > 0) {
+								this.anims.play('e1WalkDown', true);
+							} else {
+								this.anims.play('e1WalkUp', true);
+							}
+						}
+					};
+
+					//Player Tracking
+					if(this.distDePlayer < 500) {
+						this.following = true;
+						Phaser.Physics.Matter.Matter.Sleeping.set(this.body, false);
+					};
+					if(this.distDePlayer > 1000) {
+						this.following = false;
+					};
+					if(this.distDePlayer > 2000) {
+						Phaser.Physics.Matter.Matter.Sleeping.set(this.body, true);
+						this.anims.stop();
+					};
+					if(this.distDePlayer > 2500) {
+						this.scene.events.off('update', this.update, this);
+						delete ctx.enemiesAliveBodies[""+this.body.id];
+						ctx.enemieNum -= 1;
+						this.destroy();
+					};
+					
+					if(this.health <= 0) {
+						ctx.liveParams.exp += this.expValue;
+						this.scene.events.off('update', this.update, this);
+						delete ctx.enemiesAliveBodies[""+this.body.id];
+						ctx.enemieNum -= 1;
+						this.destroy();
+					}
+					
+				};
+			}
+		}
+		
+		class enemy1 extends Phaser.Physics.Matter.Sprite
+		{
+			constructor(scene, x, y, type) {
+				super(scene.matter.world, x, y);
+				this.scene = scene;
+				this.setTexture("enemy1");
+				this.setDisplaySize(25,25);
+				this.texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
+				this.setBody({
+					shape: "rectangle",
+					width: 15,
+					height: 20,
+				});
+				this.body.isEnemy = true;
+				this.body.sleepThreshold = -1;
+				this.setFrictionAir(0.05);
+				this.setFriction(0.05);
+				this.setMass(0.15);
+				this.setAngle(0);
+				this.setFixedRotation(true);
+				if(type) null; else type = 0;
+				type == 0 ? this.setScale(Math.random()*0.5+3): null;
+				type == 1 ? this.setScale(Math.random()*0.5+2): null;
+				this.scene.events.on('update', this.update, this);
+				scene.add.existing(this);
+				this.setCollisionCategory(2);
+				this.body.attackCD = 0;
+				this.idleTimer = 0;
+				this.despawnTimer = 0;
+				this.following = false;
+				ctx.enemieNum += 1;
+				if(type == 0) {
+					this.speed = (Math.random()*ctx.enemieParams.speedVariation+ctx.enemieParams.baseSpeed);
+					this.health = Math.floor(Math.random()*ctx.enemieParams.healthVariation+ctx.enemieParams.baseHealth);
+					this.expValue = ctx.enemieParams.baseExpValue;
+				} else if(type == 1) {
+					this.speed = (Math.random()*ctx.enemieParams.speedVariation+ctx.enemieParams.baseSpeed)*2;
+					this.health = Math.floor((Math.random()*ctx.enemieParams.healthVariation+ctx.enemieParams.baseHealth)/2);
+					this.expValue = ctx.enemieParams.baseExpValue*1.5;
+				};
 				this.frameCount = 0;
 				this.distDePlayer;
 				this.body.density = 1;
@@ -488,8 +618,12 @@ class Main extends Phaser.Scene
 				}
 			}
 		}
-		this.createEnemy = function(x, y) {
-			var bull = new enemy1(this, x, y)
+		this.createEnemy = function(x, y, type) {
+			var bull = new enemy1(this, x, y, type)
+		} 
+		
+		this.createEnemy2 = function(x, y) {
+			var bull = new enemy2(this, x, y)
 		} 
 		this.createPlayerBullet = function(x, y, speed, angle) {
 			var bull = new playerBullet(this, x, y, speed, angle);
@@ -585,13 +719,17 @@ class Main extends Phaser.Scene
 		} else {
 			this.enemyTimer = 120 - (this.waveLevel*2);
 		};
-		if(this.enemyTimer == 1) {
+		if(this.enemyTimer == 1 && this.enemiesSpawn) {
 			for(var i=0;i<this.waveLevel*2;i++) {
 				var angle = Math.random()*Math.PI*2;
 				var dist = Math.random()*500+500;
 				var x = playPos.x + Math.cos(angle)*dist;
 				var y = playPos.y + Math.sin(angle)*dist;
-				this.createEnemy(x,y);
+				if(this.waveLevel > 2) {
+					this.createEnemy(x,y, Math.random() < 0.3 ? 0 : 1);
+				} else {
+					this.createEnemy(x,y,0);
+				}
 			}
 		};
 
