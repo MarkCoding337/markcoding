@@ -2036,29 +2036,29 @@ class Level6 extends Level {
 	}
 }*/
 
-    const config = {
-        type: Phaser.AUTO,
-        width: 500*(window.innerWidth/window.innerHeight),
-        height: 500,
-        backgroundColor: "#87CEEB",
-        scene: [Start, Level, ResultL, Menu, hatMenu],
-        stableSort: true,
-        physics: {
-          default: 'arcade',
-          arcade: {
-           enableBody: true,
-            gravity: { y: 2000 },
-            //debug: true,
-          }
-        },
-      render: {
-        //pixelArt: true
-      },
-        fps: {
-          target: 70,
-          forceSetTimeOut: true
-        },
-    };
+const config = {
+  type: Phaser.AUTO,
+  width: 500*(window.innerWidth/window.innerHeight),
+  height: 500,
+  backgroundColor: "#87CEEB",
+  scene: [Start, Level, ResultL, Menu, hatMenu],
+  stableSort: true,
+  physics: {
+    default: 'arcade',
+    arcade: {
+      enableBody: true,
+      gravity: { y: 2000 },
+      //debug: true,
+    }
+  },
+  render: {
+    //pixelArt: true
+  },
+  fps: {
+    target: 70,
+    forceSetTimeOut: true
+  },
+};
 
 function selectLevel(level) {
   gameState.currLevel = level;
