@@ -120,6 +120,8 @@ class Start extends Phaser.Scene {
     this.load.audio('jumpSFX', 'https://ik.imagekit.io/markathious/SalsaJumper/jump.mp3');
   }
   create() {
+    this.scale.on('resize', this.resize, this);
+
     sceneControllerExternal = this.scene;
     if(window.location.href.includes("onrender")) {} else {
       document.getElementById("enter").disabled = true;
@@ -211,27 +213,27 @@ class Start extends Phaser.Scene {
     rotate: {min: -30, max: 30},
     });
     
-    const bftext = this.add.text(config.width/2, config.height*0.25, 'Salsa\nJumper', { align: 'center' });
+    this.bftext = this.add.text(config.width/2, config.height*0.25, 'Salsa\nJumper', { align: 'center' });
 
-    bftext.setOrigin(0.5, 0.5);
-    bftext.setResolution(window.devicePixelRatio);
-    bftext.setFontFamily('Arial');
-    bftext.setFontStyle('bold');
-    bftext.setTint(0x000000);
-    bftext.setFontSize(75);
+    this.bftext.setOrigin(0.5, 0.5);
+    this.bftext.setResolution(window.devicePixelRatio);
+    this.bftext.setFontFamily('Arial');
+    this.bftext.setFontStyle('bold');
+    this.bftext.setTint(0x000000);
+    this.bftext.setFontSize(75);
 
-    const text = this.add.text(config.width/2, config.height*0.25, 'Salsa\nJumper', { align: 'center' });
+    this.text = this.add.text(config.width/2, config.height*0.25, 'Salsa\nJumper', { align: 'center' });
 
-    text.setOrigin(0.5, 0.5);
-    text.setResolution(window.devicePixelRatio);
-    text.setFontFamily('Arial');
-    text.setFontStyle('bold');
-    text.setFontSize(80);
+    this.text.setOrigin(0.5, 0.5);
+    this.text.setResolution(window.devicePixelRatio);
+    this.text.setFontFamily('Arial');
+    this.text.setFontStyle('bold');
+    this.text.setFontSize(80);
 
-    text.preFX.setPadding(32);
+    this.text.preFX.setPadding(32);
     
     this.tweens.add({
-      targets: bftext,
+      targets: this.bftext,
       scale: 1.5,
       yoyo: true,
       duration: 2000,
@@ -240,7 +242,7 @@ class Start extends Phaser.Scene {
       repeat: -1,
     });
     this.tweens.add({
-      targets: text,
+      targets: this.text,
       scale: 1.3,
       yoyo: true,
       duration: 2000,
@@ -249,31 +251,31 @@ class Start extends Phaser.Scene {
       repeat: -1,
     });
     
-    const startButton = this.add.image(config.width/2, config.height*0.65, 'taco').setScale(0.8);
+    this.startButton = this.add.image(config.width/2, config.height*0.65, 'taco').setScale(0.8);
     
-    const btext = this.add.text(config.width/2, config.height*0.68, 'Start', { align: 'center' });
+    this.btext = this.add.text(config.width/2, config.height*0.68, 'Start', { align: 'center' });
 
-    btext.setOrigin(0.5, 0.5);
-    btext.setResolution(window.devicePixelRatio);
-    btext.setFontFamily('Arial');
-    btext.setFontStyle('bold');
-    btext.setTint(0x000000);
-    btext.setFontSize(70);
+    this.btext.setOrigin(0.5, 0.5);
+    this.btext.setResolution(window.devicePixelRatio);
+    this.btext.setFontFamily('Arial');
+    this.btext.setFontStyle('bold');
+    this.btext.setTint(0x000000);
+    this.btext.setFontSize(70);
 
-    text.preFX.setPadding(32);
+    this.text.preFX.setPadding(32);
     
-    const b2text = this.add.text(config.width/2, config.height*0.68, 'Start', { align: 'center' });
+    this.b2text = this.add.text(config.width/2, config.height*0.68, 'Start', { align: 'center' });
 
-    b2text.setOrigin(0.5, 0.5);
-    b2text.setResolution(window.devicePixelRatio);
-    b2text.setFontFamily('Arial');
-    b2text.setFontStyle('bold');
-    b2text.setFontSize(80);
+    this.b2text.setOrigin(0.5, 0.5);
+    this.b2text.setResolution(window.devicePixelRatio);
+    this.b2text.setFontFamily('Arial');
+    this.b2text.setFontStyle('bold');
+    this.b2text.setFontSize(80);
 
-    text.preFX.setPadding(32);
+    this.text.preFX.setPadding(32);
     
     this.tweens.add({
-      targets: btext,
+      targets: this.btext,
       scale: 1.25,
       yoyo: true,
       duration: 1000,
@@ -282,7 +284,7 @@ class Start extends Phaser.Scene {
       repeat: -1,
     });
     this.tweens.add({
-      targets: b2text,
+      targets: this.b2text,
       scale: 1.25,
       yoyo: true,
       duration: 1000,
@@ -292,17 +294,17 @@ class Start extends Phaser.Scene {
     });
     
     
-    startButton.setInteractive();
+    this.startButton.setInteractive();
     
-    startButton.on('pointerover', () => {
-      startButton.setScale(0.9);
+    this.startButton.on('pointerover', () => {
+      this.startButton.setScale(0.9);
     });
     
-    startButton.on('pointerout', () => {
-      startButton.setScale(0.8);
+    this.startButton.on('pointerout', () => {
+      this.startButton.setScale(0.8);
     });
     
-    startButton.on('pointerdown', () => {
+    this.startButton.on('pointerdown', () => {
       unlockAll();
       this.scene.stop("Start");
       if(document.getElementById("Login")) {
@@ -330,6 +332,16 @@ class Start extends Phaser.Scene {
     };
     
   }
+  resize(gameSize, baseSize, displaySize, resolution) {
+    const width = gameSize.width;
+    const height = gameSize.height;
+    this.cameras.resize(width, height);
+    this.startButton.setPosition(width/2, height*0.65);
+    this.btext.setPosition(width/2, height*0.68);
+    this.b2text.setPosition(width/2, height*0.68);
+    this.text.setPosition(width/2, height*0.25);
+    this.bftext.setPosition(width/2, height*0.25);
+  };
 }
 
 class hatMenu extends Phaser.Scene {
@@ -341,7 +353,9 @@ class hatMenu extends Phaser.Scene {
     this.load.image('arrowRight', 'https://ik.imagekit.io/markathious/SalsaJumper/right.png');
   }
   create() {
-    this.add.rectangle(0, 0, config.width, config.height, 0x000000, 90).setOrigin(0, 0);
+    this.scale.on('resize', this.resize, this);
+
+    this.backgroundC = this.add.rectangle(0, 0, config.width, config.height, 0x000000, 90).setOrigin(0, 0);
     
     this.anims.create({
       key: 'idle',
@@ -393,9 +407,12 @@ class hatMenu extends Phaser.Scene {
     
     const playerAvatar = this.add.sprite(config.width/2, config.height*0.5, 'logo').anims.play("idle");
     const hatAvatar = this.add.sprite(config.width/2, config.height*0.5, 'hats').setOrigin(0.55,1.20).setScale(1.2).anims.play(hatIndex[cHatIndex]);
-    
+    this.playerAvatar = playerAvatar;
+    this.hatAvatar = hatAvatar;
+
     const leftButton = this.add.image(config.width/2, config.height*0.48, 'arrowLeft').setDisplaySize(75,50).setOrigin(2,0.5);
-    
+    this.leftButton = leftButton;
+
     this.leftButtonTween = this.tweens.add({
       targets: leftButton,
       displayWidth: `+= 10`,
@@ -437,7 +454,8 @@ class hatMenu extends Phaser.Scene {
     });
     
     const rightButton = this.add.image(config.width/2, config.height*0.48, 'arrowRight').setDisplaySize(75,50).setOrigin(-1,0.5);
-    
+    this.rightButton = rightButton;
+
     this.rightButtonTween = this.tweens.add({
       targets: rightButton,
       displayWidth: `+= 20`,
@@ -480,6 +498,7 @@ class hatMenu extends Phaser.Scene {
     
     
     const doneButton = this.add.image(config.width/2, config.height*0.80, 'taco').setScale(0.4);
+    this.doneButton = doneButton;
     
     this.doneButtonTween = this.tweens.add({
       targets: doneButton,
@@ -518,29 +537,42 @@ class hatMenu extends Phaser.Scene {
     });
     
       
-    const btext = this.add.text(config.width/2, config.height*0.80, 'Done', { align: 'center' });
+    this.btext = this.add.text(config.width/2, config.height*0.80, 'Done', { align: 'center' });
 
-    btext.setOrigin(0.5, 0.5);
-    btext.setResolution(window.devicePixelRatio);
-    btext.setFontFamily('Arial');
-    btext.setFontStyle('bold');
-    btext.setTint(0x000000);
-    btext.setFontSize(45);
+    this.btext.setOrigin(0.5, 0.5);
+    this.btext.setResolution(window.devicePixelRatio);
+    this.btext.setFontFamily('Arial');
+    this.btext.setFontStyle('bold');
+    this.btext.setTint(0x000000);
+    this.btext.setFontSize(45);
 
-    btext.preFX.setPadding(32);
+    this.btext.preFX.setPadding(32);
     
-    const b2text = this.add.text(config.width/2, config.height*0.80, 'Done', { align: 'center' });
+    this.b2text = this.add.text(config.width/2, config.height*0.80, 'Done', { align: 'center' });
 
-    b2text.setOrigin(0.5, 0.5);
-    b2text.setResolution(window.devicePixelRatio);
-    b2text.setFontFamily('Arial');
-    b2text.setFontStyle('bold');
-    b2text.setFontSize(50);
+    this.b2text.setOrigin(0.5, 0.5);
+    this.b2text.setResolution(window.devicePixelRatio);
+    this.b2text.setFontFamily('Arial');
+    this.b2text.setFontStyle('bold');
+    this.b2text.setFontSize(50);
 
-    b2text.preFX.setPadding(32);
+    this.b2text.preFX.setPadding(32);
     
   }
-}
+  resize(gameSize, baseSize, displaySize, resolution) {
+    const width = gameSize.width;
+    const height = gameSize.height;
+    this.cameras.resize(width, height);
+    this.btext.setPosition(width/2, height*0.80);
+    this.b2text.setPosition(width/2, height*0.80);
+    this.doneButton.setPosition(width/2, height*0.80);
+    this.playerAvatar.setPosition(width/2, height*0.5);
+    this.hatAvatar.setPosition(width/2, height*0.5);
+    this.leftButton.setPosition(width/2, height*0.48);
+    this.rightButton.setPosition(width/2, height*0.48);
+    this.backgroundC.setSize(width, height);
+  }
+ }
 
 class Menu extends Phaser.Scene {
   constructor() {
@@ -970,7 +1002,18 @@ class ResultL extends Phaser.Scene {
     b2text.setFontSize(90);
 
     text.preFX.setPadding(32);
-    
+
+    const timetext = this.add.text(config.width/2, config.height*0.45, 'Time: ' + gameState.finalTime.toFixed(2) + 's', { align: 'center' });
+
+    timetext.setOrigin(0.5, 0.5);
+    timetext.setResolution(window.devicePixelRatio);
+    timetext.setFontFamily('Arial');
+    timetext.setFontStyle('bold');
+    timetext.setFontSize(40);
+
+    b2text.setFontSize(90);
+
+    text.preFX.setPadding(32);
     
     startButton.setInteractive();
     
@@ -1024,6 +1067,8 @@ class Level extends Phaser.Scene
 
         create ()
         {
+          gameState.levelStartTime = this.time.now;
+          this.scale.on('resize', this.resize, this);
           gameState.physicsVars = this.physics;
           gameState.phaser = this;
           //console.log(yourRoom);
@@ -1399,10 +1444,22 @@ class Level extends Phaser.Scene
               gameState.normalTouch = true;
               gameState.jumpable = true; 
             });
+            this.endLevelDebug = function() {
+              gameState.finalTime = (this.time.now - gameState.levelStartTime)/1000;
+              this.scene.stop("Level");
+              gameState.checkSpawn.active = false;
+              this.music.stop();
+              if(gameState.multiplayer) {
+                socket.emit('deleteOldPlayer', socket.id);
+              };
+              this.scene.start("ResultL");
+              //this.scene.start(this.nextLevel[this.levelC]);
+            }
             this.physics.add.overlap(gameState.logo, gameState.finalPlat, function() {
               if(!this.doorLocked) {
                 this.cameras.main.fade(800, 0, 0, 0, false, function(camera, progress) {
                   if (progress > .9) {
+                    gameState.finalTime = (this.time.now - gameState.levelStartTime)/1000;
                     this.scene.stop("Level");
                     gameState.checkSpawn.active = false;
                     this.music.stop();
@@ -1649,7 +1706,7 @@ class Level extends Phaser.Scene
             gameState.playerSpawn.y = gameState.checkSpawn.y;
           }
           //this.cameras.main.setBounds(0, 0, this.map[0].length*250, this.map.length*250);
-          this.add.rectangle(37.5, config.height-37.5, 75, 75, 0xFFFFFF).setScrollFactor(0).setDepth(2);
+          gameState.dashBack = this.add.rectangle(37.5, config.height-37.5, 75, 75, 0xFFFFFF).setScrollFactor(0).setDepth(2);
           gameState.dashImg = this.add.image(37.5, config.height-37.5, 'dash').setDisplaySize(50,50).setDepth(2);
           gameState.dashImg.setScrollFactor(0);
           gameState.dash = false;
@@ -1831,6 +1888,15 @@ class Level extends Phaser.Scene
         otherPlayer.animSpriteHH = otherPlayerH;
         otherPlayer.playerId = playerInfo.playerId;
         this.otherPlayers.add(otherPlayer);
+      }
+      resize(gameSize) {
+        const {height, width} = gameSize;
+        this.moveForward.setPosition(width-180, height-100);
+        this.moveLeft.setPosition(width-430, height-100);
+        this.moveJump.setPosition(180, height-155);
+        this.moveDash.setPosition(180, height-75);
+        gameState.dashImg.setPosition(37.5, height-37.5);
+        gameState.dashBack.setPosition(37.5, height-37.5);
       }
     };
 
@@ -2038,8 +2104,8 @@ class Level6 extends Level {
 
 const config = {
   type: Phaser.AUTO,
-  width: 500*(window.innerWidth/window.innerHeight),
-  height: 500,
+  width: window.innerWidth,
+  height: window.innerHeight,
   backgroundColor: "#87CEEB",
   scene: [Start, Level, ResultL, Menu, hatMenu],
   stableSort: true,
@@ -2050,6 +2116,9 @@ const config = {
       gravity: { y: 2000 },
       //debug: true,
     }
+  },
+  scale: {
+    mode: Phaser.Scale.RESIZE,
   },
   render: {
     //pixelArt: true
