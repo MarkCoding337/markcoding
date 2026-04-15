@@ -19,22 +19,22 @@ class Main extends Phaser.Scene {
     super("Main");
   }
   preload() {
-    this.load.spritesheet("player", ["https://cdn.glitch.global/0bcdf285-864d-4f45-9216-aad834ce9407/playerAtlas.png?v=1745099852661", "https://cdn.glitch.global/0bcdf285-864d-4f45-9216-aad834ce9407/playerAtlas_n2.image.png?v=1745100737774"], { frameWidth: 300, frameHeight: 500});
-    this.load.spritesheet("playerHead", ["https://cdn.glitch.global/0bcdf285-864d-4f45-9216-aad834ce9407/playerHead.png?v=1745099856161", "https://cdn.glitch.global/0bcdf285-864d-4f45-9216-aad834ce9407/playerHead_n2.image.png?v=1745100633508"], {frameWidth: 300, frameHeight: 500});
-    this.load.spritesheet("door", "https://cdn.glitch.global/0bcdf285-864d-4f45-9216-aad834ce9407/door.png?v=1746018369363", {frameHeight: 144, frameWidth: 426});
-    this.load.image("wallStuff", ["https://cdn.glitch.global/0bcdf285-864d-4f45-9216-aad834ce9407/wallStuff_Padded.png?v=1747758769033", "https://cdn.glitch.global/0bcdf285-864d-4f45-9216-aad834ce9407/NormalMap_Padded_2.png?v=1745435611731"]);
-    this.load.image("staminaBar", "https://cdn.glitch.global/0bcdf285-864d-4f45-9216-aad834ce9407/staminaBar.png?v=1745033092453");
-    this.load.image("itemSlot", "https://cdn.glitch.global/0bcdf285-864d-4f45-9216-aad834ce9407/itemSlot.png?v=1747681657204");
-    this.load.image("paperItem", "https://cdn.glitch.global/0bcdf285-864d-4f45-9216-aad834ce9407/paperImg.png?v=1747681663088");
-    this.load.image("beerItem", "https://cdn.glitch.global/0bcdf285-864d-4f45-9216-aad834ce9407/beerCanItemSlot.png?v=1747253035829");
-    this.load.image("beerImg", "https://cdn.glitch.global/0bcdf285-864d-4f45-9216-aad834ce9407/beerCan.png?v=1747252959122");
-    this.load.image("paperImg", "https://cdn.glitch.global/0bcdf285-864d-4f45-9216-aad834ce9407/paperImage.png?v=1747233309594");
+    this.load.spritesheet("player", "https://ik.imagekit.io/markathious/SCP%20Game/playerAtlas.png", { frameWidth: 300, frameHeight: 500});
+    this.load.spritesheet("playerHead", "https://ik.imagekit.io/markathious/SCP%20Game/playerHead.png", {frameWidth: 300, frameHeight: 500});
+    this.load.spritesheet("door", "https://ik.imagekit.io/markathious/SCP%20Game/door.png", {frameHeight: 144, frameWidth: 426});
+    this.load.image("wallStuff", ["https://ik.imagekit.io/markathious/SCP%20Game/wallStuff_Padded.png", "https://ik.imagekit.io/markathious/SCP%20Game/wallStuff_n_Padded.png"]);
+    //this.load.image("staminaBar", "");
+    this.load.image("itemSlot", "https://ik.imagekit.io/markathious/SCP%20Game/itemSlot.png");
+    this.load.image("paperItem", "https://ik.imagekit.io/markathious/SCP%20Game/paperImg.png");
+    this.load.image("beerItem", "https://ik.imagekit.io/markathious/SCP%20Game/beerCanItemSlot.png");
+    this.load.image("beerImg", "https://ik.imagekit.io/markathious/SCP%20Game/beerCan.png");
+    this.load.image("paperImg", "https://ik.imagekit.io/markathious/SCP%20Game/paperImage.png");
     
-    this.load.image("note1", "https://cdn.glitch.global/0bcdf285-864d-4f45-9216-aad834ce9407/Note1.png?v=1747747836090");
+    this.load.image("note1", "https://ik.imagekit.io/markathious/SCP%20Game/Note1.png");
     
-    this.load.image("D-1828Docum", "https://cdn.glitch.global/0bcdf285-864d-4f45-9216-aad834ce9407/D-Class%20Form%20(1).png?v=1747663701508");
-    this.load.image("D-1829Docum", "https://cdn.glitch.global/0bcdf285-864d-4f45-9216-aad834ce9407/D-Class%20Form.2.png?v=1747663717062");
-    this.load.image("paperBackground", "https://cdn.glitch.global/0bcdf285-864d-4f45-9216-aad834ce9407/paperBackground.png?v=1747260041672");
+    this.load.image("D-1828Docum", "https://ik.imagekit.io/markathious/SCP%20Game/D-Class%20Form%20(1).png");
+    this.load.image("D-1829Docum", "https://ik.imagekit.io/markathious/SCP%20Game/D-Class%20Form.2.png");
+    this.load.image("paperBackground", "https://ik.imagekit.io/markathious/SCP%20Game/paperBackground.png");
     this.load.json("shapes", "./shapes.json");
     
     this.load.tilemapTiledJSON('mapData', './mapData.json');
@@ -473,7 +473,7 @@ class Main extends Phaser.Scene {
     
     //add status Bars
     
-    this.createStatusBar(20,config.height-60,400, 15, "staminaBar", 0x000000,"this.player.stats.stamina","this.player.stats.maxStamina", "staminaBar");
+    this.createStatusBar(20,config.height-60,400, 15, 0x00FF00, 0x000000,"this.player.stats.stamina","this.player.stats.maxStamina", "staminaBar");
     
     this.hotbarBackground2 = this.add.rectangle(0, 0, 168.75, 81.25, 0xAAAAAA).setAlpha(0.5).setScrollFactor(0).setDepth(10).setOrigin(0, 0.5);
     this.hotbarBackground = this.add.rectangle(3.125, 0, 162.5, 75, 0x555555).setAlpha(0.5).setScrollFactor(0).setDepth(10).setOrigin(0, 0.5);
@@ -1048,7 +1048,7 @@ class Main extends Phaser.Scene {
     height: window.innerHeight,
     backgroundColor: "#666666",
     mipmapFilter: 'LINEAR_MIPMAP_LINEAR',
-    maxLights: 40,
+    maxLights: 1,
     fps: {
       forceSetTimeOut: true,
       target: 60
