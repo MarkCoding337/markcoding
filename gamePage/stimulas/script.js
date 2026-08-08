@@ -17,7 +17,7 @@ class Start extends Phaser.Scene {
     super("Start");
   }
   preload() {
-    this.load.image("particle","https://cdn.glitch.global/16759f38-d101-4b36-ba93-dc7b873629ca/particle.png?v=1724899988378");
+    this.load.image("particle","https://ik.imagekit.io/markathious/Stimulas/blue_bubble.png");
     this.load.image("red", "https://labs.phaser.io/assets/particles/red.png");
     this.load.image("white", "https://labs.phaser.io/assets/particles/white.png");
     this.load.image("happyGreen", "https://cdn.glitch.global/16759f38-d101-4b36-ba93-dc7b873629ca/particle%20(1).png?v=1725907280961");
@@ -48,13 +48,13 @@ class Start extends Phaser.Scene {
       alpha: {start: 0.7, end: 0},
       rotate: {min: -30, max: 30},
     });
-    let text = this.add.text(config.width/2,160,"STIMULAS").setScrollFactor(0).setFontSize(60).setFontFamily('Courier New').setOrigin(0.5, 0.5).setShadow(3,10,0xFF0000,20).setColor("#FFD1DC");
-    text.setShadow(-3, 3, 'rgba(255,255,255,0.4)', 2);
+    let text = this.add.text(config.width/2,160,"STIMULAS").setScrollFactor(0).setFontSize(60).setFontFamily('Courier New').setOrigin(0.5, 0.5).setShadow(3,10,0xFF0000,20).setColor("#004708");
+    text.setShadow(-3, 3, 'rgba(4, 135, 6, 0.4)', 2);
     let verText = this.add.text(config.width/2, 205, "Release Delta").setScrollFactor(0).setFontSize(20).setFontFamily("Courier New").setOrigin(0, 0.5).setColor("#FFFFFF");
 		
 	
 	
-    let start = this.add.rectangle(config.width/2, 500, 300,200, 0xFFD1DC).setOrigin(0.5,0.5);
+    let start = this.add.rectangle(config.width/2, 500, 300,200, 0x004708).setOrigin(0.5,0.5);
     this.openVal = 0;
     start.setInteractive();
     start.on('pointerover', () => {
@@ -86,7 +86,7 @@ class Start extends Phaser.Scene {
       start.setScale(1.1);
     });
     
-    let shadowFX = start.postFX.addShadow(0, 0, 0.5, 0.5, 0xFFD1DC, 2, 0.5);
+    let shadowFX = start.postFX.addShadow(0, 0, 0.5, 0.5, 0x307738, 2, 0.5);
 	this.cameras.main.fadeIn(fadeDelay);
   } 
 
@@ -375,7 +375,7 @@ class PoppingOptions extends Phaser.Scene {
 		    this.mapIndicator.setScale(1.1);
 		});
 		
-		let start = this.add.rectangle(config.width/2, 550, buttonWidth, 150, 0xFFD1DC).setOrigin(0.5,0.5);
+		let start = this.add.rectangle(config.width/2, 550, buttonWidth, 150, 0x004708).setOrigin(0.5,0.5);
 		start.setInteractive();
 		start.on('pointerover', () => {
 		  start.setScale(1.1);
@@ -399,7 +399,7 @@ class PoppingOptions extends Phaser.Scene {
 		  start.setScale(1.1);
 		});
 		
-		let shadowFX = start.postFX.addShadow(0, 0, 0.5, 0.5, 0xFFD1DC, 2, 0.5);
+		let shadowFX = start.postFX.addShadow(0, 0, 0.5, 0.5, 0x307738, 2, 0.5);
 		
 		this.cameras.main.fadeIn(fadeDelay);
 	}
@@ -658,7 +658,7 @@ class Popping extends Phaser.Scene {
 			this.ball.deathPart.depth = -1;
 			this.ball.on(dragChoice[dragPopChoice], function(){
 				if(ctx.popCD <= 0) {
-					ctx.popCD = 2;
+					ctx.popCD = 3;
 					ctx.sound.play("button"+(Math.floor(Math.random()*3)+1));
 					ctx.totalBalls -= 1;
 					this.disableInteractive();
@@ -723,7 +723,7 @@ const config = {
         type: Phaser.AUTO,
         width: cWidth,
         height: window.innerHeight,
-        backgroundColor: "#000000",
+        backgroundColor: "#16161d",
         scene: [Start, SelectScene, PoppingOptions, Popping],
         physics: {
           matter: {
