@@ -210,10 +210,14 @@ class PoppingOptions extends Phaser.Scene {
 			ease: "Quad.easeInOut"
 		});
 		
+		if (dragPopChoice == undefined) {
+			dragPopChoice = 0;
+		}
+		var dragPopChoices = ["Enabled", "Disabled"];
 		this.dragPop = this.add.rectangle(config.width/2, 185, buttonWidth, 75, 0xFFFFFF).setInteractive();
 		this.add.text(config.width/2, 165, "Drag To Pop").setFontSize(30).setFontFamily("Courier New").setOrigin(0.5, 0.5).setColor("#000000");
 		this.add.rectangle(config.width/2, 185, buttonWidth, 2, 0x000000);
-		this.dragPopText = this.add.text(config.width/2, 201, "Disabled").setFontSize(20).setFontFamily("Arial").setOrigin(0.5, 0.5).setColor("#000000").setAngle(-4);
+		this.dragPopText = this.add.text(config.width/2, 201, dragPopChoices[dragPopChoice]).setFontSize(20).setFontFamily("Arial").setOrigin(0.5, 0.5).setColor("#000000").setAngle(-4);
 		this.tweens.add({
 			targets: this.dragPopText,
 			angle: 4,
@@ -222,8 +226,6 @@ class PoppingOptions extends Phaser.Scene {
 			persist: true,
 			ease: "Quad.easeInOut",
 		});
-		dragPopChoice = 1;
-		var dragPopChoices = ["Enabled", "Disabled"];
 		
 		this.dragPop.on('pointerover', () => {
 		  this.dragPop.setScale(1.1);
@@ -245,11 +247,15 @@ class PoppingOptions extends Phaser.Scene {
 		  this.dragPop.setScale(1.1);
 		});
 			
+		if (ballSpeed == undefined) {
+			ballSpeed = 1;
+		}
+		var ballSpeeds = ["Zen", "Normal", "Insane", "Ludicrous"];
 			
 		this.speedIndicator = this.add.rectangle(config.width/2, 345, buttonWidth, 75, 0xFFFFFF).setInteractive();
 		this.add.text(config.width/2, 325, "Ball Speed").setFontSize(30).setFontFamily("Courier New").setOrigin(0.5, 0.5).setColor("#000000");
 		this.add.rectangle(config.width/2, 345, buttonWidth, 2, 0x000000);
-		this.speedText = this.add.text(config.width/2, 365, "Normal").setFontSize(20).setFontFamily("Arial").setOrigin(0.5, 0.5).setColor("#000000").setAngle(-4);
+		this.speedText = this.add.text(config.width/2, 365, ballSpeeds[ballSpeed]).setFontSize(20).setFontFamily("Arial").setOrigin(0.5, 0.5).setColor("#000000").setAngle(-4);
 		this.tweens.add({
 			targets: this.speedText,
 			angle: 4,
@@ -258,8 +264,6 @@ class PoppingOptions extends Phaser.Scene {
 			persist: true,
 			ease: "Quad.easeInOut",
 		});
-		ballSpeed = 1;
-		var ballSpeeds = ["Zen", "Normal", "Insane", "Ludicrous"];
 		
 		this.speedIndicator.on('pointerover', () => {
 		  this.speedIndicator.setScale(1.1);
@@ -289,10 +293,14 @@ class PoppingOptions extends Phaser.Scene {
 		    this.speedIndicator.setScale(1.1);
 		});
 		
+		if (ballCount == undefined) {
+			ballCount = 2;
+		}
+		var ballCounts = ["Lower", "Low", "Normal", "A Lot", "Absurd", "Death"];
 		this.countIndicator = this.add.rectangle(config.width/2, 265, buttonWidth, 75, 0xFFFFFF).setInteractive();
 		this.add.text(config.width/2, 245, "Ball Count").setFontSize(30).setFontFamily("Courier New").setOrigin(0.5, 0.5).setColor("#000000");
 		this.add.rectangle(config.width/2, 265, buttonWidth, 2, 0x000000);
-		this.countText = this.add.text(config.width/2, 285, "Normal").setFontSize(20).setFontFamily("Arial").setOrigin(0.5, 0.5).setColor("#000000").setAngle(4);
+		this.countText = this.add.text(config.width/2, 285, ballCounts[ballCount]).setFontSize(20).setFontFamily("Arial").setOrigin(0.5, 0.5).setColor("#000000").setAngle(4);
 		this.tweens.add({
 			targets: this.countText,
 			angle: -4,
@@ -301,8 +309,6 @@ class PoppingOptions extends Phaser.Scene {
 			persist: true,
 			ease: "Quad.easeInOut",
 		});
-		ballCount = 2;
-		var ballCounts = ["Lower", "Low", "Normal", "A Lot", "Absurd", "Death"];
 		
 		this.countIndicator.on('pointerover', () => {
 		  this.countIndicator.setScale(1.1);
@@ -332,10 +338,14 @@ class PoppingOptions extends Phaser.Scene {
 		  this.countIndicator.setScale(1.1);
 		});
 		
+		if (mapChoice == undefined) {
+			mapChoice = 0;
+		}
+		var maps = ["Random", "Single Bar", "Empty", "Double Bar", "Plinko", "Triangled"];
 		this.mapIndicator = this.add.rectangle(config.width/2, 425, buttonWidth, 75, 0xFFFFFF).setInteractive();
 		this.add.text(config.width/2, 405, "Map").setFontSize(30).setFontFamily("Courier New").setOrigin(0.5, 0.5).setColor("#000000");
 		this.add.rectangle(config.width/2, 425, buttonWidth, 2, 0x000000);
-		this.mapText = this.add.text(config.width/2, 445, "Random").setFontSize(20).setFontFamily("Arial").setOrigin(0.5, 0.5).setColor("#000000").setAngle(4);
+		this.mapText = this.add.text(config.width/2, 445, maps[mapChoice]).setFontSize(20).setFontFamily("Arial").setOrigin(0.5, 0.5).setColor("#000000").setAngle(4);
 		this.tweens.add({
 			targets: this.mapText,
 			angle: -4,
@@ -344,8 +354,9 @@ class PoppingOptions extends Phaser.Scene {
 			persist: true,
 			ease: "Quad.easeInOut",
 		});
-		mapChoice = 0;
-		var maps = ["Random", "Single Bar", "Empty", "Double Bar", "Plinko", "Triangled"];
+		if (mapChoice == undefined) {
+			mapChoice = 0;
+		}
 		
 		this.mapIndicator.on('pointerover', () => {
 		  this.mapIndicator.setScale(1.1);
@@ -623,7 +634,7 @@ class Popping extends Phaser.Scene {
 		this.popCD = 0;
 		this.createBall = function() {
 			this.totalBalls += 1;
-			this.ball = this.add.sprite(config.width/2, 80, "particle").setDisplaySize(50,50);
+			this.ball = this.add.sprite(config.width/2, config.height/2, "particle").setDisplaySize(50,50);
 			this.ball = this.matter.add.gameObject(this.ball);
 			var selectArr = ["+=360","-=360"];
 			var angleChange = selectArr[Math.floor(Math.random()*2)];
