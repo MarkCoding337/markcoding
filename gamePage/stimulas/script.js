@@ -147,8 +147,9 @@ class SelectScene extends Phaser.Scene {
 		poppingGame.on('pointerdown', () => {
 		  poppingGame.setDisplaySize(config.width/4-10, config.width/4-10);
 		  poppingGame.disableInteractive();
+		  ctx.cameras.main.fadeOut(fadeDelay, 0, 0, 0)
 		  this.tweens.add({
-			targets: [poppingGameContainer, titleText, backButton],
+			targets: [poppingGameContainer, popWavesGameContainer, titleText, backButton],
 			x: -config.width,
 			duration: 1000,
 			ease: "Quad.easeInOut",
@@ -162,6 +163,37 @@ class SelectScene extends Phaser.Scene {
 		poppingGame.on('pointerup', () => {
 		  poppingGame.setDisplaySize(config.width/4+10, config.width/4+10);
 		});
+
+		let popWavesGame = this.add.image(config.width/3*2, config.height/4, "particle").setDisplaySize(config.width/4, config.width/4).setInteractive();
+		let popWavesGameText = this.add.text(config.width/3*2, config.height/4, "Pop Waves").setOrigin(0.5,0).setStroke("#000000", 8).setFontFamily("Arial");
+		let popWavesGameContainer = this.add.container(0,0,[popWavesGame, popWavesGameText]);
+		popWavesGame.on('pointerover', () => {
+		  popWavesGame.setDisplaySize(config.width/4+10, config.width/4+10);
+		  this.sound.play("button1", {volume: 0.8});
+		});
+		popWavesGame.on('pointerout', () => {
+		  popWavesGame.setDisplaySize(config.width/4, config.width/4);
+		});
+		popWavesGame.on('pointerdown', () => {
+		  popWavesGame.setDisplaySize(config.width/4-10, config.width/4-10);
+		  popWavesGame.disableInteractive();
+		  ctx.cameras.main.fadeOut(fadeDelay, 0, 0, 0)
+		  this.tweens.add({
+			targets: [popWavesGameContainer, poppingGameContainer, titleText, backButton],
+			x: -config.width,
+			duration: 1000,
+			ease: "Quad.easeInOut",
+			onComplete: ()=>{
+				ctx.scene.stop();
+				ctx.scene.start("PopWaves");
+			}
+		});
+		  this.sound.play("button1", {volume: 0.8});
+		});
+		popWavesGame.on('pointerup', () => {
+		  popWavesGame.setDisplaySize(config.width/4+10, config.width/4+10);
+		});
+
 		this.cameras.main.fadeIn(fadeDelay);
 	}
 	update() {
@@ -724,6 +756,231 @@ class Popping extends Phaser.Scene {
     }
 }
 
+class PopWaves extends Phaser.Scene {
+  constructor() {
+		super("PopWaves");
+  }
+  create() {
+	ctx = this;
+	this.gameStarted = false;
+	var buttonWidth = config.width-200;
+	if(buttonWidth < 300) {
+		buttonWidth = 300;
+	}
+	let backButton = this.add.image(10,10, "backButton").setOrigin(0,0).setDisplaySize(45,45).setInteractive();
+	backButton.on('pointerover', () => {
+		backButton.setDisplaySize(50,50);
+		this.sound.play("button1", {volume: 0.8});
+	});
+	backButton.on('pointerout', () => {
+		backButton.setDisplaySize(45,45);
+	});
+	backButton.on('pointerdown', () => {
+		backButton.setDisplaySize(40,40);
+		backButton.disableInteractive();
+		ctx.cameras.main.fadeOut(fadeDelay, 0, 0, 0, (camera, progress)=>{
+			if(progress >= 0.99) {
+				ctx.scene.stop();
+				ctx.scene.start("SelectScene");
+			}
+		});	
+	});
+	let start = this.add.rectangle(config.width/2, 550, buttonWidth, 150, 0x004708).setOrigin(0.5,0.5);
+	start.setInteractive();
+	start.on('pointerover', () => {
+		start.setScale(1.1);
+		this.sound.play("button1", {volume: 0.8});
+	});
+	start.on('pointerout', () => {
+		start.setScale(1);
+	});
+	start.on('pointerdown', () => {
+		this.sound.play("button1", {volume: 0.8});
+		start.setScale(0.9);
+		start.disableInteractive();
+		this.cameras.main.fadeOut(fadeDelay, 0, 0, 0, (camera, progress)=>{
+			if(progress >= 0.99) {
+				start.destroy();
+				backButton.setVisible();
+				this.startGame();
+				this.cameras.main.fadeIn(fadeDelay);
+			}
+		});
+	});
+	start.on('pointerup', () => {
+		start.setScale(1.1);
+	});
+	
+	let shadowFX = start.postFX.addShadow(0, 0, 0.5, 0.5, 0x307738, 2, 0.5);
+	
+
+	this.cameras.main.fadeIn(fadeDelay);
+  }
+  startGame() {
+	this.matter.world.on('collisionstart', (event) => {
+		event.pairs.forEach((pair) => {
+			const { bodyA, bodyB } = pair;
+			// Check if one of the bodies is our bottom sensor
+			if (bodyA.label === 'floorSensor' || bodyB.label === 'floorSensor') {
+				// Identify which body is the incoming object
+				const targetBody = bodyA.label === 'floorSensor' ? bodyB : bodyA;
+
+				// Check if the body has your specific tag
+				if (targetBody.label === 'ball') {
+					// Safely get the Phaser Game Object attached to the Matter body
+					const gameObject = targetBody.gameObject;
+					if (gameObject && gameObject.active) {
+						gameObject.active = false; // Mark the game object as inactive to prevent further interactions
+						gameObject.deathPart.setPosition(targetBody.position.x, targetBody.position.y);
+						gameObject.deathPart.start();
+						ctx.health -= 1;
+						ctx.tweens.add({
+							targets: gameObject,
+							duration: 500,
+							alpha: 0,
+							scale: 0.05
+						});
+						ctx.time.delayedCall(100, () => {gameObject.deathPart.stop();});
+						ctx.time.delayedCall(1000, () => {
+							gameObject.deathPart.destroy();
+							gameObject.rotateTween.destroy();
+						});
+						ctx.time.delayedCall(1100, () => {
+							gameObject.destroy();
+						});
+					}
+				}
+			}
+		});
+	});
+	  var borderWidth = 10;
+	  this.ballSpawnInterval = 60;
+	  this.ballMaxSpeed = 2.5;
+	  this.ballMinSpeed = 1.25;
+	  this.health = 100;
+	  this.healthText = this.add.text(config.width/2, 20, "Health: "+this.health).setFontSize(30).setFontFamily("Arial").setOrigin(0.5, 0).setAngle(-1);
+	  this.topWall = this.matter.add.rectangle(config.width/2, 0, config.width, borderWidth, {
+			isStatic: true,
+			slop: 0,
+			restitution: 1,
+		});
+		this.leftWall = this.matter.add.rectangle(0, config.height/2, borderWidth, config.height, {
+			isStatic: true,
+			slop: 0,
+			restitution: 1,
+		});
+		this.rightWall = this.matter.add.rectangle(config.width, config.height/2, borderWidth, config.height, {
+			isStatic: true,
+			slop: 0,
+			restitution: 1,
+		});
+		this.bottomSensor = this.matter.add.rectangle(
+			config.width / 2, 
+			config.height + (borderWidth / 2), 
+			config.width, 
+			borderWidth, 
+			{ isStatic: true, isSensor: true }
+		);
+		this.bottomSensor.label = 'floorSensor';
+		this.matter.resolver._restingThresh = 0.001;
+		this.totalBalls = 0;
+		this.popCD = 0;
+		this.createBall = function() {
+			this.totalBalls += 1;
+			var randX = Math.random()*(config.width-30)+15;
+			var randY = Math.random()*(20)+100;
+			this.ball = this.add.sprite(randX, randY, "particle").setDisplaySize(50,50);
+			this.ball = this.matter.add.gameObject(this.ball);
+			var selectArr = ["+=360","-=360"];
+			var angleChange = selectArr[Math.floor(Math.random()*2)];
+			this.ball.rotateTween = ctx.tweens.add({
+				targets: this.ball,
+				angle: angleChange,
+				duration: Math.random()*500+1000,
+				repeat: -1,
+				persist: true,
+			});
+			this.ball.setInteractive();
+			this.ball.deathPart = this.add.particles(0, 0, "red", {
+			  lifespan: 1000,
+			  speedX: { min:-100, max: 100 },
+			  speedY: { min: -100, max: 100 },
+			  scale: 0.6,
+			  quantity: 1,
+			  frequency: 20,
+			  blendMode: "ADD",
+			  alpha: {start: 0.5, end: 0},
+			  rotate: {min: -30, max: 30},
+			});
+			let alphaY = Math.random()+0.5;
+			if(alphaY>1) {
+				alphaY = 1;
+			}
+			this.ball.setAlpha(alphaY);
+			var scale = 50*(Math.random()*0.5+1);
+			this.ball.setDisplaySize(scale, scale);
+			
+			this.ball.deathPart.stop();
+			this.ball.deathPart.depth = -1;
+			this.ball.on("pointerover", function(){
+				if(ctx.popCD <= 0) {
+					ctx.popCD = 3;
+					ctx.sound.play("button"+(Math.floor(Math.random()*3)+1));
+					ctx.totalBalls -= 1;
+					this.disableInteractive();
+					this.deathPart.setPosition(this.body.position.x, this.body.position.y);
+					this.deathPart.start();
+					this.setFrictionAir(0.8);
+					ctx.time.delayedCall(200, () => {this.deathPart.stop();});
+					ctx.time.delayedCall(1000, () => {
+						this.deathPart.destroy();
+						this.rotateTween.destroy();
+						this.destroy();
+					});
+					ctx.tweens.add({
+						targets: this,
+						duration: 500,
+						alpha: 0,
+						scale: 0.05
+					});
+				};
+			}, this.ball);
+			this.ball.setBody({
+				type: "circle",
+				radius: (scale/2)*0.9,
+			}, {
+				restitution: 1,
+				frictionAir: 0,
+				friction: 0,
+				inertia: Infinity,
+				slop: 0,
+				frictionStatic: -1,
+			})
+			
+			this.ball.body.label = "ball";
+			this.ball.setCollisionGroup(-1);
+			this.ball.setBounce(1);
+			this.ball.setVelocity(Math.random()*this.ballMaxSpeed-this.ballMinSpeed,Math.random()*3+1.5);
+		};
+		
+	this.gameStarted = true;
+  }
+  update() {
+	if(this.gameStarted) {
+		this.healthText.setText("Health: "+this.health);
+		if(this.ballSpawnInterval > 0) {
+			this.ballSpawnInterval -= 1;
+		} else if (this.ballSpawnInterval <= 0) {
+			this.ballSpawnInterval = 10;
+			this.createBall();
+		}
+		if (this.popCD > 0) {
+			this.popCD -= 1;
+		}
+	}
+  }
+}
+
 if (window.innerWidth < 500) {
   cWidth = window.innerWidth;
 } else {
@@ -735,7 +992,7 @@ const config = {
         width: cWidth,
         height: window.innerHeight,
         backgroundColor: "#16161d",
-        scene: [Start, SelectScene, PoppingOptions, Popping],
+        scene: [Start, SelectScene, PoppingOptions, Popping, PopWaves],
         physics: {
           matter: {
              //debug: true,
