@@ -10,6 +10,8 @@ var ballCount;
 var dragPopChoice;
 var mapChoice;
 
+var counter = 0;
+
 var fadeDelay = 500;
 
 class Start extends Phaser.Scene {
@@ -767,6 +769,7 @@ class PopWaves extends Phaser.Scene {
 	if(buttonWidth < 300) {
 		buttonWidth = 300;
 	}
+
 	let backButton = this.add.image(10,10, "backButton").setOrigin(0,0).setDisplaySize(45,45).setInteractive();
 	backButton.on('pointerover', () => {
 		backButton.setDisplaySize(50,50);
@@ -812,11 +815,21 @@ class PopWaves extends Phaser.Scene {
 	});
 	
 	let shadowFX = start.postFX.addShadow(0, 0, 0.5, 0.5, 0x307738, 2, 0.5);
-	
 
-	this.cameras.main.fadeIn(fadeDelay);
-  }
-  startGame() {
+	this.events.on('resume', () => {
+		// 1. Force Phaser systems alive
+		this.sys.setActive(true);
+		
+		// 2. Wake up Matter and reset its internal step delta
+		if (this.matter && this.matter.world) {
+			this.matter.world.resume();
+		}
+		
+		// 3. Kickstart Phaser's timers and tweens
+		this.time.paused = false;
+		this.tweens.resumeAll();
+	});
+
 	this.matter.world.on('collisionstart', (event) => {
 		event.pairs.forEach((pair) => {
 			const { bodyA, bodyB } = pair;
@@ -834,13 +847,9 @@ class PopWaves extends Phaser.Scene {
 						gameObject.deathPart.setPosition(targetBody.position.x, targetBody.position.y);
 						gameObject.deathPart.start();
 						ctx.health -= 1;
-						ctx.tweens.add({
-							targets: gameObject,
-							duration: 500,
-							alpha: 0,
-							scale: 0.05
+						ctx.time.delayedCall(100, () => {
+							gameObject.deathPart.stop();
 						});
-						ctx.time.delayedCall(100, () => {gameObject.deathPart.stop();});
 						ctx.time.delayedCall(1000, () => {
 							gameObject.deathPart.destroy();
 							gameObject.rotateTween.destroy();
@@ -848,17 +857,45 @@ class PopWaves extends Phaser.Scene {
 						ctx.time.delayedCall(1100, () => {
 							gameObject.destroy();
 						});
+						ctx.tweens.add({
+							targets: gameObject,
+							duration: 500,
+							alpha: 0,
+							scale: 0.05
+						});
 					}
 				}
 			}
 		});
 	});
+
+	this.cameras.main.fadeIn(fadeDelay);
+  }
+  startGame() {
+	ctx = this;
 	  var borderWidth = 10;
 	  this.ballSpawnInterval = 60;
 	  this.ballMaxSpeed = 2.5;
 	  this.ballMinSpeed = 1.25;
 	  this.health = 100;
-	  this.healthText = this.add.text(config.width/2, 20, "Health: "+this.health).setFontSize(30).setFontFamily("Arial").setOrigin(0.5, 0).setAngle(-1);
+	  this.points = 0;
+	  this.healthText = this.add.text(20, 20, "Health: "+this.health).setFontSize(30).setFontFamily("Arial").setOrigin(0, 0).setAngle(-1);
+	  this.pointsText = this.add.text(20, 60, "Points: "+this.points).setFontSize(20).setFontFamily("Arial").setOrigin(0, 0).setAngle(1);
+	  this.menuButton = this.add.image(config.width-20, 20, "backButton").setOrigin(1,0).setDisplaySize(30,30);
+	  this.menuButton.setInteractive();
+	  this.menuButton.on('pointerover', () => {
+		this.menuButton.setDisplaySize(35,35);
+		this.sound.play("button1", {volume: 0.8});
+	  });
+	  this.menuButton.on('pointerout', () => {
+		this.menuButton.setDisplaySize(30,30);
+	  });
+	  this.menuButton.on('pointerdown', () => {
+		this.menuButton.setDisplaySize(25,25);
+		this.scene.pause();
+		this.scene.launch("PopWavesMenu");
+		
+	  });
 	  this.topWall = this.matter.add.rectangle(config.width/2, 0, config.width, borderWidth, {
 			isStatic: true,
 			slop: 0,
@@ -922,11 +959,12 @@ class PopWaves extends Phaser.Scene {
 			
 			this.ball.deathPart.stop();
 			this.ball.deathPart.depth = -1;
-			this.ball.on("pointerover", function(){
+			this.ball.on("pointerdown", function(){
 				if(ctx.popCD <= 0) {
 					ctx.popCD = 3;
 					ctx.sound.play("button"+(Math.floor(Math.random()*3)+1));
 					ctx.totalBalls -= 1;
+					ctx.points += 1;
 					this.disableInteractive();
 					this.deathPart.setPosition(this.body.position.x, this.body.position.y);
 					this.deathPart.start();
@@ -968,16 +1006,44 @@ class PopWaves extends Phaser.Scene {
   update() {
 	if(this.gameStarted) {
 		this.healthText.setText("Health: "+this.health);
+		this.pointsText.setText("Points: "+this.points);
 		if(this.ballSpawnInterval > 0) {
 			this.ballSpawnInterval -= 1;
 		} else if (this.ballSpawnInterval <= 0) {
-			this.ballSpawnInterval = 10;
+			this.ballSpawnInterval = 30;
 			this.createBall();
 		}
 		if (this.popCD > 0) {
 			this.popCD -= 1;
 		}
 	}
+  }
+}
+
+class PopWavesMenu extends Phaser.Scene {
+  constructor() {
+		super("PopWavesMenu");
+  }
+  create() {
+
+	this.add.rectangle(0, 0, config.width, config.height, { color: 0x000000 }).setOrigin(0,0).setAlpha(0.5);
+	var buttonWidth = config.width-200;
+	if(buttonWidth < 300) {
+		buttonWidth = 300;
+	}
+	let backButton = this.add.image(10,10, "backButton").setOrigin(0,0).setDisplaySize(45,45).setInteractive();
+	backButton.on('pointerover', () => {
+		backButton.setDisplaySize(50,50);
+		this.sound.play("button1", {volume: 0.8});
+	});
+	backButton.on('pointerout', () => {
+		backButton.setDisplaySize(45,45);
+	});
+	backButton.on('pointerdown', () => {
+		backButton.setDisplaySize(40,40);
+		this.scene.stop("PopWavesMenu");
+		this.scene.resume("PopWaves")
+	});
   }
 }
 
@@ -992,7 +1058,7 @@ const config = {
         width: cWidth,
         height: window.innerHeight,
         backgroundColor: "#16161d",
-        scene: [Start, SelectScene, PoppingOptions, Popping, PopWaves],
+        scene: [Start, SelectScene, PoppingOptions, Popping, PopWaves, PopWavesMenu],
         physics: {
           matter: {
              //debug: true,
